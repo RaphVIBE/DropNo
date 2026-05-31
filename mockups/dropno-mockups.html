@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Drop № — Maquettes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: oklch(0.975 0.006 80);
+    --bg-elev: oklch(0.99 0.004 80);
+    --ink: oklch(0.18 0.012 60);
+    --ink-2: oklch(0.32 0.012 60);
+    --muted: oklch(0.52 0.01 60);
+    --rule: oklch(0.85 0.01 70);
+    --rule-soft: oklch(0.92 0.008 70);
+    --champagne: oklch(0.72 0.07 80);
+    --champagne-deep: oklch(0.52 0.06 70);
+    --serif: 'Fraunces', 'Times New Roman', serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --shadow-soft: 0 1px 0 oklch(0.85 0.01 70 / 0.5), 0 24px 60px -30px oklch(0.18 0.012 60 / 0.18);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.55;
+    font-size: 16px;
+  }
+  ::selection { background: var(--champagne); color: var(--ink); }
+
+  /* TYPOGRAPHY */
+  .serif { font-family: var(--serif); font-style: italic; font-weight: 300; letter-spacing: -0.01em; }
+  .display { font-family: var(--serif); font-weight: 300; font-style: italic; line-height: 0.92; letter-spacing: -0.025em; }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .label-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-feature-settings: "ss01", "tnum";
+  }
+
+  /* GLOBAL CHROME */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 28px;
+    background: oklch(0.975 0.006 80 / 0.86);
+    backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .wordmark {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .wordmark sup { font-feature-settings: "sups"; font-size: 0.8em; vertical-align: super; margin-left: -2px; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-link {
+    background: none; border: none; cursor: pointer;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-2);
+    letter-spacing: 0.04em;
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 240ms cubic-bezier(0.22, 1, 0.36, 1), border-color 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover { color: var(--ink); }
+  .nav-link.active { color: var(--ink); border-bottom-color: var(--ink); }
+  .nav-cta {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 18px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+    cursor: pointer;
+    transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-cta:hover { opacity: 0.86; }
+
+  /* SECTIONS */
+  section.view { display: none; padding-top: 72px; }
+  section.view.active { display: block; }
+
+  /* HOMEPAGE */
+  .hero {
+    min-height: calc(100vh - 72px);
+    padding: 80px 28px 60px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 64px;
+    align-items: end;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  @media (min-width: 900px) {
+    .hero { grid-template-columns: 1.4fr 1fr; padding: 120px 64px 80px; align-items: end; gap: 80px; }
+  }
+  .hero-display { font-size: clamp(72px, 14vw, 220px); }
+  .hero-tagline {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: clamp(16px, 1.6vw, 20px);
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 38ch;
+    margin-top: 32px;
+  }
+  .hero-meta {
+    display: flex; flex-direction: column; gap: 18px;
+    padding-bottom: 16px;
+  }
+  .hero-meta-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 14px 0;
+    border-top: 1px solid var(--rule);
+    gap: 16px;
+  }
+  .hero-meta-row:last-child { border-bottom: 1px solid var(--rule); }
+  .hero-meta-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  .hero-meta-value { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 22px; color: var(--ink); }
+
+  /* HOMEPAGE — UPCOMING DROP STRIP */
+  .upcoming-strip {
+    padding: 64px 28px 96px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  @media (min-width: 900px) {
+    .upcoming-strip { grid-template-columns: 1fr 1.2fr; padding: 96px 64px 120px; gap: 80px; align-items: center; }
+  }
+  .upcoming-art {
+    aspect-ratio: 4/5;
+    background:
+      radial-gradient(ellipse at 30% 30%, oklch(0.82 0.04 80) 0%, transparent 55%),
+      radial-gradient(ellipse at 70% 70%, oklch(0.45 0.03 60) 0%, transparent 50%),
+      linear-gradient(135deg, oklch(0.32 0.02 60) 0%, oklch(0.18 0.012 60) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .upcoming-art::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 12px, oklch(0.18 0.012 60 / 0.04) 12px 13px);
+  }
+  .upcoming-art-label {
+    position: absolute; bottom: 24px; left: 24px;
+    color: oklch(0.95 0.005 80);
+    font-family: var(--serif); font-style: italic; font-size: 14px; font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+  .upcoming-content h3 { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: clamp(42px, 6vw, 72px); line-height: 1; margin: 16px 0 24px; }
+  .upcoming-content .lede {
+    font-size: 16px; line-height: 1.6; color: var(--ink-2);
+    max-width: 50ch; margin-bottom: 36px;
+  }
+  .upcoming-specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 36px; }
+  .spec-block { padding-top: 16px; border-top: 1px solid var(--rule); }
+  .spec-block .eyebrow { display: block; margin-bottom: 6px; }
+  .spec-block .v { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 22px; }
+
+  .countdown-pill {
+    display: inline-flex; align-items: baseline; gap: 14px;
+    padding: 14px 22px;
+    border: 1px solid var(--ink);
+    background: var(--bg-elev);
+    margin-bottom: 28px;
+  }
+  .countdown-pill .label { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .countdown-pill .time { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 24px; color: var(--ink); font-feature-settings: "tnum"; }
+
+  /* MANIFESTO */
+  .manifesto {
+    padding: 120px 28px;
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+    background: var(--bg-elev);
+  }
+  @media (min-width: 900px) { .manifesto { padding: 160px 64px; } }
+  .manifesto-inner { max-width: 760px; margin: 0 auto; }
+  .manifesto p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(22px, 2.6vw, 36px);
+    line-height: 1.35;
+    color: var(--ink);
+  }
+  .manifesto p + p { margin-top: 24px; }
+  .manifesto .signature {
+    font-family: var(--sans); font-style: normal; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted);
+    margin-top: 64px;
+  }
+
+  /* HOW IT WORKS */
+  .how {
+    padding: 96px 28px;
+  }
+  @media (min-width: 900px) { .how { padding: 140px 64px; } }
+  .how-header {
+    display: flex; justify-content: space-between; align-items: end;
+    margin-bottom: 72px; gap: 32px; flex-wrap: wrap;
+  }
+  .how-title { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: clamp(38px, 5vw, 58px); line-height: 1; max-width: 14ch; }
+  .how-aside { font-size: 14px; color: var(--ink-2); max-width: 36ch; line-height: 1.6; }
+
+  .how-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  @media (min-width: 900px) { .how-grid { grid-template-columns: repeat(3, 1fr); gap: 0; } }
+  .how-step {
+    padding: 32px 0 40px;
+    border-top: 1px solid var(--ink);
+    position: relative;
+  }
+  @media (min-width: 900px) {
+    .how-step { padding: 40px 32px 56px 0; }
+    .how-step + .how-step { padding-left: 32px; }
+  }
+  .how-step .n { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 56px; line-height: 1; margin-bottom: 24px; }
+  .how-step h4 { font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; }
+  .how-step p { font-size: 15px; line-height: 1.6; color: var(--ink-2); max-width: 32ch; }
+
+  /* PAST DROPS GRID */
+  .past {
+    padding: 96px 28px 120px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  @media (min-width: 900px) { .past { padding: 140px 64px 160px; } }
+  .past-header { display: flex; justify-content: space-between; align-items: end; margin-bottom: 56px; flex-wrap: wrap; gap: 24px; }
+  .past-grid { display: grid; grid-template-columns: 1fr; gap: 48px; }
+  @media (min-width: 700px) { .past-grid { grid-template-columns: repeat(2, 1fr); gap: 56px 40px; } }
+  @media (min-width: 1100px) { .past-grid { grid-template-columns: repeat(3, 1fr); } }
+  .past-item .art {
+    aspect-ratio: 1/1;
+    margin-bottom: 20px;
+    position: relative; overflow: hidden;
+  }
+  .past-item .art .num {
+    position: absolute; top: 16px; left: 16px;
+    font-family: var(--serif); font-style: italic; font-size: 13px;
+    color: oklch(0.95 0.005 80); letter-spacing: 0.04em;
+  }
+  .past-item h5 { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 24px; line-height: 1.15; margin-bottom: 4px; }
+  .past-item .sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+  .past-item .price-row {
+    display: flex; justify-content: space-between; padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    font-size: 12px;
+  }
+  .past-item .price-row .v { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink); }
+
+  /* FOOTER */
+  footer {
+    padding: 64px 28px 32px;
+    border-top: 1px solid var(--rule);
+    background: var(--bg-elev);
+  }
+  @media (min-width: 900px) { footer { padding: 80px 64px 40px; } }
+  .foot-grid {
+    display: grid; grid-template-columns: 1fr; gap: 40px;
+    margin-bottom: 56px;
+  }
+  @media (min-width: 700px) { .foot-grid { grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 48px; } }
+  .foot-col h6 { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; font-weight: 500; }
+  .foot-col a { display: block; color: var(--ink-2); font-size: 14px; text-decoration: none; padding: 4px 0; }
+  .foot-col a:hover { color: var(--ink); }
+  .foot-newsletter input {
+    width: 100%; border: none; border-bottom: 1px solid var(--ink);
+    background: transparent; padding: 12px 0;
+    font-family: var(--sans); font-size: 15px; color: var(--ink);
+    outline: none;
+  }
+  .foot-newsletter input::placeholder { color: var(--muted); }
+  .foot-newsletter button {
+    margin-top: 16px;
+    background: var(--ink); color: var(--bg);
+    border: none; padding: 12px 24px;
+    font-family: var(--sans); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
+    cursor: pointer;
+  }
+  .foot-bottom {
+    display: flex; justify-content: space-between; padding-top: 32px;
+    border-top: 1px solid var(--rule-soft);
+    font-size: 12px; color: var(--muted); flex-wrap: wrap; gap: 16px;
+  }
+
+  /* DROP PAGE */
+  .drop-hero {
+    padding: 56px 28px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  @media (min-width: 900px) { .drop-hero { padding: 80px 64px 0; } }
+  .drop-hero-top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 32px; border-bottom: 1px solid var(--rule);
+    flex-wrap: wrap; gap: 16px;
+  }
+  .drop-hero-top .num { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 32px; }
+  .drop-hero-top .status {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--champagne-deep);
+    box-shadow: 0 0 0 4px oklch(0.72 0.07 80 / 0.2);
+    animation: pulse 2400ms cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px oklch(0.72 0.07 80 / 0.2); }
+    50% { box-shadow: 0 0 0 8px oklch(0.72 0.07 80 / 0.06); }
+  }
+
+  .drop-title {
+    padding: 48px 0 56px;
+  }
+  .drop-title .brand { font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+  .drop-title h1 { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: clamp(56px, 8vw, 110px); line-height: 0.95; letter-spacing: -0.02em; max-width: 12ch; }
+
+  .drop-main {
+    display: grid; grid-template-columns: 1fr; gap: 0;
+    padding: 0 28px 96px;
+  }
+  @media (min-width: 1000px) {
+    .drop-main { grid-template-columns: 1.2fr 1fr; gap: 64px; padding: 0 64px 120px; }
+  }
+  .drop-art {
+    aspect-ratio: 4/5;
+    background:
+      radial-gradient(ellipse at 35% 40%, oklch(0.78 0.05 80) 0%, transparent 50%),
+      radial-gradient(ellipse at 65% 65%, oklch(0.42 0.04 60) 0%, transparent 55%),
+      linear-gradient(160deg, oklch(0.28 0.02 60) 0%, oklch(0.16 0.012 60) 100%);
+    position: relative;
+  }
+  .drop-art::after {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-radial-gradient(circle at 50% 50%, transparent 0 80px, oklch(0.95 0.005 80 / 0.03) 80px 81px);
+  }
+  .drop-art-label { position: absolute; top: 24px; left: 24px; color: oklch(0.95 0.005 80); font-family: var(--serif); font-style: italic; font-size: 13px; letter-spacing: 0.04em; }
+  .drop-art-thumbs {
+    display: flex; gap: 8px;
+    margin-top: 12px;
+  }
+  .drop-art-thumb {
+    flex: 1; aspect-ratio: 1; cursor: pointer;
+    background: oklch(0.85 0.02 70);
+    transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .drop-art-thumb:hover { opacity: 0.7; }
+  .drop-art-thumb.active { outline: 1px solid var(--ink); outline-offset: 4px; }
+
+  .drop-panel { padding: 32px 0 0; }
+  @media (min-width: 1000px) { .drop-panel { padding: 0; position: sticky; top: 96px; align-self: start; } }
+
+  .countdown-block {
+    padding: 24px 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 32px;
+  }
+  .countdown-block .label { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+  .countdown-time {
+    display: flex; align-items: baseline; gap: 16px;
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-feature-settings: "tnum";
+  }
+  .countdown-unit { display: flex; align-items: baseline; gap: 4px; }
+  .countdown-unit .n { font-size: 48px; line-height: 1; color: var(--ink); }
+  .countdown-unit .u { font-size: 13px; color: var(--muted); font-family: var(--sans); font-style: normal; font-weight: 400; letter-spacing: 0.04em; text-transform: lowercase; }
+
+  .drop-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 32px; }
+  .drop-spec { padding: 18px 0; border-top: 1px solid var(--rule-soft); }
+  .drop-spec:first-child { padding-right: 16px; }
+  .drop-spec:last-child { padding-left: 16px; border-left: 1px solid var(--rule-soft); }
+  .drop-spec .label { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .drop-spec .v { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 24px; }
+
+  .bid-input-row {
+    margin: 32px 0 0; padding: 28px;
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+  }
+  .bid-input-row .head {
+    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px;
+  }
+  .bid-input-row .head .l { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  .bid-input-row .head .r { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-2); }
+  .bid-input {
+    display: flex; align-items: baseline; gap: 8px;
+    border-bottom: 1px solid var(--ink);
+    padding: 12px 0;
+  }
+  .bid-input input {
+    flex: 1; border: none; background: transparent; outline: none;
+    font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 40px;
+    color: var(--ink); font-feature-settings: "tnum";
+  }
+  .bid-input input::placeholder { color: var(--rule); }
+  .bid-input .currency { font-family: var(--serif); font-style: italic; font-size: 28px; color: var(--muted); }
+
+  .bid-cta {
+    width: 100%; margin-top: 20px;
+    background: var(--ink); color: var(--bg);
+    border: none; padding: 18px;
+    font-family: var(--sans); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500;
+    cursor: pointer;
+    transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bid-cta:hover { opacity: 0.88; }
+
+  .bid-fine {
+    font-size: 12px; color: var(--muted); line-height: 1.55;
+    margin-top: 16px;
+  }
+
+  .drop-detail {
+    padding: 96px 28px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  @media (min-width: 900px) { .drop-detail { padding: 140px 64px; } }
+  .drop-detail-grid { display: grid; grid-template-columns: 1fr; gap: 64px; max-width: 1200px; }
+  @media (min-width: 900px) { .drop-detail-grid { grid-template-columns: 1fr 1.4fr; gap: 96px; } }
+  .drop-detail h3 { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: clamp(32px, 4vw, 48px); line-height: 1; }
+  .drop-detail .body p { font-size: 16px; line-height: 1.7; color: var(--ink-2); max-width: 60ch; }
+  .drop-detail .body p + p { margin-top: 16px; }
+  .drop-detail .body .specs-list { margin-top: 32px; }
+  .drop-detail .specs-list dl { display: grid; grid-template-columns: 180px 1fr; gap: 0; }
+  .drop-detail .specs-list dt, .drop-detail .specs-list dd {
+    padding: 14px 0; border-top: 1px solid var(--rule-soft);
+    font-size: 14px;
+  }
+  .drop-detail .specs-list dt { color: var(--muted); letter-spacing: 0.04em; }
+  .drop-detail .specs-list dd { color: var(--ink); font-family: var(--serif); font-style: italic; font-size: 17px; }
+
+  /* CALENDAR */
+  .cal-hero {
+    padding: 80px 28px 64px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  @media (min-width: 900px) { .cal-hero { padding: 120px 64px 80px; } }
+  .cal-hero h1 { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: clamp(56px, 9vw, 130px); line-height: 0.95; max-width: 11ch; }
+  .cal-hero p { font-size: 16px; color: var(--ink-2); max-width: 50ch; margin-top: 24px; line-height: 1.6; }
+
+  .cal-section {
+    padding: 64px 28px 0;
+  }
+  @media (min-width: 900px) { .cal-section { padding: 96px 64px 0; } }
+  .cal-section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 24px; border-bottom: 1px solid var(--ink);
+    margin-bottom: 32px;
+  }
+  .cal-section-head h3 { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 36px; }
+  .cal-section-head .count { font-size: 13px; color: var(--muted); letter-spacing: 0.08em; }
+
+  .cal-row {
+    display: grid; grid-template-columns: 1fr;
+    gap: 12px; padding: 28px 0; border-bottom: 1px solid var(--rule-soft);
+    transition: background 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+  }
+  @media (min-width: 800px) {
+    .cal-row { grid-template-columns: 120px 1.4fr 1fr 1fr 100px; gap: 32px; align-items: center; padding: 32px 8px; }
+  }
+  .cal-row:hover { background: var(--bg-elev); padding-left: 16px; padding-right: 16px; }
+  .cal-num { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 22px; color: var(--ink-2); }
+  .cal-piece h4 { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 26px; line-height: 1.1; margin-bottom: 4px; }
+  .cal-piece .brand { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  .cal-meta { font-size: 13px; color: var(--ink-2); }
+  .cal-meta .v { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--ink); display: block; }
+  .cal-meta .l { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .cal-status {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    text-align: right;
+  }
+  .cal-status.live { color: var(--champagne-deep); }
+  .cal-status.upcoming { color: var(--ink-2); }
+  .cal-status.closed { color: var(--muted); }
+
+  .view-banner {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--bg);
+    padding: 12px 20px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    z-index: 60; font-weight: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .view-banner.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="wordmark" onclick="switchView('home'); return false;">Drop <sup>№</sup></a>
+  <div class="nav-links">
+    <button class="nav-link active" data-view="home" onclick="switchView('home')">Maison</button>
+    <button class="nav-link" data-view="drop" onclick="switchView('drop')">Drop № 001</button>
+    <button class="nav-link" data-view="calendar" onclick="switchView('calendar')">Calendrier</button>
+  </div>
+  <button class="nav-cta">Rejoindre</button>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="view active">
+
+  <div class="hero">
+    <div>
+      <span class="eyebrow">Maison de drops scellés · Établie 2026</span>
+      <h1 class="display hero-display" style="margin-top: 32px;">Drop <span style="font-feature-settings: 'sups';"><sup>№</sup></span></h1>
+      <p class="hero-tagline">Une pièce horlogère par semaine. Huit exemplaires, parfois moins. Vous soumettez votre offre, scellée, jusqu'à la révélation du jeudi.</p>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-row">
+        <span class="hero-meta-label">Prochaine révélation</span>
+        <span class="hero-meta-value" id="hero-next-reveal">Jeudi 18h00</span>
+      </div>
+      <div class="hero-meta-row">
+        <span class="hero-meta-label">Drop courant</span>
+        <span class="hero-meta-value">№ 001 · Maison Lévrier</span>
+      </div>
+      <div class="hero-meta-row">
+        <span class="hero-meta-label">Exemplaires offerts</span>
+        <span class="hero-meta-value">Huit</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="upcoming-strip">
+    <div class="upcoming-art">
+      <span class="upcoming-art-label">Drop № 001 · Maison Lévrier</span>
+    </div>
+    <div class="upcoming-content">
+      <span class="eyebrow">En cours</span>
+      <h3>Type 01 Anthracite</h3>
+      <p class="lede">Pour Drop № 001, Maison Lévrier ouvre huit exemplaires de sa nouvelle référence trois-aiguilles, mouvement micro-rotor poli main, boîtier acier brossé 38 mm.</p>
+
+      <div class="countdown-pill">
+        <span class="label">Révélation dans</span>
+        <span class="time" id="upcoming-countdown">3j 14h 02min</span>
+      </div>
+
+      <div class="upcoming-specs">
+        <div class="spec-block">
+          <span class="eyebrow">Plancher</span>
+          <span class="v">4 500 €</span>
+        </div>
+        <div class="spec-block">
+          <span class="eyebrow">Exemplaires</span>
+          <span class="v">8 / 8</span>
+        </div>
+        <div class="spec-block">
+          <span class="eyebrow">Offres scellées</span>
+          <span class="v">47</span>
+        </div>
+      </div>
+
+      <button class="nav-cta" style="background: transparent; color: var(--ink);" onclick="switchView('drop')">Découvrir le drop →</button>
+    </div>
+  </div>
+
+  <div class="manifesto">
+    <div class="manifesto-inner">
+      <p>Les pièces qui comptent ne devraient pas être attribuées au plus rapide ni au plus bruyant.</p>
+      <p>Chaque jeudi, une maison ouvre un drop. Huit exemplaires, parfois moins. Vous décidez ce que la pièce vaut pour vous. Les huit plus hautes offres remportent la pièce, toutes au même prix : la huitième.</p>
+      <p>Pas de surenchère. Pas de guerre. Votre offre, scellée, jusqu'à la révélation.</p>
+      <div class="signature">Drop № · Manifeste</div>
+    </div>
+  </div>
+
+  <div class="how">
+    <div class="how-header">
+      <h2 class="how-title">Trois temps, une cérémonie.</h2>
+      <p class="how-aside">Chaque drop suit le même rythme. Pas de timer caché, pas de surenchère soudaine. Juste un calendrier que vous pouvez tenir.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="n">01</div>
+        <h4>Le drop ouvre</h4>
+        <p>Une maison sélectionne une pièce, fixe le nombre d'exemplaires et le prix plancher. Le drop reste ouvert cinq jours.</p>
+      </div>
+      <div class="how-step">
+        <div class="n">02</div>
+        <h4>L'offre scellée</h4>
+        <p>Vous soumettez une offre. Personne ne la voit, ni les autres bidders, ni la maison, ni notre équipe. Modifiable jusqu'à une heure avant la révélation.</p>
+      </div>
+      <div class="how-step">
+        <div class="n">03</div>
+        <h4>La révélation</h4>
+        <p>Jeudi à 18h, les huit plus hautes offres remportent une pièce. Le prix unitaire, identique pour tous, correspond à la huitième offre.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="past">
+    <div class="past-header">
+      <h2 class="how-title" style="font-size: clamp(32px, 4vw, 48px);">Drops récents</h2>
+      <button class="nav-link" onclick="switchView('calendar')">Voir le calendrier complet →</button>
+    </div>
+    <div class="past-grid">
+      <div class="past-item">
+        <div class="art" style="background: linear-gradient(160deg, oklch(0.32 0.025 50) 0%, oklch(0.18 0.012 60) 100%);">
+          <span class="num">№ 000</span>
+        </div>
+        <h5>Type Zéro Prototype</h5>
+        <div class="sub">Maison Lévrier · 12 exemplaires</div>
+        <div class="price-row">
+          <span style="color: var(--muted); letter-spacing: 0.12em;">CLÔTURÉ</span>
+          <span class="v">5 280 €</span>
+        </div>
+      </div>
+      <div class="past-item">
+        <div class="art" style="background: linear-gradient(160deg, oklch(0.42 0.035 30) 0%, oklch(0.22 0.018 30) 100%);">
+          <span class="num">Beta-02</span>
+        </div>
+        <h5>Référence Cuivre</h5>
+        <div class="sub">Atelier Périgord · 6 exemplaires</div>
+        <div class="price-row">
+          <span style="color: var(--muted); letter-spacing: 0.12em;">CLÔTURÉ</span>
+          <span class="v">8 950 €</span>
+        </div>
+      </div>
+      <div class="past-item">
+        <div class="art" style="background: linear-gradient(160deg, oklch(0.38 0.04 230) 0%, oklch(0.18 0.022 230) 100%);">
+          <span class="num">Beta-01</span>
+        </div>
+        <h5>Bleu Marin</h5>
+        <div class="sub">Horlogerie Roussel · 10 exemplaires</div>
+        <div class="price-row">
+          <span style="color: var(--muted); letter-spacing: 0.12em;">CLÔTURÉ</span>
+          <span class="v">3 720 €</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <div class="foot-newsletter">
+        <h6>Lettre du jeudi</h6>
+        <p style="font-size: 14px; color: var(--ink-2); margin-bottom: 20px; max-width: 36ch;">Un message par semaine. L'annonce du prochain drop, le jeudi à 9h.</p>
+        <input type="email" placeholder="raph@maison.be" />
+        <button>S'inscrire</button>
+      </div>
+      <div class="foot-col">
+        <h6>Maison</h6>
+        <a href="#">Manifeste</a>
+        <a href="#">Mécanique</a>
+        <a href="#">Marques</a>
+        <a href="#">Presse</a>
+      </div>
+      <div class="foot-col">
+        <h6>Collectionneur</h6>
+        <a href="#">Calendrier</a>
+        <a href="#">Comment bidder</a>
+        <a href="#">Vérification d'identité</a>
+        <a href="#">Livraison</a>
+      </div>
+      <div class="foot-col">
+        <h6>Conditions</h6>
+        <a href="#">CGV</a>
+        <a href="#">Confidentialité</a>
+        <a href="#">Rétractation 14 jours</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Drop № SA · Bruxelles</span>
+      <span>Sealed bids. Maison direct.</span>
+    </div>
+  </footer>
+</section>
+
+<!-- DROP -->
+<section id="drop" class="view">
+  <div class="drop-hero">
+    <div class="drop-hero-top">
+      <span class="num">Drop № 001</span>
+      <span class="status">
+        <span class="status-dot"></span>
+        En cours · clôture jeudi 18h
+      </span>
+    </div>
+    <div class="drop-title">
+      <div class="brand">Maison Lévrier</div>
+      <h1>Type 01<br/>Anthracite</h1>
+    </div>
+  </div>
+
+  <div class="drop-main">
+    <div>
+      <div class="drop-art">
+        <span class="drop-art-label">Vue cadran</span>
+      </div>
+      <div class="drop-art-thumbs">
+        <div class="drop-art-thumb active" style="background: linear-gradient(160deg, oklch(0.4 0.03 60) 0%, oklch(0.18 0.012 60) 100%);"></div>
+        <div class="drop-art-thumb" style="background: linear-gradient(160deg, oklch(0.55 0.025 70) 0%, oklch(0.28 0.018 70) 100%);"></div>
+        <div class="drop-art-thumb" style="background: linear-gradient(160deg, oklch(0.32 0.018 60) 0%, oklch(0.16 0.012 60) 100%);"></div>
+        <div class="drop-art-thumb" style="background: linear-gradient(160deg, oklch(0.62 0.03 80) 0%, oklch(0.42 0.025 80) 100%);"></div>
+      </div>
+    </div>
+
+    <div class="drop-panel">
+      <div class="countdown-block">
+        <div class="label">Révélation dans</div>
+        <div class="countdown-time" id="drop-countdown">
+          <div class="countdown-unit"><span class="n" data-unit="d">03</span><span class="u">j</span></div>
+          <div class="countdown-unit"><span class="n" data-unit="h">14</span><span class="u">h</span></div>
+          <div class="countdown-unit"><span class="n" data-unit="m">02</span><span class="u">min</span></div>
+          <div class="countdown-unit"><span class="n" data-unit="s">45</span><span class="u">s</span></div>
+        </div>
+      </div>
+
+      <div class="drop-specs">
+        <div class="drop-spec">
+          <div class="label">Prix plancher</div>
+          <div class="v">4 500 €</div>
+        </div>
+        <div class="drop-spec">
+          <div class="label">Exemplaires</div>
+          <div class="v">8</div>
+        </div>
+      </div>
+
+      <div class="bid-input-row">
+        <div class="head">
+          <span class="l">Votre offre scellée</span>
+          <span class="r">47 offres déjà soumises</span>
+        </div>
+        <div class="bid-input">
+          <input type="text" placeholder="6 200" id="bid-amount" inputmode="numeric" />
+          <span class="currency">€</span>
+        </div>
+        <button class="bid-cta">Sceller mon offre</button>
+        <div class="bid-fine">Votre offre reste invisible jusqu'à la révélation. Une pré-autorisation Stripe sera émise pour le montant exact, libérée si vous ne gagnez pas. Vérification d'identité requise au premier bid.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drop-detail">
+    <div class="drop-detail-grid">
+      <div>
+        <span class="eyebrow">La pièce</span>
+        <h3 style="margin-top: 16px;">Une ligne, peu de mots.</h3>
+      </div>
+      <div class="body">
+        <p>La Type 01 ferme un chapitre. Maison Lévrier la conçoit comme une montre de tous les jours, sans concession sur la finition. Le cadran anthracite est obtenu par galvanisation, les index sont appliqués un à un, les aiguilles sont taillées dans le maillechort.</p>
+        <p>Le mouvement, calibre micro-rotor MLV-01, est entièrement assemblé et réglé à Genève. Soixante-douze heures de réserve de marche. Chaque pièce porte un numéro frappé sur la masse oscillante, visible par le fond saphir.</p>
+        <div class="specs-list">
+          <dl>
+            <dt>Boîtier</dt><dd>Acier brossé, 38 mm</dd>
+            <dt>Cadran</dt><dd>Anthracite galvanisé</dd>
+            <dt>Mouvement</dt><dd>Calibre MLV-01, automatique micro-rotor</dd>
+            <dt>Réserve</dt><dd>72 heures</dd>
+            <dt>Étanchéité</dt><dd>50 mètres</dd>
+            <dt>Garantie</dt><dd>Cinq ans, Maison Lévrier</dd>
+            <dt>Livraison</dt><dd>Concierge Malca-Amit, main propre</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section id="calendar" class="view">
+  <div class="cal-hero">
+    <span class="eyebrow">Calendrier</span>
+    <h1 style="margin-top: 24px;">Tous les drops, en un seul lieu.</h1>
+    <p>Drop № 001 vient d'ouvrir. Les prochains sont planifiés. Les précédents conservent leur prix unitaire de clôture.</p>
+  </div>
+
+  <div class="cal-section">
+    <div class="cal-section-head">
+      <h3>En cours</h3>
+      <span class="count">1 drop ouvert</span>
+    </div>
+    <div class="cal-row" onclick="switchView('drop')">
+      <div class="cal-num">№ 001</div>
+      <div class="cal-piece">
+        <h4>Type 01 Anthracite</h4>
+        <div class="brand">Maison Lévrier</div>
+      </div>
+      <div class="cal-meta"><span class="l">Plancher</span><span class="v">4 500 €</span></div>
+      <div class="cal-meta"><span class="l">Révélation</span><span class="v">Jeudi 18h</span></div>
+      <div class="cal-status live">Ouvert</div>
+    </div>
+  </div>
+
+  <div class="cal-section">
+    <div class="cal-section-head">
+      <h3>À venir</h3>
+      <span class="count">3 drops planifiés</span>
+    </div>
+    <div class="cal-row">
+      <div class="cal-num">№ 002</div>
+      <div class="cal-piece">
+        <h4>Sport Cadran Crème</h4>
+        <div class="brand">Atelier Périgord</div>
+      </div>
+      <div class="cal-meta"><span class="l">Plancher</span><span class="v">3 200 €</span></div>
+      <div class="cal-meta"><span class="l">Ouverture</span><span class="v">Vendredi 9h</span></div>
+      <div class="cal-status upcoming">7 juin</div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-num">№ 003</div>
+      <div class="cal-piece">
+        <h4>Plongeur Bronze</h4>
+        <div class="brand">Horlogerie Roussel</div>
+      </div>
+      <div class="cal-meta"><span class="l">Plancher</span><span class="v">5 800 €</span></div>
+      <div class="cal-meta"><span class="l">Ouverture</span><span class="v">Vendredi 9h</span></div>
+      <div class="cal-status upcoming">14 juin</div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-num">№ 004</div>
+      <div class="cal-piece">
+        <h4>Référence Acier Brossé</h4>
+        <div class="brand">Maison Lévrier</div>
+      </div>
+      <div class="cal-meta"><span class="l">Plancher</span><span class="v">12 500 €</span></div>
+      <div class="cal-meta"><span class="l">Ouverture</span><span class="v">Vendredi 9h</span></div>
+      <div class="cal-status upcoming">21 juin</div>
+    </div>
+  </div>
+
+  <div class="cal-section" style="padding-bottom: 120px;">
+    <div class="cal-section-head">
+      <h3>Passés</h3>
+      <span class="count">3 drops clôturés</span>
+    </div>
+    <div class="cal-row">
+      <div class="cal-num">№ 000</div>
+      <div class="cal-piece">
+        <h4>Type Zéro Prototype</h4>
+        <div class="brand">Maison Lévrier</div>
+      </div>
+      <div class="cal-meta"><span class="l">Plancher</span><span class="v">4 500 €</span></div>
+      <div class="cal-meta"><span class="l">Prix unitaire</span><span class="v">5 280 €</span></div>
+      <div class="cal-status closed">23 mai</div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-num">Beta-02</div>
+      <div class="cal-piece">
+        <h4>Référence Cuivre</h4>
+        <div class="brand">Atelier Périgord</div>
+      </div>
+      <div class="cal-meta"><span class="l">Plancher</span><span class="v">6 000 €</span></div>
+      <div class="cal-meta"><span class="l">Prix unitaire</span><span class="v">8 950 €</span></div>
+      <div class="cal-status closed">16 mai</div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-num">Beta-01</div>
+      <div class="cal-piece">
+        <h4>Bleu Marin</h4>
+        <div class="brand">Horlogerie Roussel</div>
+      </div>
+      <div class="cal-meta"><span class="l">Plancher</span><span class="v">3 000 €</span></div>
+      <div class="cal-meta"><span class="l">Prix unitaire</span><span class="v">3 720 €</span></div>
+      <div class="cal-status closed">9 mai</div>
+    </div>
+  </div>
+</section>
+
+<div class="view-banner" id="view-banner">Maquette</div>
+
+<script>
+  function switchView(view) {
+    document.querySelectorAll('section.view').forEach(s => s.classList.remove('active'));
+    document.getElementById(view).classList.add('active');
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    const link = document.querySelector(`.nav-link[data-view="${view}"]`);
+    if (link) link.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+
+    const banner = document.getElementById('view-banner');
+    banner.textContent = view === 'home' ? 'Maquette · Maison' : view === 'drop' ? 'Maquette · Page Drop' : 'Maquette · Calendrier';
+    banner.classList.add('show');
+    clearTimeout(window.__bannerTimer);
+    window.__bannerTimer = setTimeout(() => banner.classList.remove('show'), 1600);
+  }
+
+  // Live countdown: target = next Thursday 18:00 Paris
+  function getTarget() {
+    const now = new Date();
+    const target = new Date(now);
+    const dayOfWeek = now.getDay(); // 0=sun, 4=thu
+    let daysUntilThu = (4 - dayOfWeek + 7) % 7;
+    if (daysUntilThu === 0 && now.getHours() >= 18) daysUntilThu = 7;
+    target.setDate(now.getDate() + daysUntilThu);
+    target.setHours(18, 0, 0, 0);
+    return target;
+  }
+  const TARGET = getTarget();
+  function pad(n) { return n.toString().padStart(2, '0'); }
+
+  function updateCountdowns() {
+    const now = new Date();
+    const diff = Math.max(0, TARGET - now);
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+
+    document.querySelector('#drop-countdown [data-unit="d"]').textContent = pad(d);
+    document.querySelector('#drop-countdown [data-unit="h"]').textContent = pad(h);
+    document.querySelector('#drop-countdown [data-unit="m"]').textContent = pad(m);
+    document.querySelector('#drop-countdown [data-unit="s"]').textContent = pad(s);
+
+    document.getElementById('upcoming-countdown').textContent = `${d}j ${pad(h)}h ${pad(m)}min`;
+  }
+
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
+</script>
+
+</body>
+</html>

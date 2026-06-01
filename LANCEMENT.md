@@ -1,25 +1,32 @@
 # Drop No. - Étapes de mise en production
 
 Récapitulatif des actions manuelles restantes avant le lancement. Trois volets :
-déploiement Vercel, activation du scheduler, purge des données de test.
+déploiement Netlify, activation du scheduler, purge des données de test.
+
+> Hébergement retenu : **Netlify** (projet `dropno` déjà connecté au dépôt). Le
+> build est piloté par `netlify.toml` (Node 20, runtime Next.js OpenNext
+> auto-géré). Chaque push sur `main` déclenche un déploiement de production ;
+> chaque PR génère une Deploy Preview.
 
 ---
 
-## 1. Déploiement Vercel (intégration Git)
+## 1. Déploiement Netlify
 
-### 1.1 Importer le dépôt
+### 1.1 Le dépôt est déjà connecté
 
-1. Aller sur [vercel.com/new](https://vercel.com/new), puis **Add New... > Project**.
-2. Importer **`RaphVIBE/DropNo`** (autoriser GitHub si demandé).
-3. Le préréglage **Next.js** est détecté automatiquement : laisser les commandes
-   Build / Output / Install par défaut. Répertoire racine : `./`.
+Le projet Netlify `dropno` build le dépôt `RaphVIBE/DropNo`. Rien à réimporter.
+La configuration de build vit dans `netlify.toml` (commande `npm run build`,
+`NODE_VERSION = 20`). Le runtime Next.js est détecté automatiquement.
 
-### 1.2 Variables d'environnement (à ajouter AVANT le premier build)
+### 1.2 Variables d'environnement (à ajouter AVANT le prochain build)
+
+Netlify : **Site configuration > Environment variables**. Portée : laisser
+« All scopes » (Production + Deploy previews) sauf besoin contraire.
 
 > Important : les variables `NEXT_PUBLIC_*` sont injectées au moment du build.
-> Elles doivent exister avant que le build ne tourne, sinon le client ne se
-> connecte pas. À renseigner dans l'écran d'import, section Environment
-> Variables (portée : Production + Preview).
+> Sur Netlify, modifier une variable ne suffit pas : il faut **relancer un
+> déploiement** (Deploys > Trigger deploy > Clear cache and deploy site) pour
+> que la nouvelle valeur soit prise en compte.
 
 **Valeurs connues (à coller telles quelles)**
 
@@ -36,20 +43,21 @@ déploiement Vercel, activation du scheduler, purge des données de test.
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase > Settings > API > service_role |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe > Developers > API keys (`pk_...`) |
 | `STRIPE_SECRET_KEY` | Stripe > API keys (`sk_...`) |
-| `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | optionnel (emails) |
+| `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | Resend (emails) |
 | `NEXT_PUBLIC_POSTHOG_KEY` / `_HOST`, `NEXT_PUBLIC_CRISP_WEBSITE_ID` | optionnel |
 
-Cliquer ensuite sur **Deploy**.
+Déclencher ensuite un déploiement (Trigger deploy > Clear cache and deploy site).
 
-### 1.3 Après le premier déploiement (besoin de l'URL en ligne)
+### 1.3 Après le premier déploiement de production (besoin de l'URL)
 
-Une fois l'URL `https://<votre-app>.vercel.app` obtenue :
+URL de production : `https://dropno.netlify.app` (ou le domaine personnalisé
+configuré dans Domain management).
 
-1. **Ajouter deux variables**, puis redéployer (Deployments > ... > Redeploy) :
-   - `NEXT_PUBLIC_APP_URL` = `https://<votre-app>.vercel.app`
+1. **Ajouter deux variables**, puis redéployer (cache vidé) :
+   - `NEXT_PUBLIC_APP_URL` = `https://dropno.netlify.app` (ou domaine custom)
    - `STRIPE_WEBHOOK_SECRET` = `whsec_...` (issu de l'étape 2 ci-dessous)
 2. **Webhook Stripe** : Stripe > Developers > Webhooks > Add endpoint :
-   `https://<votre-app>.vercel.app/api/stripe/webhook`. S'abonner aux événements
+   `https://dropno.netlify.app/api/stripe/webhook`. S'abonner aux événements
    `identity.verification_session.*` et `payment_intent.*`. Copier le signing
    secret (`whsec_...`) dans `STRIPE_WEBHOOK_SECRET`.
 
@@ -57,10 +65,12 @@ Une fois l'URL `https://<votre-app>.vercel.app` obtenue :
 
 Supabase > **Authentication > URL Configuration** :
 
-- **Site URL** : `https://<votre-app>.vercel.app`
-- **Redirect URLs** : ajouter `https://<votre-app>.vercel.app/auth/callback`
-  (et `https://*-raphvibe.vercel.app/auth/callback` pour autoriser le login sur
-  les déploiements de preview).
+- **Site URL** : `https://dropno.netlify.app` (ou domaine custom)
+- **Redirect URLs** : ajouter
+  - `https://dropno.netlify.app/auth/callback`
+  - `https://deploy-preview-*--dropno.netlify.app/auth/callback` (login sur les
+    Deploy Previews de PR)
+  - le domaine custom + `/auth/callback` le cas échéant
 
 ---
 
@@ -109,11 +119,12 @@ delete from brands where slug = 'maison-levrier';
 
 ## Checklist finale avant lancement
 
-- [ ] Projet Vercel importé, variables connues + secrets renseignés
-- [ ] Premier déploiement OK
-- [ ] `NEXT_PUBLIC_APP_URL` + `STRIPE_WEBHOOK_SECRET` ajoutés, redéploiement
+- [ ] Variables connues + secrets renseignés dans Netlify (Environment variables)
+- [ ] Déploiement de production OK (Clear cache and deploy)
+- [ ] `NEXT_PUBLIC_APP_URL` + `STRIPE_WEBHOOK_SECRET` ajoutés, redéploiement (cache vidé)
 - [ ] Webhook Stripe créé et abonné aux bons événements
-- [ ] Domaine Vercel whitelisté dans Supabase Auth (Site URL + Redirect URLs)
+- [ ] Domaine Netlify whitelisté dans Supabase Auth (Site URL + Redirect URLs)
+- [ ] Login magic link testé sur une Deploy Preview ou en production
 - [ ] Secret Vault `service_role_key` créé + cron réactivé
 - [ ] Données de test purgées
 - [ ] Test bout en bout : créer une marque réelle, un drop avec `reveal_at`

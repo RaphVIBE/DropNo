@@ -97,23 +97,35 @@ select cron.alter_job(
 
 ---
 
-## 2b. Emails de résultat (notifications)
+## 2b. Notifications email (US-22)
 
-À la clôture d'un drop, l'edge function `close-drop` appelle l'app Next
-(`/api/notifications/drop-results`) qui envoie les emails gagné / non retenu via
-Resend. Trois réglages, une seule fois :
+Deux déclencheurs, un seul secret partagé `NOTIFY_SECRET` (générer une valeur,
+ex. `openssl rand -hex 32`, et l'utiliser PARTOUT) :
 
-1. **Netlify** (Environment variables) : ajouter `NOTIFY_SECRET` (chaîne
-   aléatoire, ex. `openssl rand -hex 32`).
-2. **Supabase** (Edge Functions > close-drop > Secrets, ou
-   `supabase secrets set`) : `NOTIFY_SECRET` (même valeur) et `APP_URL`
-   (= `https://dropno.netlify.app`).
-3. **Redéployer** l'edge function après modif du code notifications :
-   `supabase functions deploy close-drop --project-ref ygzyzvjxregoqbzmcmyq`.
+- **Emails de résultat** (gagné / non retenu) : `close-drop` appelle
+  `/api/notifications/drop-results` après chaque clôture révélée.
+- **Rappels** (ouverture / T-24h / T-1h) : un cron `dispatch_reminders` (toutes
+  les 5 min, créé désactivé) pinge `/api/notifications/reminders`, qui scanne
+  les rappels dus et les envoie aux followers + bidders actifs.
 
-Sans ces réglages, la clôture fonctionne normalement mais aucun email de
-résultat n'est envoyé (best-effort, jamais bloquant). `RESEND_API_KEY` doit
-aussi être présent côté Netlify pour l'envoi réel.
+Réglages, une seule fois (même valeur `NOTIFY_SECRET` partout) :
+
+1. **Netlify** (Environment variables) : `NOTIFY_SECRET` + `RESEND_API_KEY`
+   (sinon les envois sont no-op).
+2. **Supabase — secrets edge function** (pour les emails de résultat) :
+   `supabase secrets set NOTIFY_SECRET=... APP_URL=https://dropno.netlify.app`,
+   puis redéployer : `supabase functions deploy close-drop --project-ref ygzyzvjxregoqbzmcmyq`.
+3. **Supabase — Vault** (pour le cron rappels) : le secret `app_url` est déjà
+   créé ; ajouter `notify_secret` (même valeur) puis activer le cron :
+   ```sql
+   select vault.create_secret('<NOTIFY_SECRET>', 'notify_secret', 'Secret notifications');
+   select cron.alter_job(
+     (select jobid from cron.job where jobname = 'dispatch_reminders_every_5_min'),
+     active := true);
+   ```
+
+Les deux flux sont best-effort : un échec d'email n'interrompt jamais la
+clôture. Les rappels ne partent que pour les drops en statut `open`.
 
 ---
 

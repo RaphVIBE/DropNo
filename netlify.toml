@@ -1,0 +1,13 @@
+# Drop No. — configuration de build Netlify
+#
+# Le runtime Next.js (adaptateur OpenNext) est auto-détecté et géré par Netlify.
+# Recommandation officielle Netlify : NE PAS épingler l'adaptateur, pour
+# bénéficier automatiquement des correctifs de compatibilité Next.js à chaque
+# build. On se contente donc d'épingler Node (builds reproductibles) et de
+# déclarer la commande de build.
+
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"

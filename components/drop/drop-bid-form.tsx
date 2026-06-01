@@ -2,9 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 
 import { formatEuros } from "@/lib/format";
+import { getStripe } from "@/lib/stripe/browser";
 import { StartKycButton } from "@/components/kyc/start-kyc-button";
+
+const STRIPE_ENABLED = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
 type Props = {
   dropId: string;
@@ -113,10 +122,10 @@ function BidEntry({
   const [raw, setRaw] = useState(
     existingBidCents ? String(Math.round(existingBidCents / 100)) : ""
   );
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "sealed" | "error"
-  >("idle");
+  const [step, setStep] = useState<"amount" | "card" | "sealed">("amount");
+  const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
   const [message, setMessage] = useState("");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [sealedCents, setSealedCents] = useState<number | null>(
     existingBidCents
   );
@@ -126,7 +135,7 @@ function BidEntry({
   const belowFloor = amountCents > 0 && amountCents < floorPriceCents;
   const isModify = sealedCents != null;
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmitAmount(e: React.FormEvent) {
     e.preventDefault();
     if (!amountCents || belowFloor) return;
     setStatus("submitting");
@@ -144,15 +153,30 @@ function BidEntry({
         setMessage(data.error ?? "Une erreur est survenue.");
         return;
       }
-      setSealedCents(amountCents);
-      setStatus("sealed");
+      setStatus("idle");
+      if (data.clientSecret) {
+        // Etape carte (Stripe configure) : pre-autorisation a confirmer.
+        setClientSecret(data.clientSecret as string);
+        setStep("card");
+      } else {
+        // Pas d'etape carte (dev sans cle Stripe) : offre scellee directement.
+        setSealedCents(amountCents);
+        setStep("sealed");
+      }
     } catch {
       setStatus("error");
       setMessage("Impossible de joindre le serveur.");
     }
   }
 
-  if (status === "sealed" && sealedCents) {
+  function handleCardConfirmed() {
+    setSealedCents(amountCents);
+    setClientSecret(null);
+    setStep("sealed");
+  }
+
+  // --- Offre scellee ---
+  if (step === "sealed" && sealedCents) {
     return (
       <Panel>
         <Head bidCount={bidCount} />
@@ -165,7 +189,10 @@ function BidEntry({
         </p>
         <button
           type="button"
-          onClick={() => setStatus("idle")}
+          onClick={() => {
+            setStep("amount");
+            setStatus("idle");
+          }}
           className="mt-4 text-sm underline underline-offset-4 hover:text-champagne-deep"
         >
           Modifier mon offre
@@ -174,10 +201,37 @@ function BidEntry({
     );
   }
 
+  // --- Etape carte : pre-autorisation Stripe (Payment Element) ---
+  if (step === "card" && clientSecret) {
+    return (
+      <Panel>
+        <Head bidCount={bidCount} />
+        <p className="mb-1 font-serif text-lg italic">
+          {formatEuros(amountCents)}
+        </p>
+        <p className="mb-5 text-sm text-ink-2">
+          Une pré-autorisation de ce montant est posée sur votre carte. Aucun
+          débit tant que vous ne gagnez pas ce drop.
+        </p>
+        <Elements
+          stripe={getStripe()}
+          options={{ clientSecret, appearance: { theme: "flat" } }}
+        >
+          <CardStep
+            onConfirmed={handleCardConfirmed}
+            onBack={() => setStep("amount")}
+          />
+        </Elements>
+        <Fine />
+      </Panel>
+    );
+  }
+
+  // --- Etape montant ---
   return (
     <Panel>
       <Head bidCount={bidCount} />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmitAmount}>
         <div className="flex items-baseline gap-2 border-b border-foreground py-3">
           <input
             type="text"
@@ -208,14 +262,84 @@ function BidEntry({
           disabled={status === "submitting" || !amountCents || belowFloor}
         >
           {status === "submitting"
-            ? "Scellement..."
+            ? "Préparation..."
             : isModify
               ? "Modifier mon offre"
-              : "Sceller mon offre"}
+              : STRIPE_ENABLED
+                ? "Continuer"
+                : "Sceller mon offre"}
         </Cta>
       </form>
       <Fine />
     </Panel>
+  );
+}
+
+/**
+ * Etape de confirmation carte. Monte le Payment Element et confirme la
+ * pre-autorisation (PaymentIntent en capture manuelle) on-session. Une carte
+ * deja enregistree sur le Customer est proposee automatiquement.
+ */
+function CardStep({
+  onConfirmed,
+  onBack,
+}: {
+  onConfirmed: () => void;
+  onBack: () => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function confirm() {
+    if (!stripe || !elements) return;
+    setSubmitting(true);
+    setError("");
+
+    const { error: confirmError, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: "if_required",
+    });
+
+    if (confirmError) {
+      setError(confirmError.message ?? "La pré-autorisation a échoué.");
+      setSubmitting(false);
+      return;
+    }
+
+    // Capture manuelle : la carte autorisee laisse le PI en `requires_capture`.
+    if (
+      paymentIntent &&
+      (paymentIntent.status === "requires_capture" ||
+        paymentIntent.status === "processing")
+    ) {
+      onConfirmed();
+      return;
+    }
+
+    setError("La carte n'a pas pu être pré-autorisée. Réessayez.");
+    setSubmitting(false);
+  }
+
+  return (
+    <div>
+      <PaymentElement />
+      {error ? (
+        <p className="mt-3 text-sm text-destructive">{error}</p>
+      ) : null}
+      <Cta as="button" onClick={confirm} disabled={!stripe || submitting}>
+        {submitting ? "Scellement..." : "Sceller mon offre"}
+      </Cta>
+      <button
+        type="button"
+        onClick={onBack}
+        disabled={submitting}
+        className="mt-3 block w-full text-center text-sm underline underline-offset-4 hover:text-champagne-deep disabled:opacity-50"
+      >
+        Modifier le montant
+      </button>
+    </div>
   );
 }
 

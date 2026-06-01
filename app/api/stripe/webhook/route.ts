@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 
 import { getStripe } from "@/lib/stripe/client";
 import { createServiceClient } from "@/lib/supabase/service";
+import { sendBidConfirmation } from "@/lib/email/send";
 
 export const dynamic = "force-dynamic";
 
@@ -55,8 +56,14 @@ export async function POST(request: NextRequest) {
         await updateKyc(event, "pending");
         break;
       case "payment_intent.amount_capturable_updated":
+        // Carte autorisee : la pre-autorisation est posee (requires_capture).
+        await markBidAuthorized(event);
+        break;
       case "payment_intent.canceled":
-        // TODO : synchroniser stripe_auth_status du bid (collecte carte Elements).
+        await setBidAuthStatusByPi(event, "released");
+        break;
+      case "payment_intent.payment_failed":
+        await setBidAuthStatusByPi(event, "failed");
         break;
       default:
         break;
@@ -88,4 +95,66 @@ async function updateKyc(
       kyc_verified_at: status === "verified" ? new Date().toISOString() : null,
     })
     .eq("id", userId);
+}
+
+/**
+ * Carte autorisee pour une offre : bascule stripe_auth_status -> 'authorized'
+ * et envoie l'email de confirmation (US-05). Idempotent : le filtre
+ * `.neq('authorized')` garantit qu'on n'envoie l'email qu'une seule fois meme
+ * si Stripe re-livre l'evenement.
+ */
+async function markBidAuthorized(event: Stripe.Event) {
+  const pi = event.data.object as Stripe.PaymentIntent;
+  const supabase = createServiceClient();
+
+  const { data: bid } = await supabase
+    .from("bids")
+    .update({ stripe_auth_status: "authorized" })
+    .eq("stripe_payment_intent_id", pi.id)
+    .neq("stripe_auth_status", "authorized")
+    .select("drop_id, user_id, amount_cents, submitted_at, amount_hash")
+    .maybeSingle();
+
+  // Aucune ligne : offre deja autorisee (re-livraison) ou PI orphelin -> stop.
+  if (!bid) return;
+
+  const [{ data: drop }, { data: profile }] = await Promise.all([
+    supabase
+      .from("drops")
+      .select("drop_number, title")
+      .eq("id", bid.drop_id)
+      .maybeSingle(),
+    supabase
+      .from("profiles")
+      .select("email")
+      .eq("id", bid.user_id)
+      .maybeSingle(),
+  ]);
+
+  if (profile?.email) {
+    await sendBidConfirmation(profile.email, {
+      dropNumber: drop?.drop_number ?? 0,
+      title: drop?.title ?? "votre pièce",
+      amountCents: bid.amount_cents,
+      submittedAt: bid.submitted_at,
+      hash: bid.amount_hash,
+    });
+  }
+}
+
+/**
+ * Synchronise stripe_auth_status d'une offre depuis un PaymentIntent
+ * (annulation / echec). Une pre-autorisation annulee n'est jamais 'authorized',
+ * donc l'offre ne pourra pas etre capturee a la cloture.
+ */
+async function setBidAuthStatusByPi(
+  event: Stripe.Event,
+  status: "released" | "failed"
+) {
+  const pi = event.data.object as Stripe.PaymentIntent;
+  const supabase = createServiceClient();
+  await supabase
+    .from("bids")
+    .update({ stripe_auth_status: status })
+    .eq("stripe_payment_intent_id", pi.id);
 }

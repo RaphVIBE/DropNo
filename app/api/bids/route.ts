@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/client";
+import { sendBidConfirmation } from "@/lib/email/send";
 import type { Tables } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
@@ -46,7 +47,7 @@ export async function POST(request: NextRequest) {
   // Pre-validation metier (la RLS reste l'autorite finale).
   const { data: drop } = await supabase
     .from("drops_public")
-    .select("status, floor_price_cents, bid_lock_at")
+    .select("status, floor_price_cents, bid_lock_at, title, drop_number")
     .eq("id", dropId)
     .maybeSingle();
 
@@ -127,6 +128,23 @@ export async function POST(request: NextRequest) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
+  }
+
+  // Email de confirmation (US-05), best-effort : ne bloque jamais la réponse.
+  // On relit l'offre pour récupérer l'empreinte (amount_hash) et l'horodatage
+  // posés par les triggers DB.
+  if (user.email) {
+    const { data: saved } = await supabase
+      .rpc("my_bid_for_drop", { p_drop_id: dropId })
+      .maybeSingle();
+    const savedBid = saved as unknown as Tables<"bids"> | null;
+    await sendBidConfirmation(user.email, {
+      dropNumber: drop.drop_number ?? 0,
+      title: drop.title ?? "votre pièce",
+      amountCents,
+      submittedAt: savedBid?.submitted_at ?? new Date().toISOString(),
+      hash: savedBid?.amount_hash ?? null,
+    });
   }
 
   return NextResponse.json({ ok: true, amountCents });

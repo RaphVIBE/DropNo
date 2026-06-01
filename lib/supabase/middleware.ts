@@ -11,6 +11,26 @@ const PROTECTED_PREFIXES = ["/account"];
  * les acces non authentifies aux routes protegees.
  */
 export async function updateSession(request: NextRequest) {
+  // Filet de securite : Supabase retombe parfois sur le Site URL (la racine)
+  // au lieu du emailRedirectTo si /auth/callback n'est pas dans la liste
+  // blanche des Redirect URLs. On rattrape le code OAuth et on le renvoie
+  // vers le handler de callback.
+  const { pathname: incomingPath, searchParams } = request.nextUrl;
+  if (incomingPath === "/" && searchParams.has("code")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/callback";
+    return NextResponse.redirect(url);
+  }
+  // Lien magique rejete par Supabase (expire, deja consomme, invalide) :
+  // GoTrue retombe sur la racine avec ?error=... On renvoie vers /login pour
+  // afficher un message lisible plutot que la home muette.
+  if (incomingPath === "/" && searchParams.has("error")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = `?auth_error=${searchParams.get("error_code") ?? searchParams.get("error") ?? "unknown"}`;
+    return NextResponse.redirect(url);
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient<Database>(

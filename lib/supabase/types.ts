@@ -285,6 +285,39 @@ export type Database = {
           },
         ]
       }
+      drop_notifications: {
+        Row: {
+          drop_id: string
+          kind: string
+          sent_at: string
+        }
+        Insert: {
+          drop_id: string
+          kind: string
+          sent_at?: string
+        }
+        Update: {
+          drop_id?: string
+          kind?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drop_notifications_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: false
+            referencedRelation: "drops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drop_notifications_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: false
+            referencedRelation: "drops_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       drops: {
         Row: {
           bid_count: number
@@ -554,7 +587,24 @@ export type Database = {
     }
     Functions: {
       close_drop: { Args: { p_drop_id: string }; Returns: Json }
+      dispatch_reminders: { Args: never; Returns: Json }
       dispatch_ripe_drops: { Args: never; Returns: Json }
+      drop_notification_recipients: {
+        Args: { p_drop_id: string }
+        Returns: {
+          email: string
+          user_id: string
+        }[]
+      }
+      reminders_due: {
+        Args: never
+        Returns: {
+          drop_id: string
+          drop_number: number
+          kind: string
+          title: string
+        }[]
+      }
       drop_result_recipients: {
         Args: { p_drop_id: string }
         Returns: {

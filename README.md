@@ -1,6 +1,6 @@
 # Drop No.
 
-Plateforme de **drops scellés multi-gagnants** pour montres premium, en
+Plateforme de **drops scellés multi-gagnants** pour produits premium, en
 brand-direct. Une marque ouvre un drop hebdomadaire : N exemplaires d'une pièce,
 prix plancher P, fenêtre de bids de 5 jours. Les acheteurs soumettent une offre
 cachée (sealed bid), modifiable jusqu'à T-1h. À la révélation, les N plus hautes

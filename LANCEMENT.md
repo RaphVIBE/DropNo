@@ -97,6 +97,26 @@ select cron.alter_job(
 
 ---
 
+## 2b. Emails de résultat (notifications)
+
+À la clôture d'un drop, l'edge function `close-drop` appelle l'app Next
+(`/api/notifications/drop-results`) qui envoie les emails gagné / non retenu via
+Resend. Trois réglages, une seule fois :
+
+1. **Netlify** (Environment variables) : ajouter `NOTIFY_SECRET` (chaîne
+   aléatoire, ex. `openssl rand -hex 32`).
+2. **Supabase** (Edge Functions > close-drop > Secrets, ou
+   `supabase secrets set`) : `NOTIFY_SECRET` (même valeur) et `APP_URL`
+   (= `https://dropno.netlify.app`).
+3. **Redéployer** l'edge function après modif du code notifications :
+   `supabase functions deploy close-drop --project-ref ygzyzvjxregoqbzmcmyq`.
+
+Sans ces réglages, la clôture fonctionne normalement mais aucun email de
+résultat n'est envoyé (best-effort, jamais bloquant). `RESEND_API_KEY` doit
+aussi être présent côté Netlify pour l'envoi réel.
+
+---
+
 ## 3. Purger les données de test
 
 Une marque fictive (Maison Lévrier) et 4 drops ont été seedés pour vérifier les

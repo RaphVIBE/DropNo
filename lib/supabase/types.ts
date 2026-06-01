@@ -301,6 +301,7 @@ export type Database = {
           id: string
           images_urls: Json | null
           piece_reference: string | null
+          result_notified_at: string | null
           reveal_at: string
           revealed_at: string | null
           specs: Json | null
@@ -323,6 +324,7 @@ export type Database = {
           id?: string
           images_urls?: Json | null
           piece_reference?: string | null
+          result_notified_at?: string | null
           reveal_at: string
           revealed_at?: string | null
           specs?: Json | null
@@ -345,6 +347,7 @@ export type Database = {
           id?: string
           images_urls?: Json | null
           piece_reference?: string | null
+          result_notified_at?: string | null
           reveal_at?: string
           revealed_at?: string | null
           specs?: Json | null
@@ -551,6 +554,15 @@ export type Database = {
     }
     Functions: {
       close_drop: { Args: { p_drop_id: string }; Returns: Json }
+      dispatch_ripe_drops: { Args: never; Returns: Json }
+      drop_result_recipients: {
+        Args: { p_drop_id: string }
+        Returns: {
+          email: string
+          status: string
+          user_id: string
+        }[]
+      }
       my_bid_for_drop: {
         Args: { p_drop_id: string }
         Returns: {

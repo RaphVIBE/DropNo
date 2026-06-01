@@ -25,6 +25,9 @@ import Stripe from "https://esm.sh/stripe@16.0.0?target=denonext";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") ?? "";
+// URL de l'app Next + secret partagé pour déclencher les emails de résultat.
+const APP_URL = Deno.env.get("APP_URL") ?? "";
+const NOTIFY_SECRET = Deno.env.get("NOTIFY_SECRET") ?? "";
 
 // Lazy init pour ne pas crash au cold start si STRIPE_SECRET_KEY pas encore configurée.
 let stripe: Stripe | null = null;
@@ -89,6 +92,11 @@ Deno.serve(async (req: Request) => {
 
   try {
     const report = await processDrop(supabase, body.drop_id);
+    // Emails de résultat (US-22) : seulement si le drop est révélé. Best-effort,
+    // n'altère jamais le résultat de la clôture financière.
+    if (report.close_result.status === "revealed") {
+      await notifyResults(body.drop_id);
+    }
     return json(report, 200);
   } catch (err) {
     console.error("[close-drop] fatal", err);
@@ -249,6 +257,30 @@ async function releaseAllForDrop(
       report.releases.failed++;
       report.errors.push({ bid_id: bid.id, action: "release", message });
     }
+  }
+}
+
+// Déclenche les emails de résultat via l'app Next (source unique des templates
+// + Resend). Best-effort : tout échec est loggé sans interrompre la clôture.
+async function notifyResults(dropId: string): Promise<void> {
+  if (!APP_URL || !NOTIFY_SECRET) {
+    console.warn("[close-drop] APP_URL/NOTIFY_SECRET absents, emails non déclenchés");
+    return;
+  }
+  try {
+    const res = await fetch(`${APP_URL}/api/notifications/drop-results`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-notify-secret": NOTIFY_SECRET,
+      },
+      body: JSON.stringify({ dropId }),
+    });
+    if (!res.ok) {
+      console.error("[close-drop] notify résultat échec", res.status, await res.text());
+    }
+  } catch (err) {
+    console.error("[close-drop] notify résultat exception", err);
   }
 }
 

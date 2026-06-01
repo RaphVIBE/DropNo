@@ -95,6 +95,11 @@ select cron.alter_job(
 > Le secret `edge_function_url` est déjà créé dans Vault. Pour suivre l'exécution :
 > `select * from cron.job_run_details order by start_time desc limit 5;`
 
+> Lifecycle : le cron `open_ripe_drops_every_minute` (migration 0007) est déjà
+> **actif** et fait passer les drops `scheduled` -> `open` à `bid_window_opens_at`
+> (pur SQL, aucun secret requis). Seule la clôture (`dispatch_ripe_drops`) attend
+> l'activation ci-dessus.
+
 ---
 
 ## 2b. Notifications email (US-22)

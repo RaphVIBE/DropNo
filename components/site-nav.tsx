@@ -6,7 +6,7 @@ import Link from "next/link";
  */
 export function SiteNav() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-rule-soft bg-background/85 px-7 py-[18px] backdrop-blur-md backdrop-saturate-150">
+    <header className="reveal-nav fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-rule-soft bg-background/85 px-7 py-[18px] backdrop-blur-md backdrop-saturate-150">
       <Link
         href="/"
         className="font-serif text-[22px] font-light italic tracking-tight text-foreground no-underline"
@@ -14,6 +14,12 @@ export function SiteNav() {
         Drop <sup className="align-super text-[0.8em]">No.</sup>
       </Link>
       <nav className="flex items-center gap-7">
+        <Link
+          href="/a-propos"
+          className="hidden border-b border-transparent py-1 text-[13px] text-ink-2 transition-colors hover:text-foreground sm:inline-block"
+        >
+          À propos
+        </Link>
         <Link
           href="/drops"
           className="border-b border-transparent py-1 text-[13px] text-ink-2 transition-colors hover:text-foreground"

@@ -33,9 +33,16 @@
   .email{background:var(--bg);padding:28px 16px}
   .mail{max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--rule)}
   .mail .accent{height:3px;background:var(--champagne)}
-  .mail .hd{padding:22px 32px;border-bottom:1px solid #efeae0}
+  .mail .hd{padding:18px 32px;border-bottom:1px solid #efeae0;display:flex;align-items:center;justify-content:space-between}
   .mail .hd .w{font-family:var(--serif);font-style:italic;font-weight:300;font-size:21px}
   .mail .hd .w sup{font-size:.6em;color:var(--champagne-ink);vertical-align:super}
+  .mail .hd img{width:42px;height:42px;display:block}
+  .strip{width:100%;border-collapse:collapse;margin:8px 0 2px}
+  .strip td{width:33%;text-align:center;vertical-align:top;padding:0 4px}
+  .strip img{display:block;margin:0 auto;width:100%;max-width:150px;height:auto}
+  .strip .cap{margin-top:6px;font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .dashed{border-top:1px dashed var(--champagne);margin:30px 0 0;line-height:0;font-size:0}
+  .eyb{margin:20px 0 12px;font-size:10px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
   .mail .body{padding:32px 32px 30px}
   .eyebrow{font-size:10.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:13px}
   .mail h1{font-family:var(--serif);font-style:italic;font-weight:300;font-size:29px;line-height:1.08;letter-spacing:-.02em;margin-bottom:16px}
@@ -69,7 +76,7 @@
       <div class="tag"><span class="name">Offre scellée · US-05</span><span class="subj">Offre scellée · Drop No. 001</span></div>
       <div class="email"><div class="mail">
         <div class="accent"></div>
-        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span><img src="../public/email/filigrane.png" width="42" height="42" alt=""/></div>
         <div style="max-height:360px;overflow:hidden;line-height:0;border-bottom:1px solid #efeae0;background:#f6f3ec"><a href="#" style="text-decoration:none"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1040&q=80" alt="Patek Philippe Nautilus 5711" style="display:block;width:100%;height:auto;border:0;background:#f6f3ec;font-family:var(--serif);font-style:italic;font-size:16px;color:#8a8175"/></a></div>
         <div class="body">
           <div class="eyebrow">Drop No. 001</div>
@@ -84,6 +91,13 @@
           <p>Vous pouvez modifier votre offre jusqu'à une heure avant la révélation. Vous recevrez le résultat par email.</p>
           <a class="btn" href="#">Voir mon offre</a>
           <div class="tl"><a href="#">Modifiable jusqu'à une heure avant la révélation</a></div>
+          <div class="dashed">&nbsp;</div>
+          <div class="eyb">Comment ça marche</div>
+          <table class="strip"><tr>
+            <td><img src="../public/email/step-01.png" alt=""/><div class="cap">Offre scellée</div></td>
+            <td><img src="../public/email/step-02.png" alt=""/><div class="cap">Révélation</div></td>
+            <td><img src="../public/email/step-03.png" alt=""/><div class="cap">Prix unique</div></td>
+          </tr></table>
         </div>
         <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>Vous recevez cet email parce que vous participez à un drop. © 2026 Drop No.</div>
       </div></div>
@@ -94,7 +108,7 @@
       <div class="tag"><span class="name">Offre scellée · image bloquée</span><span class="subj">Fallback client sans images</span></div>
       <div class="email"><div class="mail">
         <div class="accent"></div>
-        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span><img src="../public/email/filigrane.png" width="42" height="42" alt=""/></div>
         <div style="background:#f6f3ec;border-bottom:1px solid #efeae0"><img src="about:blank#broken" alt="Patek Philippe Nautilus 5711" style="display:block;width:100%;height:auto;border:0;background:#f6f3ec;font-family:var(--serif);font-style:italic;font-size:16px;color:#8a8175;padding:0"/></div>
         <div class="body">
           <div class="eyebrow">Drop No. 001</div>
@@ -111,7 +125,7 @@
       <div class="tag"><span class="name">Offre scellée · image verticale</span><span class="subj">Recadrée à 360px max</span></div>
       <div class="email"><div class="mail">
         <div class="accent"></div>
-        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span><img src="../public/email/filigrane.png" width="42" height="42" alt=""/></div>
         <div style="max-height:360px;overflow:hidden;line-height:0;border-bottom:1px solid #efeae0;background:#f6f3ec"><a href="#" style="text-decoration:none"><img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=720&q=80" alt="Audemars Piguet Royal Oak" style="display:block;width:100%;height:auto;border:0;background:#f6f3ec"/></a></div>
         <div class="body">
           <div class="eyebrow">Drop No. 002</div>
@@ -128,7 +142,7 @@
       <div class="tag"><span class="name">Résultat · gagné · US-22</span><span class="subj">Vous avez gagné · Drop No. 001</span></div>
       <div class="email"><div class="mail">
         <div class="accent"></div>
-        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span><img src="../public/email/filigrane.png" width="42" height="42" alt=""/></div>
         <div class="body">
           <div class="eyebrow">Drop No. 001</div>
           <h1>Vous avez gagné.</h1>
@@ -145,7 +159,7 @@
       <div class="tag"><span class="name">Résultat · non retenu · US-22</span><span class="subj">Résultat · Drop No. 001</span></div>
       <div class="email"><div class="mail">
         <div class="accent"></div>
-        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span><img src="../public/email/filigrane.png" width="42" height="42" alt=""/></div>
         <div class="body">
           <div class="eyebrow">Drop No. 001</div>
           <h1>Vous n'avez pas gagné ce drop.</h1>
@@ -162,7 +176,7 @@
       <div class="tag"><span class="name">Rappel · ouverture · US-22</span><span class="subj">Drop No. 001 est ouvert</span></div>
       <div class="email"><div class="mail">
         <div class="accent"></div>
-        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span><img src="../public/email/filigrane.png" width="42" height="42" alt=""/></div>
         <div class="body">
           <div class="eyebrow">Drop No. 001 · Patek Philippe Nautilus 5711</div>
           <h1>Le drop est ouvert.</h1>
@@ -178,7 +192,7 @@
       <div class="tag"><span class="name">Rappel · T-24h · US-22</span><span class="subj">Plus que 24h · Drop No. 001</span></div>
       <div class="email"><div class="mail">
         <div class="accent"></div>
-        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span><img src="../public/email/filigrane.png" width="42" height="42" alt=""/></div>
         <div class="body">
           <div class="eyebrow">Drop No. 001 · Patek Philippe Nautilus 5711</div>
           <h1>Plus que 24 heures.</h1>
@@ -194,7 +208,7 @@
       <div class="tag"><span class="name">Rappel · T-1h · US-22</span><span class="subj">Dernière heure · Drop No. 001</span></div>
       <div class="email"><div class="mail">
         <div class="accent"></div>
-        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span><img src="../public/email/filigrane.png" width="42" height="42" alt=""/></div>
         <div class="body">
           <div class="eyebrow">Drop No. 001 · Patek Philippe Nautilus 5711</div>
           <h1>Dernière heure.</h1>

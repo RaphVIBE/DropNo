@@ -85,6 +85,8 @@ def main() -> int:
     req = urllib.request.Request(url, data=body, method="PATCH")
     req.add_header("Authorization", f"Bearer {token}")
     req.add_header("Content-Type", "application/json")
+    # Cloudflare (devant l'API Supabase) bloque le UA par défaut de urllib (1010).
+    req.add_header("User-Agent", "DropNo-EmailSetup/1.0")
 
     print(f"\nPATCH {url} …")
     try:

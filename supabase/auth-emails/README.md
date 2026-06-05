@@ -33,6 +33,23 @@ Le ref projet par défaut est celui de Drop No. (`ygzyzvjxregoqbzmcmyq`),
 surchargeable via `PROJECT_REF`. Le script échoue proprement (et n'envoie rien)
 si un fichier manque ou si le token est absent.
 
+## Finalisation en une commande (rotation clé + SMTP + Site URL)
+
+`finalize-auth.py` fait tout d'un coup avec un PAT frais : crée une **nouvelle
+clé Resend dédiée au SMTP** (la clé transactionnelle reste séparée), branche le
+SMTP dessus, et règle **Site URL** + la liste des redirections (prod + localhost).
+
+```bash
+export SUPABASE_ACCESS_TOKEN=sbp_xxxx          # PAT frais, révoqué juste après
+export RESEND_API_KEY=re_xxxx                  # clé Resend FULL ACCESS (pour créer la clé SMTP)
+python3 supabase/auth-emails/finalize-auth.py --dry-run
+python3 supabase/auth-emails/finalize-auth.py
+```
+
+Options : `--site-url https://…`, `--no-rotate` (réutilise la clé fournie).
+Après : fais tourner la clé Resend **transactionnelle** côté hébergeur (Vercel)
+et déploie pour publier `public/email/*.png`.
+
 ## Brancher Resend en SMTP (recommandé en prod)
 
 Par défaut les emails d'auth partent via le SMTP intégré Supabase, rate-limité
@@ -77,6 +94,18 @@ subject = "Réinitialisez votre mot de passe · Drop No."
 content_path = "./auth-emails/recovery.html"
 # … idem confirmation / email_change / invite
 ```
+
+## Assets (filigrane + mécanisme)
+
+Les en-têtes affichent le filigrane (cadran maison) et l'email de bienvenue
+(`confirm-signup`) intègre le bandeau « comment ça marche ». Ces images sont
+référencées via `{{ .SiteURL }}/email/*.png` (variable Supabase, pas de domaine
+en dur). Prérequis :
+
+- Les PNG doivent être déployés sous `public/email/` (générés par
+  `python3 scripts/email-assets/build.py`).
+- **Site URL** doit être renseigné dans Supabase (Auth → URL Configuration),
+  sinon `{{ .SiteURL }}` est vide et les images ne chargent pas.
 
 ## Notes
 

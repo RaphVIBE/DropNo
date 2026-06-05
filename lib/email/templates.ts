@@ -27,16 +27,21 @@ const SERIF = "'Fraunces', Georgia, 'Times New Roman', serif";
 const SANS =
   "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
 
-/** URL publique du site (CTA). Surchargeable via NEXT_PUBLIC_SITE_URL. */
+/** URL publique du site (CTA + assets). NEXT_PUBLIC_SITE_URL > NEXT_PUBLIC_APP_URL. */
 function siteUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "https://dropno.eu").replace(
-    /\/$/,
-    ""
-  );
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    "https://dropno.eu";
+  return raw.replace(/\/$/, "");
 }
 /** Construit une URL absolue à partir d'un chemin relatif. */
 function url(path: string): string {
   return `${siteUrl()}${path.startsWith("/") ? path : `/${path}`}`;
+}
+/** URL absolue d'un asset email hébergé (public/email/). */
+function assetUrl(file: string): string {
+  return url(`/email/${file}`);
 }
 
 /**
@@ -120,6 +125,27 @@ function button(label: string, href: string): string {
 </td></tr></table>`;
 }
 
+/**
+ * Bandeau « comment ça marche » — reprend la section mécanisme du site :
+ * 3 étapes au trait (offre scellée / révélation / prix unique), numérotées,
+ * avec repères d'angle. Assets PNG rasterisés (cf. scripts/email-assets).
+ */
+function mechanismStrip(): string {
+  const step = (file: string, caption: string) =>
+    `<td width="33%" align="center" valign="top" style="padding:0 4px;">
+<img src="${assetUrl(file)}" width="150" alt="" style="display:block;margin:0 auto;width:100%;max-width:150px;height:auto;border:0;outline:none;"/>
+<div style="margin-top:6px;font-family:${SANS};font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:${C.muted};">${caption}</div>
+</td>`;
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:10px 0 2px;">
+<tr>${step("step-01.png", "Offre scellée")}${step("step-02.png", "Révélation")}${step("step-03.png", "Prix unique")}</tr>
+</table>`;
+}
+
+/** Filet pointillé champagne (séparateur façon site). */
+function dashedRule(): string {
+  return `<div style="border-top:1px dashed ${C.champagne};line-height:0;font-size:0;">&nbsp;</div>`;
+}
+
 /** Lien texte discret, sous le bouton. */
 function textLink(label: string, href: string): string {
   return `<p style="margin:14px 0 0;font-family:${SANS};font-size:13px;color:${C.muted};"><a href="${href}" style="color:${C.champagneInk};text-decoration:none;border-bottom:1px solid ${C.rule};">${label}</a></p>`;
@@ -166,8 +192,15 @@ function layout(preheader: string, inner: string, hero?: string): string {
 <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:${C.panel};border:1px solid ${C.rule};">
 <!-- filet d'accent champagne -->
 <tr><td style="height:3px;background:${C.champagne};font-size:0;line-height:0;">&nbsp;</td></tr>
-<!-- en-tête -->
-<tr><td style="padding:26px 40px;border-bottom:1px solid ${C.ruleSoft};">${wordmark()}</td></tr>
+<!-- en-tête : wordmark + filigrane (cadran maison) -->
+<tr><td style="padding:22px 40px;border-bottom:1px solid ${C.ruleSoft};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+<td style="vertical-align:middle;">${wordmark()}</td>
+<td align="right" style="vertical-align:middle;width:54px;">
+<img src="${assetUrl("filigrane.png")}" width="46" height="46" alt="" style="display:inline-block;width:46px;height:46px;border:0;outline:none;"/>
+</td>
+</tr></table>
+</td></tr>
 ${hero ?? ""}
 <!-- corps -->
 <tr><td style="padding:40px 40px 36px;">${inner}</td></tr>
@@ -218,7 +251,10 @@ ${h1("Votre offre est scellée.")}
 ${p("Votre offre reste invisible jusqu'à la révélation. Une pré-autorisation a été émise pour le montant exact, libérée si vous ne gagnez pas.")}
 ${stats(rows)}
 ${p("Vous pouvez modifier votre offre jusqu'à une heure avant la révélation. Vous recevrez le résultat par email.", 20)}
-${cta}`;
+${cta}
+<div style="margin:34px 0 0;">${dashedRule()}</div>
+<div style="margin:22px 0 14px;">${eyebrow("Comment ça marche")}</div>
+${mechanismStrip()}`;
   const text = `Offre scellée · Drop No. ${num}
 Pièce : ${d.title}
 Votre offre : ${formatEuros(d.amountCents)}

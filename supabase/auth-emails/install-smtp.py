@@ -31,7 +31,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ENV_LOCAL = os.path.join(HERE, "..", "..", ".env.local")
 
 SMTP_HOST = "smtp.resend.com"
-SMTP_PORT = 465
+SMTP_PORT = "465"  # l'API valide une chaîne, pas un nombre
 SMTP_USER = "resend"
 SENDER_NAME = "Drop No."
 
@@ -107,6 +107,8 @@ def main() -> int:
     )
     req.add_header("Authorization", f"Bearer {token}")
     req.add_header("Content-Type", "application/json")
+    # Cloudflare (devant l'API Supabase) bloque le UA par défaut de urllib (1010).
+    req.add_header("User-Agent", "DropNo-EmailSetup/1.0")
 
     print(f"\nPATCH {url} …")
     try:

@@ -177,8 +177,7 @@ export function WatchArt({
       className={className}
       width="100%"
       height="100%"
-      role="img"
-      aria-hidden
+      aria-hidden="true"
     >
       <defs>
         <linearGradient id={`${uid}-bg`} x1="0" y1="0" x2="0.4" y2="1">

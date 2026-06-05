@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 
@@ -23,6 +23,12 @@ export const metadata: Metadata = {
     "Une maison de drops scellés dédiée à l'horlogerie premium. Offre cachée, prix unique à la révélation.",
 };
 
+export const viewport: Viewport = {
+  colorScheme: "light",
+  // Accorde la barre d'URL mobile au fond off-white warm-tinted (--background).
+  themeColor: "#f6f3ec",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,7 +36,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${fraunces.variable} ${inter.variable}`}>
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <a href="#main-content" className="skip-link">
+          Aller au contenu
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

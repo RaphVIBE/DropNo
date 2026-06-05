@@ -50,14 +50,45 @@
   * {
     @apply border-border;
   }
+  html {
+    color-scheme: light;
+    /* Ancres sous le header fixe (72px) — evite que la cible passe dessous. */
+    scroll-padding-top: 72px;
+  }
   body {
     @apply bg-background text-foreground font-sans;
     -webkit-font-smoothing: antialiased;
     line-height: 1.55;
   }
+  /* Elements interactifs : pas de delai de tap mobile, surbrillance maitrisee. */
+  a,
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
   ::selection {
     background: var(--champagne);
     color: var(--foreground);
+  }
+  /* Skip link — visible uniquement au focus clavier. */
+  .skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 100;
+    padding: 10px 16px;
+    background: var(--foreground);
+    color: var(--background);
+    border-radius: var(--radius);
+    font-size: 13px;
+    transform: translateY(-150%);
+    transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skip-link:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 }
 
@@ -115,7 +146,7 @@
     from {
       opacity: 0;
       transform: translateY(14px);
-      filter: blur(6px);
+      filter: blur(4px);
     }
     to {
       opacity: 1;

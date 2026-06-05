@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { MechanismFlow } from "@/components/home/mechanism-flow";
+import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
 
 export default function HomePage() {
   return (
@@ -48,8 +48,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Mécanisme — flux blueprint du drop scellé en trois temps */}
-      <MechanismFlow />
+      {/* Mécanisme — flux blueprint vivant du drop scellé en trois temps */}
+      <MechanismVariantB />
     </section>
   );
 }

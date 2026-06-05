@@ -1,29 +1,7 @@
 import Link from "next/link";
-import { Eye, Lock, Tag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-
-/** Mécanisme du drop scellé, expliqué en trois temps sous le hero. */
-const STEPS = [
-  {
-    n: "01",
-    Icon: Lock,
-    label: "Offre scellée",
-    desc: "Vous scellez votre prix. Invisible des autres jusqu'à la révélation.",
-  },
-  {
-    n: "02",
-    Icon: Eye,
-    label: "Révélation",
-    desc: "À l'heure dite, toutes les offres s'ouvrent d'un seul coup.",
-  },
-  {
-    n: "03",
-    Icon: Tag,
-    label: "Prix unique",
-    desc: "Les plus hautes offres gagnent, et toutes payent le même prix.",
-  },
-];
+import { MechanismFlow } from "@/components/home/mechanism-flow";
 
 export default function HomePage() {
   return (
@@ -70,33 +48,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Mécanisme — comprendre le drop scellé en trois temps */}
-      <ol className="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-3">
-        {STEPS.map((step, i) => (
-          <li
-            key={step.n}
-            className="reveal flex flex-col gap-3 border-t border-border pt-5"
-            style={
-              { "--reveal-delay": `${700 + i * 90}ms` } as React.CSSProperties
-            }
-          >
-            <span className="flex items-baseline gap-3">
-              <span className="font-display text-3xl tabular-nums text-[var(--champagne-deep)]">
-                {step.n}
-              </span>
-              <step.Icon
-                className="size-[15px] translate-y-[-1px] text-muted-foreground"
-                strokeWidth={1.5}
-                aria-hidden="true"
-              />
-            </span>
-            <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-foreground">
-              {step.label}
-            </span>
-            <p className="text-sm leading-relaxed text-ink-2">{step.desc}</p>
-          </li>
-        ))}
-      </ol>
+      {/* Mécanisme — flux blueprint du drop scellé en trois temps */}
+      <MechanismFlow />
     </section>
   );
 }

@@ -193,7 +193,7 @@ function BidEntry({
             setStep("amount");
             setStatus("idle");
           }}
-          className="mt-4 text-sm underline underline-offset-4 hover:text-champagne-deep"
+          className="mt-4 rounded-sm text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           Modifier mon offre
         </button>
@@ -232,7 +232,7 @@ function BidEntry({
     <Panel>
       <Head bidCount={bidCount} />
       <form onSubmit={handleSubmitAmount}>
-        <div className="flex items-baseline gap-2 border-b border-foreground py-3">
+        <div className="flex items-baseline gap-2 border-b border-foreground py-3 transition-colors focus-within:border-champagne-deep">
           <input
             type="text"
             inputMode="numeric"
@@ -335,7 +335,7 @@ function CardStep({
         type="button"
         onClick={onBack}
         disabled={submitting}
-        className="mt-3 block w-full text-center text-sm underline underline-offset-4 hover:text-champagne-deep disabled:opacity-50"
+        className="mt-3 block w-full rounded-sm text-center text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
       >
         Modifier le montant
       </button>
@@ -344,8 +344,7 @@ function CardStep({
 }
 
 function KycGate({ dropId, bidCount }: { dropId: string; bidCount: number }) {
-  const ctaClassName =
-    "mt-5 block w-full bg-primary px-6 py-[18px] text-center text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50";
+  const ctaClassName = CTA_CLASS;
 
   return (
     <Panel>
@@ -402,9 +401,11 @@ type CtaProps = {
     }
 );
 
+const CTA_CLASS =
+  "mt-5 block w-full bg-primary px-6 py-[18px] text-center text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50";
+
 function Cta(props: CtaProps) {
-  const className =
-    "mt-5 block w-full bg-primary px-6 py-[18px] text-center text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50";
+  const className = CTA_CLASS;
 
   if (props.as === "link") {
     return (

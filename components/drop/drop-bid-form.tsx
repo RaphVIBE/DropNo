@@ -11,7 +11,6 @@ import {
 
 import { formatEuros } from "@/lib/format";
 import { getStripe } from "@/lib/stripe/browser";
-import { StartKycButton } from "@/components/kyc/start-kyc-button";
 
 const STRIPE_ENABLED = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
@@ -20,7 +19,7 @@ type Props = {
   floorPriceCents: number;
   bidCount: number;
   isAuthenticated: boolean;
-  kycVerified: boolean;
+  kycStatus: string;
   isOpen: boolean;
   isLocked: boolean;
   existingBidCents: number | null;
@@ -36,7 +35,7 @@ export function DropBidForm(props: Props) {
     floorPriceCents,
     bidCount,
     isAuthenticated,
-    kycVerified,
+    kycStatus,
     isOpen,
     isLocked,
     existingBidCents,
@@ -93,8 +92,8 @@ export function DropBidForm(props: Props) {
   }
 
   // --- Connecté mais KYC non vérifié ---
-  if (!kycVerified) {
-    return <KycGate dropId={dropId} bidCount={bidCount} />;
+  if (kycStatus !== "verified") {
+    return <KycGate status={kycStatus} bidCount={bidCount} />;
   }
 
   // --- Peut bidder (créer ou modifier) ---
@@ -343,19 +342,38 @@ function CardStep({
   );
 }
 
-function KycGate({ dropId, bidCount }: { dropId: string; bidCount: number }) {
-  const ctaClassName = CTA_CLASS;
+function KycGate({ status, bidCount }: { status: string; bidCount: number }) {
+  // Vérification en cours : le webhook Stripe n'a pas encore confirmé.
+  if (status === "verifying") {
+    return (
+      <Panel>
+        <Head bidCount={bidCount} />
+        <div className="mb-3 flex items-center gap-2 text-ink-2">
+          <span className="status-dot" aria-hidden />
+          <span className="text-[11px] font-medium uppercase tracking-[0.18em]">
+            Vérification en cours
+          </span>
+        </div>
+        <p className="text-sm text-ink-2">
+          Votre identité est en cours de vérification. Vous pourrez sceller une
+          offre dès qu&apos;elle est confirmée, généralement en quelques minutes.
+        </p>
+      </Panel>
+    );
+  }
 
+  const rejected = status === "rejected";
   return (
     <Panel>
       <Head bidCount={bidCount} />
       <p className="mb-5 text-sm text-ink-2">
-        Une vérification d&apos;identité est requise avant votre première offre.
-        Quelques minutes, une pièce d&apos;identité et un selfie.
+        {rejected
+          ? "Votre dernière vérification n'a pas abouti. Reprenez-la pour pouvoir faire une offre."
+          : "Une vérification d'identité est requise avant votre première offre. Quelques minutes, une pièce d'identité et un selfie."}
       </p>
-      <StartKycButton dropId={dropId} className={ctaClassName}>
-        Vérifier mon identité
-      </StartKycButton>
+      <Link href="/account/verification" className={CTA_CLASS}>
+        {rejected ? "Reprendre la vérification" : "Vérifier mon identité"}
+      </Link>
       <Fine />
     </Panel>
   );

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Drop No. — Aperçu des emails</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300;0,9..144,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f3ec;--ink:#221d17;--muted:#8a8175;--rule:#e6e0d3;--champagne:#c4ac82;--champagne-ink:#8c7a52;
+    --serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;padding:48px 24px 96px}
+  .page{max-width:1240px;margin:0 auto}
+  header.head{margin-bottom:40px;padding-bottom:28px;border-bottom:1px solid var(--rule)}
+  .wm{font-family:var(--serif);font-style:italic;font-weight:300;font-size:30px;letter-spacing:-.01em}
+  .wm sup{font-size:.6em;color:var(--champagne-ink);vertical-align:super}
+  .head p{margin-top:10px;color:var(--muted);font-size:14px;max-width:60ch;line-height:1.6}
+  h2.sec{font-family:var(--serif);font-style:italic;font-weight:300;font-size:24px;margin:56px 0 6px;letter-spacing:-.01em}
+  .sec-note{color:var(--muted);font-size:12.5px;margin-bottom:22px;letter-spacing:.02em}
+  .grid{display:grid;gap:28px;grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
+  .card{background:#fff;border:1px solid var(--rule);box-shadow:0 24px 60px -36px rgba(34,29,23,.28)}
+  .card .tag{display:flex;justify-content:space-between;align-items:baseline;padding:14px 18px;border-bottom:1px solid #efeae0;background:#fbf9f4}
+  .tag .name{font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .tag .subj{font-size:12px;color:var(--ink);font-family:var(--serif);font-style:italic}
+  iframe{width:100%;border:0;display:block;background:var(--bg)}
+  .full iframe{height:560px}
+  .auth iframe{height:520px}
+  .legend{margin-top:8px;font-size:12px;color:var(--muted)}
+  /* ---- email card render (transactional) ---- */
+  .email{background:var(--bg);padding:28px 16px}
+  .mail{max-width:520px;margin:0 auto;background:#fff;border:1px solid var(--rule)}
+  .mail .accent{height:3px;background:var(--champagne)}
+  .mail .hd{padding:22px 32px;border-bottom:1px solid #efeae0}
+  .mail .hd .w{font-family:var(--serif);font-style:italic;font-weight:300;font-size:21px}
+  .mail .hd .w sup{font-size:.6em;color:var(--champagne-ink);vertical-align:super}
+  .mail .body{padding:32px 32px 30px}
+  .eyebrow{font-size:10.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:13px}
+  .mail h1{font-family:var(--serif);font-style:italic;font-weight:300;font-size:29px;line-height:1.08;letter-spacing:-.02em;margin-bottom:16px}
+  .mail p{font-size:14.5px;line-height:1.62;color:#4a4339;margin:0}
+  .mail p+p{margin-top:16px}
+  .stat{width:100%;border-collapse:collapse;margin:24px 0 4px}
+  .stat td{padding:12px 0;border-top:1px solid var(--rule);font-size:13px;color:var(--muted)}
+  .stat td.v{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--ink);text-align:right}
+  .btn{display:inline-block;margin-top:26px;padding:13px 28px;background:var(--ink);color:var(--bg);font-size:11.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
+  .tl{margin-top:13px;font-size:12.5px;color:var(--muted)}
+  .tl a{color:var(--champagne-ink);text-decoration:none;border-bottom:1px solid var(--rule)}
+  .mail .ft{padding:22px 32px 26px;border-top:1px solid #efeae0;font-size:10.5px;line-height:1.7;color:var(--muted)}
+  .mail .ft a{color:var(--muted);text-decoration:none}
+  .mail .ft .links{margin-bottom:9px}
+  strong{font-weight:500;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="head">
+    <div class="wm">Drop<sup>№</sup></div>
+    <p>Aperçu de toutes les communications email. Transactionnelles rendues depuis <code>lib/email/templates.ts</code> ; emails d'authentification depuis <code>supabase/auth-emails/</code>. Police, couleurs et composants alignés sur le design system.</p>
+  </header>
+
+  <h2 class="sec">Emails transactionnels</h2>
+  <div class="sec-note">Resend · FR · source : lib/email/templates.ts</div>
+  <div class="grid">
+
+    <!-- 1. Confirmation d'offre -->
+    <div class="card">
+      <div class="tag"><span class="name">Offre scellée · US-05</span><span class="subj">Offre scellée · Drop No. 001</span></div>
+      <div class="email"><div class="mail">
+        <div class="accent"></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div style="max-height:360px;overflow:hidden;line-height:0;border-bottom:1px solid #efeae0;background:#f6f3ec"><a href="#" style="text-decoration:none"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1040&q=80" alt="Patek Philippe Nautilus 5711" style="display:block;width:100%;height:auto;border:0;background:#f6f3ec;font-family:var(--serif);font-style:italic;font-size:16px;color:#8a8175"/></a></div>
+        <div class="body">
+          <div class="eyebrow">Drop No. 001</div>
+          <h1>Votre offre est scellée.</h1>
+          <p>Votre offre reste invisible jusqu'à la révélation. Une pré-autorisation a été émise pour le montant exact, libérée si vous ne gagnez pas.</p>
+          <table class="stat">
+            <tr><td>Pièce</td><td class="v">Patek Philippe Nautilus 5711</td></tr>
+            <tr><td>Votre offre</td><td class="v">24 000 €</td></tr>
+            <tr><td>Scellée le</td><td class="v">3 juin 2026 à 14:30</td></tr>
+            <tr><td>Empreinte</td><td class="v">9f86d081884c7d65…</td></tr>
+          </table>
+          <p>Vous pouvez modifier votre offre jusqu'à une heure avant la révélation. Vous recevrez le résultat par email.</p>
+          <a class="btn" href="#">Voir mon offre</a>
+          <div class="tl"><a href="#">Modifiable jusqu'à une heure avant la révélation</a></div>
+        </div>
+        <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>Vous recevez cet email parce que vous participez à un drop. © 2026 Drop No.</div>
+      </div></div>
+    </div>
+
+    <!-- 1b. Confirmation — image bloquée / cassée (fallback) -->
+    <div class="card">
+      <div class="tag"><span class="name">Offre scellée · image bloquée</span><span class="subj">Fallback client sans images</span></div>
+      <div class="email"><div class="mail">
+        <div class="accent"></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div style="background:#f6f3ec;border-bottom:1px solid #efeae0"><img src="about:blank#broken" alt="Patek Philippe Nautilus 5711" style="display:block;width:100%;height:auto;border:0;background:#f6f3ec;font-family:var(--serif);font-style:italic;font-size:16px;color:#8a8175;padding:0"/></div>
+        <div class="body">
+          <div class="eyebrow">Drop No. 001</div>
+          <h1>Votre offre est scellée.</h1>
+          <p>L'image est bloquée par le client mail : la bande reste tintée et le nom de la pièce s'affiche en serif. Aucune icône cassée, le reste de l'email est intact.</p>
+          <a class="btn" href="#">Voir mon offre</a>
+        </div>
+        <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>© 2026 Drop No.</div>
+      </div></div>
+    </div>
+
+    <!-- 1c. Confirmation — image verticale recadrée -->
+    <div class="card">
+      <div class="tag"><span class="name">Offre scellée · image verticale</span><span class="subj">Recadrée à 360px max</span></div>
+      <div class="email"><div class="mail">
+        <div class="accent"></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div style="max-height:360px;overflow:hidden;line-height:0;border-bottom:1px solid #efeae0;background:#f6f3ec"><a href="#" style="text-decoration:none"><img src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?w=720&q=80" alt="Audemars Piguet Royal Oak" style="display:block;width:100%;height:auto;border:0;background:#f6f3ec"/></a></div>
+        <div class="body">
+          <div class="eyebrow">Drop No. 002</div>
+          <h1>Votre offre est scellée.</h1>
+          <p>Photo verticale : le cadre la recadre par le haut (max 360px), la mise en page reste nette plutôt qu'étirée sur toute la hauteur.</p>
+          <a class="btn" href="#">Voir mon offre</a>
+        </div>
+        <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>© 2026 Drop No.</div>
+      </div></div>
+    </div>
+
+    <!-- 2. Résultat gagné -->
+    <div class="card">
+      <div class="tag"><span class="name">Résultat · gagné · US-22</span><span class="subj">Vous avez gagné · Drop No. 001</span></div>
+      <div class="email"><div class="mail">
+        <div class="accent"></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="body">
+          <div class="eyebrow">Drop No. 001</div>
+          <h1>Vous avez gagné.</h1>
+          <p>Félicitations. Vous remportez <strong>Patek Philippe Nautilus 5711</strong> au prix unitaire de <strong>22 500 €</strong>. Le paiement de votre pré-autorisation a été capturé.</p>
+          <p>Notre concierge vous contacte pour organiser la livraison assurée. Vous disposez de 14 jours de rétractation à compter de la réception.</p>
+          <a class="btn" href="#">Suivre ma livraison</a>
+        </div>
+        <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>© 2026 Drop No.</div>
+      </div></div>
+    </div>
+
+    <!-- 3. Résultat non retenu -->
+    <div class="card">
+      <div class="tag"><span class="name">Résultat · non retenu · US-22</span><span class="subj">Résultat · Drop No. 001</span></div>
+      <div class="email"><div class="mail">
+        <div class="accent"></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="body">
+          <div class="eyebrow">Drop No. 001</div>
+          <h1>Vous n'avez pas gagné ce drop.</h1>
+          <p>Votre offre n'a pas atteint le prix de clôture (22 500 €). Votre pré-autorisation a été intégralement libérée, aucun montant n'a été prélevé.</p>
+          <p>Le prochain drop vous attend dans le calendrier.</p>
+          <a class="btn" href="#">Voir le calendrier</a>
+        </div>
+        <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>© 2026 Drop No.</div>
+      </div></div>
+    </div>
+
+    <!-- 4. Rappel ouverture -->
+    <div class="card">
+      <div class="tag"><span class="name">Rappel · ouverture · US-22</span><span class="subj">Drop No. 001 est ouvert</span></div>
+      <div class="email"><div class="mail">
+        <div class="accent"></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="body">
+          <div class="eyebrow">Drop No. 001 · Patek Philippe Nautilus 5711</div>
+          <h1>Le drop est ouvert.</h1>
+          <p>Vous avez cinq jours pour sceller votre offre. Une seule offre, cachée jusqu'à la révélation, modifiable à tout moment avant la dernière heure.</p>
+          <a class="btn" href="#">Sceller mon offre</a>
+        </div>
+        <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>© 2026 Drop No.</div>
+      </div></div>
+    </div>
+
+    <!-- 5. Rappel T-24h -->
+    <div class="card">
+      <div class="tag"><span class="name">Rappel · T-24h · US-22</span><span class="subj">Plus que 24h · Drop No. 001</span></div>
+      <div class="email"><div class="mail">
+        <div class="accent"></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="body">
+          <div class="eyebrow">Drop No. 001 · Patek Philippe Nautilus 5711</div>
+          <h1>Plus que 24 heures.</h1>
+          <p>La révélation approche. Votre offre est-elle prête ? Vous pouvez encore la modifier.</p>
+          <a class="btn" href="#">Vérifier mon offre</a>
+        </div>
+        <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>© 2026 Drop No.</div>
+      </div></div>
+    </div>
+
+    <!-- 6. Rappel T-1h -->
+    <div class="card">
+      <div class="tag"><span class="name">Rappel · T-1h · US-22</span><span class="subj">Dernière heure · Drop No. 001</span></div>
+      <div class="email"><div class="mail">
+        <div class="accent"></div>
+        <div class="hd"><span class="w">Drop<sup>№</sup></span></div>
+        <div class="body">
+          <div class="eyebrow">Drop No. 001 · Patek Philippe Nautilus 5711</div>
+          <h1>Dernière heure.</h1>
+          <p>Les offres se verrouillent dans une heure. C'est votre dernière chance de modifier la vôtre.</p>
+          <a class="btn" href="#">Modifier mon offre</a>
+        </div>
+        <div class="ft"><div class="links"><a href="#">Mon compte</a> · <a href="#">Préférences</a> · <a href="#">Aide</a></div>Drop No., maison de drops scellés pour montres premium.<br/>© 2026 Drop No.</div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <h2 class="sec">Emails d'authentification — liens protégés</h2>
+  <div class="sec-note">Supabase Auth · FR · source : supabase/auth-emails/ (rendu réel des fichiers HTML)</div>
+  <div class="grid">
+    <div class="card auth"><div class="tag"><span class="name">Magic link</span><span class="subj">Votre lien d'accès</span></div><iframe src="../supabase/auth-emails/magic-link.html" title="magic link"></iframe></div>
+    <div class="card auth"><div class="tag"><span class="name">Confirm signup</span><span class="subj">Confirmez votre email</span></div><iframe src="../supabase/auth-emails/confirm-signup.html" title="confirm signup"></iframe></div>
+    <div class="card auth"><div class="tag"><span class="name">Reset password</span><span class="subj">Réinitialisation</span></div><iframe src="../supabase/auth-emails/recovery.html" title="recovery"></iframe></div>
+    <div class="card auth"><div class="tag"><span class="name">Change email</span><span class="subj">Nouvelle adresse</span></div><iframe src="../supabase/auth-emails/email-change.html" title="email change"></iframe></div>
+    <div class="card auth"><div class="tag"><span class="name">Invite</span><span class="subj">Invitation</span></div><iframe src="../supabase/auth-emails/invite.html" title="invite"></iframe></div>
+  </div>
+
+  <p class="legend">Note : les cartes transactionnelles sont une reproduction fidèle pour relecture rapide. La source de vérité reste <code>lib/email/templates.ts</code> (mêmes couleurs, polices, composants). Les emails d'auth sont les vrais fichiers, affichés en iframe.</p>
+</div>
+</body>
+</html>

@@ -19,7 +19,7 @@ export function getStripe(): Stripe {
     stripeSingleton = new Stripe(key, {
       apiVersion: "2026-05-27.dahlia",
       typescript: true,
-      appInfo: { name: "Drop No.", url: "https://dropno.com" },
+      appInfo: { name: "Drop No.", url: "https://dropno.eu" },
     });
   }
   return stripeSingleton;

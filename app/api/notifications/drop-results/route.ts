@@ -77,6 +77,7 @@ export async function POST(request: NextRequest) {
       dropNumber: drop.drop_number ?? 0,
       title: drop.title ?? "votre pièce",
       clearingPriceCents: drop.clearing_price_cents,
+      dropId,
     });
     if (res.ok) sent++;
     else failed++;

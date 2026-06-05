@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Drop № 001 · Révélation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-light: oklch(0.975 0.006 80);
+    --bg-dark: oklch(0.14 0.012 60);
+    --ink-light: oklch(0.18 0.012 60);
+    --ink-dark: oklch(0.96 0.005 80);
+    --muted-light: oklch(0.52 0.01 60);
+    --muted-dark: oklch(0.62 0.012 70);
+    --rule-light: oklch(0.85 0.01 70);
+    --rule-dark: oklch(0.32 0.012 65);
+    --champagne: oklch(0.78 0.07 80);
+    --champagne-deep: oklch(0.68 0.08 78);
+
+    --bg: var(--bg-light);
+    --ink: var(--ink-light);
+    --muted: var(--muted-light);
+    --rule: var(--rule-light);
+
+    --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+    --serif: 'Fraunces', 'Times New Roman', serif;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+
+  body.is-dark {
+    --bg: var(--bg-dark);
+    --ink: var(--ink-dark);
+    --muted: var(--muted-dark);
+    --rule: var(--rule-dark);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    transition: background 900ms var(--ease-quart), color 900ms var(--ease-quart);
+    overflow: hidden;
+  }
+
+  ::selection { background: var(--champagne); color: var(--ink-light); }
+
+  main.reveal {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 32px clamp(20px, 6vw, 80px);
+    position: relative;
+  }
+
+  /* ============================ HEADER ============================ */
+  .meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+    transition: border-color 900ms var(--ease-quart);
+    gap: 24px; flex-wrap: wrap;
+  }
+  .meta-left { display: flex; align-items: baseline; gap: 20px; }
+  .wordmark {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 18px; letter-spacing: -0.01em;
+  }
+  .wordmark sup { font-feature-settings: "sups"; font-size: 0.7em; margin-left: -2px; }
+  .meta-divider { width: 1px; height: 14px; background: var(--rule); transition: background 900ms var(--ease-quart); }
+  .meta-piece {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--muted);
+    transition: color 900ms var(--ease-quart);
+  }
+  .meta-right {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 14px; color: var(--muted);
+    transition: color 900ms var(--ease-quart);
+  }
+
+  /* ============================ STAGE ============================ */
+  .stage {
+    display: grid; place-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage-inner {
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+
+  /* --------- PHASE 1 : countdown --------- */
+  .phase-countdown {
+    display: flex; flex-direction: column; align-items: center; gap: 24px;
+    transition: opacity 600ms var(--ease-quart), transform 900ms var(--ease-quart);
+    transform-origin: center;
+  }
+  .phase-countdown.is-exiting {
+    opacity: 0;
+    transform: scale(0.96);
+    pointer-events: none;
+  }
+  .phase-countdown .eyebrow {
+    font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--muted);
+    transition: color 900ms var(--ease-quart);
+  }
+  .countdown {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(72px, 14vw, 180px);
+    line-height: 0.92; letter-spacing: -0.03em;
+    font-feature-settings: "tnum";
+    color: var(--ink);
+    transition: color 900ms var(--ease-quart);
+    will-change: transform;
+  }
+  .countdown.is-pulsing { animation: pulse 900ms var(--ease-expo) infinite; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.012); opacity: 0.92; }
+  }
+  .countdown .colon { display: inline-block; padding: 0 0.05em; opacity: 0.9; }
+
+  .countdown-hint {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+    transition: color 900ms var(--ease-quart);
+    margin-top: 8px;
+  }
+
+  /* --------- PHASE 2 : revealed --------- */
+  .phase-revealed {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .phase-revealed.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .reveal-eyebrow {
+    font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 700ms var(--ease-quart) 200ms, transform 700ms var(--ease-quart) 200ms;
+  }
+  .phase-revealed.is-visible .reveal-eyebrow {
+    opacity: 1; transform: translateY(0);
+  }
+
+  .clearing-price {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(96px, 19vw, 260px);
+    line-height: 0.9; letter-spacing: -0.035em;
+    font-feature-settings: "tnum";
+    color: var(--ink);
+    /* mask reveal from bottom to top */
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 1100ms var(--ease-expo);
+  }
+  .phase-revealed.is-visible .clearing-price {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .reveal-detail {
+    margin-top: 28px;
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(16px, 1.8vw, 22px);
+    color: var(--muted);
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 700ms var(--ease-quart) 1500ms, transform 700ms var(--ease-quart) 1500ms;
+  }
+  .phase-revealed.is-visible .reveal-detail { opacity: 1; transform: translateY(0); }
+
+  .verdict {
+    margin-top: 56px;
+    font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--champagne);
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 800ms var(--ease-quart) 2400ms, transform 800ms var(--ease-quart) 2400ms;
+  }
+  .phase-revealed.is-visible .verdict { opacity: 1; transform: translateY(0); }
+  .verdict-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--champagne);
+    box-shadow: 0 0 0 0 var(--champagne-deep);
+    animation: verdict-pulse 2s var(--ease-expo) infinite;
+  }
+  @keyframes verdict-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 oklch(0.78 0.07 80 / 0.4); }
+    50% { box-shadow: 0 0 0 8px oklch(0.78 0.07 80 / 0); }
+  }
+  .verdict.is-lost { color: var(--muted); }
+  .verdict.is-lost .verdict-dot { background: var(--muted); animation: none; box-shadow: none; }
+
+  /* ============================ FOOTER ============================ */
+  .foot {
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 24px; flex-wrap: wrap;
+    transition: border-color 900ms var(--ease-quart);
+  }
+  .progress-rail {
+    flex: 1; max-width: 380px;
+    height: 1px;
+    background: var(--rule);
+    position: relative;
+    transition: background 900ms var(--ease-quart);
+  }
+  .progress-fill {
+    position: absolute; top: -0.5px; left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--ink);
+    transition: background 900ms var(--ease-quart);
+  }
+  body.is-dark .progress-fill { background: var(--champagne); }
+
+  .foot-meta {
+    display: flex; align-items: baseline; gap: 28px;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+    transition: color 900ms var(--ease-quart);
+  }
+
+  .foot-next {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 15px; color: var(--ink);
+    text-decoration: none;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 700ms var(--ease-quart) 3000ms, transform 700ms var(--ease-quart) 3000ms, color 900ms var(--ease-quart);
+    pointer-events: none;
+  }
+  .foot-next.is-visible {
+    opacity: 1; transform: translateY(0); pointer-events: auto;
+  }
+  .foot-next:hover { color: var(--champagne-deep); }
+  .foot-next .arrow { display: inline-block; margin-left: 8px; transition: transform 360ms var(--ease-quart); }
+  .foot-next:hover .arrow { transform: translateX(4px); }
+
+  /* ============================ DEMO CONTROLS ============================ */
+  .demo-controls {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; gap: 8px;
+    z-index: 50;
+  }
+  .demo-btn {
+    background: var(--ink); color: var(--bg);
+    border: 1px solid var(--ink);
+    padding: 9px 14px;
+    font-family: var(--sans); font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; font-weight: 500;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 240ms var(--ease-quart), background 900ms var(--ease-quart), color 900ms var(--ease-quart), border-color 900ms var(--ease-quart);
+  }
+  .demo-btn:hover { opacity: 1; }
+  .demo-btn.is-ghost {
+    background: transparent; color: var(--ink);
+  }
+
+  /* ============================ REDUCED MOTION ============================ */
+  @media (prefers-reduced-motion: reduce) {
+    body, * { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+    .clearing-price { clip-path: inset(0 0 0 0); }
+  }
+
+  /* ============================ MOBILE ============================ */
+  @media (max-width: 600px) {
+    main.reveal { padding: 20px; }
+    .meta { padding-bottom: 18px; gap: 14px; }
+    .meta-left { gap: 14px; }
+    .wordmark { font-size: 16px; }
+    .meta-piece { font-size: 10px; letter-spacing: 0.18em; }
+    .meta-right { font-size: 13px; }
+    .verdict { margin-top: 40px; font-size: 11px; }
+    .foot { padding-top: 18px; gap: 14px; }
+    .foot-meta { gap: 16px; font-size: 10px; }
+    .foot-next { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="reveal">
+
+  <header class="meta">
+    <div class="meta-left">
+      <span class="wordmark">Drop <sup>№</sup> 001</span>
+      <span class="meta-divider"></span>
+      <span class="meta-piece">Maison Lévrier · Type 01 Anthracite</span>
+    </div>
+    <div class="meta-right" id="server-clock">Jeudi 18:00:00 CET</div>
+  </header>
+
+  <section class="stage">
+    <div class="stage-inner">
+
+      <div class="phase-countdown" id="phaseCountdown">
+        <p class="eyebrow">Révélation imminente</p>
+        <div class="countdown" id="countdown">
+          <span class="d-h">00</span><span class="colon">:</span><span class="d-m">00</span><span class="colon">:</span><span class="d-s">05</span>
+        </div>
+        <p class="countdown-hint">Les offres sont scellées. L'attribution est imminente.</p>
+      </div>
+
+      <div class="phase-revealed" id="phaseRevealed">
+        <p class="reveal-eyebrow">Prix unitaire de clôture</p>
+        <div class="clearing-price">6 240 €</div>
+        <p class="reveal-detail">Huit pièces attribuées sur huit. Tie-break à la milliseconde.</p>
+        <div class="verdict" id="verdict">
+          <span class="verdict-dot"></span>
+          <span id="verdict-text">Vous remportez la pièce. Confirmation par mail.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="progress-rail"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="foot-meta">
+      <span>Drop № 001</span>
+      <span>8 / 8</span>
+    </div>
+    <a href="#" class="foot-next" id="footNext">Drop № 002 ouvre vendredi 9h<span class="arrow">→</span></a>
+  </footer>
+
+</main>
+
+<div class="demo-controls">
+  <button class="demo-btn is-ghost" id="toggleVerdict">État · Gagné</button>
+  <button class="demo-btn" id="replay">Rejouer</button>
+</div>
+
+<script>
+  const TOTAL_COUNTDOWN_MS = 5000; // 5s de compte à rebours pour le demo
+  const els = {
+    body: document.body,
+    countdown: document.getElementById('countdown'),
+    dH: document.querySelector('.d-h'),
+    dM: document.querySelector('.d-m'),
+    dS: document.querySelector('.d-s'),
+    progressFill: document.getElementById('progressFill'),
+    phaseCountdown: document.getElementById('phaseCountdown'),
+    phaseRevealed: document.getElementById('phaseRevealed'),
+    verdict: document.getElementById('verdict'),
+    verdictText: document.getElementById('verdict-text'),
+    footNext: document.getElementById('footNext'),
+    serverClock: document.getElementById('server-clock'),
+    replay: document.getElementById('replay'),
+    toggleVerdict: document.getElementById('toggleVerdict'),
+  };
+
+  let verdictState = 'won'; // 'won' | 'lost'
+  const VERDICTS = {
+    won: 'Vous remportez la pièce. Confirmation par mail.',
+    lost: 'Vous n’avez pas remporté ce drop. La prochaine ouvre vendredi.',
+  };
+
+  function applyVerdict() {
+    els.verdictText.textContent = VERDICTS[verdictState];
+    els.verdict.classList.toggle('is-lost', verdictState === 'lost');
+    els.toggleVerdict.textContent = 'État · ' + (verdictState === 'won' ? 'Gagné' : 'Perdu');
+  }
+
+  function pad(n) { return n.toString().padStart(2, '0'); }
+
+  let startTime = null;
+  let rafId = null;
+  let darkApplied = false;
+  let revealStarted = false;
+
+  function reset() {
+    cancelAnimationFrame(rafId);
+    els.body.classList.remove('is-dark');
+    els.phaseCountdown.classList.remove('is-exiting');
+    els.phaseRevealed.classList.remove('is-visible');
+    els.footNext.classList.remove('is-visible');
+    els.progressFill.style.width = '0%';
+    els.countdown.classList.remove('is-pulsing');
+    darkApplied = false;
+    revealStarted = false;
+    els.dH.textContent = '00';
+    els.dM.textContent = '00';
+    els.dS.textContent = pad(Math.ceil(TOTAL_COUNTDOWN_MS / 1000));
+    startTime = null;
+  }
+
+  function tick(now) {
+    if (!startTime) startTime = now;
+    const elapsed = now - startTime;
+    const remaining = Math.max(0, TOTAL_COUNTDOWN_MS - elapsed);
+
+    // Progress fill
+    const progress = Math.min(1, elapsed / TOTAL_COUNTDOWN_MS);
+    els.progressFill.style.width = (progress * 100).toFixed(2) + '%';
+
+    // Countdown digits (h:m:s assuming < 24h, real product would compute from reveal_at)
+    const totalSec = Math.ceil(remaining / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    els.dH.textContent = pad(h);
+    els.dM.textContent = pad(m);
+    els.dS.textContent = pad(s);
+
+    // Pulse during last 2s
+    if (remaining > 0 && remaining <= 2000 && !els.countdown.classList.contains('is-pulsing')) {
+      els.countdown.classList.add('is-pulsing');
+    }
+
+    // Trigger dark inversion at T-800ms
+    if (remaining <= 800 && !darkApplied) {
+      els.body.classList.add('is-dark');
+      darkApplied = true;
+    }
+
+    if (remaining > 0) {
+      rafId = requestAnimationFrame(tick);
+    } else {
+      // T = 0
+      els.dS.textContent = '00';
+      els.countdown.classList.remove('is-pulsing');
+      // Pause beat then reveal
+      setTimeout(triggerReveal, 700);
+    }
+  }
+
+  function triggerReveal() {
+    if (revealStarted) return;
+    revealStarted = true;
+    els.phaseCountdown.classList.add('is-exiting');
+    setTimeout(() => {
+      els.phaseRevealed.classList.add('is-visible');
+      // Footer CTA reveals via CSS delay
+      setTimeout(() => els.footNext.classList.add('is-visible'), 3000);
+    }, 500);
+  }
+
+  function start() {
+    reset();
+    rafId = requestAnimationFrame(tick);
+  }
+
+  els.replay.addEventListener('click', start);
+
+  els.toggleVerdict.addEventListener('click', () => {
+    verdictState = verdictState === 'won' ? 'lost' : 'won';
+    applyVerdict();
+  });
+
+  applyVerdict();
+
+  // Server clock display (cosmetic, frozen at 18:00 to evoke the moment)
+  // In production, this is now() formatted Europe/Paris.
+  els.serverClock.textContent = 'Jeudi 18:00 CET · ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  // Auto-start the demo after 600ms
+  setTimeout(start, 600);
+</script>
+
+</body>
+</html>

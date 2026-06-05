@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
         kind,
         dropNumber: d.drop_number,
         title: d.title,
+        dropId: d.drop_id,
       });
       if (res.ok) sent++;
       else failed++;

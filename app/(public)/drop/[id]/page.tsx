@@ -69,7 +69,11 @@ export default async function DropPage({
 
       <div className="grid grid-cols-1 px-7 pb-24 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32">
         <div>
-          <DropArt heroImageUrl={drop.hero_image_url} title={drop.title ?? ""} />
+          <DropArt
+            heroImageUrl={drop.hero_image_url}
+            title={drop.title ?? ""}
+            seed={drop.drop_number ?? 0}
+          />
         </div>
 
         <div className="pt-8 md:sticky md:top-24 md:self-start md:pt-0">

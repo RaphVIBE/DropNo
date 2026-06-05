@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
   // Pre-validation metier (la RLS reste l'autorite finale).
   const { data: drop } = await supabase
     .from("drops_public")
-    .select("status, floor_price_cents, bid_lock_at, title, drop_number")
+    .select("status, floor_price_cents, bid_lock_at, title, drop_number, hero_image_url")
     .eq("id", dropId)
     .maybeSingle();
 
@@ -213,6 +213,8 @@ export async function POST(request: NextRequest) {
       amountCents,
       submittedAt: savedBid?.submitted_at ?? new Date().toISOString(),
       hash: savedBid?.amount_hash ?? null,
+      dropId,
+      imageUrl: drop.hero_image_url,
     });
   }
 

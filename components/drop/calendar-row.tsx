@@ -7,6 +7,11 @@ import {
   formatShortDate,
 } from "@/lib/format";
 import { DropCountdown } from "@/components/drop/drop-countdown";
+import { WatchArt } from "@/components/drop/watch-art";
+
+// Au-dela de ce delai avant l'ouverture, le visuel d'un drop a venir reste
+// floute (on ne devoile pas la piece trop tot).
+const TEASE_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
 
 export type CalendarDrop = {
   id: string | null;
@@ -49,13 +54,50 @@ export function CalendarRow({
     ? formatEuros(drop.floor_price_cents)
     : "—";
 
+  // On floute la vignette d'un drop a venir tant que l'ouverture est a plus
+  // d'une semaine, pour ne pas devoiler la piece trop tot.
+  const teaseLocked =
+    variant === "upcoming" && drop.bid_window_opens_at
+      ? new Date(drop.bid_window_opens_at).getTime() -
+          new Date(serverNowIso).getTime() >
+        TEASE_WINDOW_MS
+      : false;
+
   return (
     <Link
       href={drop.id ? `/drop/${drop.id}` : "#"}
-      className="grid grid-cols-1 gap-3 border-b border-rule-soft py-7 transition-colors hover:bg-card md:grid-cols-[120px_1.4fr_1fr_1fr_120px] md:items-center md:gap-8 md:px-2 md:py-8"
+      className="grid grid-cols-1 gap-3 border-b border-rule-soft py-7 transition-colors hover:bg-card md:grid-cols-[150px_1.4fr_1fr_1fr_120px] md:items-center md:gap-8 md:px-2 md:py-8"
     >
-      <div className="font-serif text-[22px] italic text-ink-2">
-        No. {formatDropNumber(drop.drop_number ?? 0)}
+      <div className="flex items-center gap-3">
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md ring-1 ring-rule-soft">
+          <WatchArt
+            seed={drop.drop_number ?? 0}
+            className={`absolute inset-0 h-full w-full ${
+              teaseLocked ? "scale-110 blur-[5px]" : ""
+            }`}
+          />
+          {teaseLocked ? (
+            <span
+              className="absolute inset-0 flex items-center justify-center bg-[oklch(0.16_0.012_60)]/35"
+              aria-label="Visuel devoile une semaine avant l'ouverture"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4 text-[oklch(0.95_0.005_80)]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden
+              >
+                <rect x="5" y="11" width="14" height="9" rx="2" />
+                <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+              </svg>
+            </span>
+          ) : null}
+        </div>
+        <span className="font-serif text-[22px] italic text-ink-2">
+          No. {formatDropNumber(drop.drop_number ?? 0)}
+        </span>
       </div>
 
       <div>

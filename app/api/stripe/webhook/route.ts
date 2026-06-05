@@ -121,7 +121,7 @@ async function markBidAuthorized(event: Stripe.Event) {
   const [{ data: drop }, { data: profile }] = await Promise.all([
     supabase
       .from("drops")
-      .select("drop_number, title")
+      .select("drop_number, title, hero_image_url")
       .eq("id", bid.drop_id)
       .maybeSingle(),
     supabase
@@ -138,6 +138,8 @@ async function markBidAuthorized(event: Stripe.Event) {
       amountCents: bid.amount_cents,
       submittedAt: bid.submitted_at,
       hash: bid.amount_hash,
+      dropId: bid.drop_id,
+      imageUrl: drop?.hero_image_url,
     });
   }
 }

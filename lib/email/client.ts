@@ -27,6 +27,6 @@ export function getResend(): Resend {
 
 /** Expéditeur par défaut. Surchargeable via RESEND_FROM_EMAIL. */
 export function fromAddress(): string {
-  const email = process.env.RESEND_FROM_EMAIL ?? "hello@dropno.com";
+  const email = process.env.RESEND_FROM_EMAIL ?? "hello@dropno.eu";
   return `Drop No. <${email}>`;
 }

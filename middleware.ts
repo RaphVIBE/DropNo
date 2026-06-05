@@ -1,8 +1,13 @@
 import { type NextRequest } from "next/server";
 
 import { updateSession } from "@/lib/supabase/middleware";
+import { constructionGate } from "@/lib/construction-gate";
 
 export async function middleware(request: NextRequest) {
+  // Barrière "site en construction" (avant la session Supabase).
+  const gated = constructionGate(request);
+  if (gated) return gated;
+
   return updateSession(request);
 }
 

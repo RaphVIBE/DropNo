@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
-import { getStripe } from "@/lib/stripe/client";
+import { getStripe, mapPaymentIntentStatus } from "@/lib/stripe/client";
 import { sendBidConfirmation } from "@/lib/email/send";
 import type { Tables } from "@/lib/supabase/types";
 
@@ -14,9 +14,18 @@ export const dynamic = "force-dynamic";
  * toute facon KYC verifie + drop ouvert + now < bid_lock_at + montant >= floor.
  * Les triggers DB gerent hash, audit log et bid_count automatiquement.
  *
- * Stripe : on cree un PaymentIntent en capture manuelle (pre-autorisation).
- * La collecte/confirmation de la carte (Stripe Elements) est l'etape suivante ;
- * sans STRIPE_SECRET_KEY on enregistre l'offre avec stripe_auth_status='pending'.
+ * Flow paiement (Phase 1) :
+ *  1. On garantit un Stripe Customer pour l'utilisateur (carte enregistrable).
+ *  2. On cree un PaymentIntent capture_method=manual (pre-autorisation) +
+ *     setup_future_usage=off_session pour reutiliser la carte sur modification.
+ *  3. On enregistre l'offre (status active, stripe_auth_status='pending') et on
+ *     renvoie le client_secret. Le client confirme la carte via Stripe Elements
+ *     -> PI passe en `requires_capture`.
+ *  4. Le webhook `payment_intent.amount_capturable_updated` bascule
+ *     stripe_auth_status -> 'authorized' et envoie l'email de confirmation.
+ *
+ * Sans STRIPE_SECRET_KEY (dev sans cle) : pas d'etape carte, l'offre est
+ * enregistree en 'pending' et l'email de confirmation est envoye directement.
  */
 export async function POST(request: NextRequest) {
   const supabase = createClient();
@@ -47,7 +56,7 @@ export async function POST(request: NextRequest) {
   // Pre-validation metier (la RLS reste l'autorite finale).
   const { data: drop } = await supabase
     .from("drops_public")
-    .select("status, floor_price_cents, bid_lock_at, title, drop_number")
+    .select("status, floor_price_cents, bid_lock_at, title, drop_number, hero_image_url")
     .eq("id", dropId)
     .maybeSingle();
 
@@ -79,39 +88,101 @@ export async function POST(request: NextRequest) {
   const bid = rpcBid as unknown as Tables<"bids"> | null;
   const existing = bid && bid.id ? bid : null;
 
-  // Pre-autorisation Stripe (capture manuelle).
-  let paymentIntentId = existing?.stripe_payment_intent_id ?? null;
-  let authStatus = "pending";
-  if (process.env.STRIPE_SECRET_KEY) {
+  const stripeConfigured = !!process.env.STRIPE_SECRET_KEY;
+
+  // --------------------------------------------------------------------------
+  // Cas 1 : Stripe configure -> pre-autorisation via PaymentIntent + Elements.
+  // --------------------------------------------------------------------------
+  if (stripeConfigured) {
     const stripe = getStripe();
-    if (existing?.stripe_payment_intent_id) {
-      // Modification : on annule l'ancienne pre-auth avant d'en recreer une.
-      try {
-        await stripe.paymentIntents.cancel(existing.stripe_payment_intent_id);
-      } catch {
-        // deja annulee/capturee : on ignore.
-      }
+
+    // 1. Customer Stripe (carte reutilisable). On persiste l'id sur le profil.
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("stripe_customer_id")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    let customerId = profile?.stripe_customer_id ?? null;
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email ?? undefined,
+        metadata: { user_id: user.id },
+      });
+      customerId = customer.id;
+      await supabase
+        .from("profiles")
+        .update({ stripe_customer_id: customerId })
+        .eq("id", user.id);
     }
+
+    // 2. Nouveau PaymentIntent (pre-autorisation, carte enregistrable).
     const pi = await stripe.paymentIntents.create({
       amount: amountCents,
       currency: "eur",
       capture_method: "manual",
+      customer: customerId,
+      setup_future_usage: "off_session",
       metadata: { drop_id: dropId, user_id: user.id, kind: "sealed_bid" },
     });
-    paymentIntentId = pi.id;
-    authStatus = pi.status; // requires_payment_method tant que la carte n'est pas confirmee
+    const authStatus = mapPaymentIntentStatus(pi.status);
+
+    // 3. Enregistrer l'offre via la session RLS de l'utilisateur.
+    //    On pointe l'offre sur le NOUVEAU PI avant d'annuler l'ancien, pour que
+    //    l'event webhook `payment_intent.canceled` de l'ancien ne matche plus
+    //    aucune ligne (sinon il invaliderait l'offre a jour).
+    const previousPiId = existing?.stripe_payment_intent_id ?? null;
+
+    if (existing) {
+      const { error } = await supabase
+        .from("bids")
+        .update({
+          amount_cents: amountCents,
+          stripe_payment_intent_id: pi.id,
+          stripe_auth_status: authStatus,
+          status: "active",
+        })
+        .eq("id", existing.id);
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+    } else {
+      const { error } = await supabase.from("bids").insert({
+        drop_id: dropId,
+        user_id: user.id,
+        amount_cents: amountCents,
+        stripe_payment_intent_id: pi.id,
+        stripe_auth_status: authStatus,
+        status: "active",
+      });
+      if (error) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+    }
+
+    // Annuler l'ancienne pre-autorisation (apres re-pointage de l'offre).
+    if (previousPiId && previousPiId !== pi.id) {
+      try {
+        await stripe.paymentIntents.cancel(previousPiId);
+      } catch {
+        // deja annulee/capturee : on ignore.
+      }
+    }
+
+    return NextResponse.json({
+      ok: true,
+      amountCents,
+      clientSecret: pi.client_secret,
+    });
   }
 
-  // Upsert de l'offre via la session RLS de l'utilisateur.
+  // --------------------------------------------------------------------------
+  // Cas 2 : Stripe non configure (dev) -> offre enregistree sans etape carte.
+  // --------------------------------------------------------------------------
   if (existing) {
     const { error } = await supabase
       .from("bids")
-      .update({
-        amount_cents: amountCents,
-        stripe_payment_intent_id: paymentIntentId,
-        stripe_auth_status: authStatus,
-        status: "active",
-      })
+      .update({ amount_cents: amountCents, status: "active" })
       .eq("id", existing.id);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
@@ -121,8 +192,6 @@ export async function POST(request: NextRequest) {
       drop_id: dropId,
       user_id: user.id,
       amount_cents: amountCents,
-      stripe_payment_intent_id: paymentIntentId,
-      stripe_auth_status: authStatus,
       status: "active",
     });
     if (error) {
@@ -144,6 +213,8 @@ export async function POST(request: NextRequest) {
       amountCents,
       submittedAt: savedBid?.submitted_at ?? new Date().toISOString(),
       hash: savedBid?.amount_hash ?? null,
+      dropId,
+      imageUrl: drop.hero_image_url,
     });
   }
 

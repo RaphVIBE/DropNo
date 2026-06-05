@@ -41,14 +41,14 @@ export default async function DropPage({
     data: { user },
   } = await supabase.auth.getUser();
 
-  let kycVerified = false;
+  let kycStatus = "pending";
   let existingBidCents: number | null = null;
   if (user) {
     const [{ data: profile }, { data: rpcBid }] = await Promise.all([
       supabase.from("profiles").select("kyc_status").eq("id", user.id).maybeSingle(),
       supabase.rpc("my_bid_for_drop", { p_drop_id: params.id }).maybeSingle(),
     ]);
-    kycVerified = profile?.kyc_status === "verified";
+    kycStatus = profile?.kyc_status ?? "pending";
     const myBid = rpcBid as unknown as Tables<"bids"> | null;
     if (myBid && myBid.id && myBid.status === "active")
       existingBidCents = myBid.amount_cents;
@@ -69,7 +69,11 @@ export default async function DropPage({
 
       <div className="grid grid-cols-1 px-7 pb-24 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32">
         <div>
-          <DropArt heroImageUrl={drop.hero_image_url} title={drop.title ?? ""} />
+          <DropArt
+            heroImageUrl={drop.hero_image_url}
+            title={drop.title ?? ""}
+            seed={drop.drop_number ?? 0}
+          />
         </div>
 
         <div className="pt-8 md:sticky md:top-24 md:self-start md:pt-0">
@@ -96,7 +100,7 @@ export default async function DropPage({
             floorPriceCents={drop.floor_price_cents ?? 0}
             bidCount={drop.bid_count ?? 0}
             isAuthenticated={!!user}
-            kycVerified={kycVerified}
+            kycStatus={kycStatus}
             isOpen={isOpen}
             isLocked={isLocked}
             existingBidCents={existingBidCents}

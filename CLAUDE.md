@@ -26,7 +26,7 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 - Publishable key : `sb_publishable_CCtEsFQO-3MxGwmIP-jjlg_dsJvjOKn`
 - ⚠️ Service role key : récupérer Dashboard → Settings → API. Jamais committée.
 
-## État backend (snapshot 2026-05-30)
+## État backend (snapshot 2026-06-01)
 
 | Composant | État |
 |---|---|
@@ -34,8 +34,11 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 | Hardening sécurité (search_path, REVOKE RPC, deny-all audit_log) | ✅ déployé (migration 0002) |
 | Fonction SQL `close_drop()` atomique | ✅ déployée |
 | Edge function `close-drop` (TS, Stripe capture/release) | ✅ déployée v1 ACTIVE |
-| Cron `dispatch_ripe_drops` | ⏳ migration 0003 prête, non appliquée |
-| Stripe secrets | ⏳ à configurer |
+| Vault secrets (`edge_function_url`, `service_role_key`) | ✅ configurés |
+| Cron `dispatch_ripe_drops_every_minute` | ✅ actif (smoke test OK) |
+| Edge function secret `STRIPE_SECRET_KEY` | ✅ configuré (mode test) |
+
+Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas superuser sur Supabase). Lookup via `vault.decrypted_secrets`, update via `vault.update_secret(<uuid>, ...)`.
 
 ## Décisions verrouillées (NE PAS re-questionner)
 

@@ -1,12 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/browser";
 import { Button } from "@/components/ui/button";
 
+/** Messages lisibles pour les erreurs d'auth renvoyees par Supabase/GoTrue. */
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  otp_expired:
+    "Ce lien de connexion a expiré ou a déjà été utilisé. Demandez-en un nouveau ci-dessous.",
+  access_denied:
+    "Ce lien de connexion n'est plus valide. Demandez-en un nouveau ci-dessous.",
+  auth: "La connexion a échoué. Réessayez avec un nouveau lien.",
+  missing_code: "Lien de connexion incomplet. Demandez-en un nouveau ci-dessous.",
+};
+
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const authError = searchParams.get("auth_error") ?? searchParams.get("error");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
@@ -60,6 +81,12 @@ export default function LoginPage() {
               de passe.
             </p>
           </div>
+          {authError ? (
+            <p className="border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {AUTH_ERROR_MESSAGES[authError] ??
+                "La connexion a échoué. Demandez un nouveau lien ci-dessous."}
+            </p>
+          ) : null}
           <input
             type="email"
             required

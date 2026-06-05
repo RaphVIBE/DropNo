@@ -1,15 +1,20 @@
 import Image from "next/image";
 
+import { WatchArt } from "@/components/drop/watch-art";
+
 /**
  * Visuel de la piece. Si hero_image_url est present, on l'affiche ; sinon on
- * retombe sur un degrade editorial (les drops MVP n'ont pas tous d'image).
+ * retombe sur une illustration de montre (les drops MVP n'ont pas tous
+ * d'image). Le seed (drop_number) fixe la palette du visuel de remplacement.
  */
 export function DropArt({
   heroImageUrl,
   title,
+  seed = 0,
 }: {
   heroImageUrl: string | null;
   title: string;
+  seed?: number;
 }) {
   if (heroImageUrl) {
     return (
@@ -27,14 +32,8 @@ export function DropArt({
   }
 
   return (
-    <div
-      className="relative aspect-[4/5]"
-      style={{
-        background:
-          "radial-gradient(ellipse at 35% 40%, oklch(0.78 0.05 80) 0%, transparent 50%), radial-gradient(ellipse at 65% 65%, oklch(0.42 0.04 60) 0%, transparent 55%), linear-gradient(160deg, oklch(0.28 0.02 60) 0%, oklch(0.16 0.012 60) 100%)",
-      }}
-      aria-hidden
-    >
+    <div className="relative aspect-[4/5] overflow-hidden">
+      <WatchArt seed={seed} className="absolute inset-0 h-full w-full" />
       <span className="absolute left-6 top-6 font-serif text-[13px] italic tracking-wide text-[oklch(0.95_0.005_80)]">
         {title}
       </span>

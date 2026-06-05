@@ -8,7 +8,9 @@ export default function PublicLayout({
   return (
     <>
       <SiteNav />
-      <main className="pt-[72px]">{children}</main>
+      <main id="main-content" tabIndex={-1} className="pt-[72px] outline-none">
+        {children}
+      </main>
     </>
   );
 }

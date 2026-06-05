@@ -62,6 +62,7 @@ export default async function DropPage({
         dropNumber={drop.drop_number ?? 0}
         title={drop.title ?? ""}
         brandName={brand?.name ?? null}
+        brandSlug={brand?.slug ?? null}
         status={status}
         revealAt={drop.reveal_at}
         clearingPriceCents={drop.clearing_price_cents}

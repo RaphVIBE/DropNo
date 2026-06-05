@@ -22,6 +22,12 @@ export function SiteNav() {
           À propos
         </Link>
         <Link
+          href="/marques"
+          className="hidden rounded-sm border-b border-transparent py-1 text-[13px] text-ink-2 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:inline-block"
+        >
+          Maisons
+        </Link>
+        <Link
           href="/drops"
           className="rounded-sm border-b border-transparent py-1 text-[13px] text-ink-2 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >

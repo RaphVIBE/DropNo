@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
 import { Filigrane } from "@/components/brand/filigrane";
 
@@ -7,6 +9,7 @@ export function DropHero({
   dropNumber,
   title,
   brandName,
+  brandSlug,
   status,
   revealAt,
   clearingPriceCents,
@@ -14,6 +17,7 @@ export function DropHero({
   dropNumber: number;
   title: string;
   brandName: string | null;
+  brandSlug?: string | null;
   status: DropStatus;
   revealAt: string | null;
   clearingPriceCents: number | null;
@@ -37,7 +41,16 @@ export function DropHero({
             className="reveal mb-4 text-[13px] font-medium uppercase tracking-[0.22em] text-muted-foreground"
             style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
           >
-            {brandName}
+            {brandSlug ? (
+              <Link
+                href={`/marques/${brandSlug}`}
+                className="rounded-sm underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                {brandName}
+              </Link>
+            ) : (
+              brandName
+            )}
           </div>
         ) : null}
         <h1

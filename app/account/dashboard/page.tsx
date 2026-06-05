@@ -1,10 +1,14 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
-import { StartKycButton } from "@/components/kyc/start-kyc-button";
 import { AccountSection, AccountRow } from "@/components/account/account-section";
+import { Filigrane } from "@/components/brand/filigrane";
 import { formatEuros, formatShortDate } from "@/lib/format";
+
+const KYC_CTA_CLASS =
+  "mt-2 inline-block bg-primary px-6 py-[16px] text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 export const dynamic = "force-dynamic";
 
@@ -130,10 +134,23 @@ export default async function DashboardPage() {
 
   return (
     <section className="mx-auto max-w-3xl px-7 py-20 md:px-16">
-      <p className="eyebrow">Mon compte</p>
-      <h1 className="font-display mb-8 text-4xl">
-        Bonjour{profile?.display_name ? `, ${profile.display_name}` : ""}
-      </h1>
+      <div className="relative overflow-hidden">
+        <Filigrane className="reveal-art pointer-events-none absolute -right-10 -top-8 z-0 h-48 w-48 text-[var(--champagne-deep)] opacity-[0.06] md:right-0 md:h-60 md:w-60" />
+        <div className="relative z-10">
+          <p
+            className="eyebrow reveal"
+            style={{ "--reveal-delay": "100ms" } as React.CSSProperties}
+          >
+            Mon compte
+          </p>
+          <h1
+            className="font-display reveal mb-8 text-4xl"
+            style={{ "--reveal-delay": "220ms" } as React.CSSProperties}
+          >
+            Bonjour{profile?.display_name ? `, ${profile.display_name}` : ""}
+          </h1>
+        </div>
+      </div>
 
       <dl className="mb-8 grid gap-4 border-y border-rule-soft py-6 text-sm">
         <div className="flex justify-between">
@@ -258,11 +275,11 @@ function KycBlock({ status }: { status: string }) {
           ? "La dernière vérification n'a pas abouti. Recommencez avec une pièce d'identité lisible, ou contactez le support."
           : "La vérification d'identité (pièce + selfie via Stripe) est requise avant votre première offre. Une fois vérifié, vous pouvez bidder à vie."}
       </p>
-      <StartKycButton>
+      <Link href="/account/verification" className={KYC_CTA_CLASS}>
         {status === "rejected"
           ? "Recommencer la vérification"
           : "Vérifier mon identité"}
-      </StartKycButton>
+      </Link>
     </div>
   );
 }

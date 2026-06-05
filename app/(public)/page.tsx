@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Eye, Lock, Tag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -6,16 +7,19 @@ import { Button } from "@/components/ui/button";
 const STEPS = [
   {
     n: "01",
+    Icon: Lock,
     label: "Offre scellée",
     desc: "Vous scellez votre prix. Invisible des autres jusqu'à la révélation.",
   },
   {
     n: "02",
+    Icon: Eye,
     label: "Révélation",
     desc: "À l'heure dite, toutes les offres s'ouvrent d'un seul coup.",
   },
   {
     n: "03",
+    Icon: Tag,
     label: "Prix unique",
     desc: "Les plus hautes offres gagnent, et toutes payent le même prix.",
   },
@@ -76,8 +80,15 @@ export default function HomePage() {
               { "--reveal-delay": `${700 + i * 90}ms` } as React.CSSProperties
             }
           >
-            <span className="font-display text-3xl tabular-nums text-[var(--champagne-deep)]">
-              {step.n}
+            <span className="flex items-baseline gap-3">
+              <span className="font-display text-3xl tabular-nums text-[var(--champagne-deep)]">
+                {step.n}
+              </span>
+              <step.Icon
+                className="size-[15px] translate-y-[-1px] text-muted-foreground"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
             </span>
             <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-foreground">
               {step.label}

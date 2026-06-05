@@ -1,4 +1,5 @@
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
+import { Filigrane } from "@/components/brand/filigrane";
 
 export type DropStatus = "draft" | "scheduled" | "open" | "closed" | "revealed" | "cancelled";
 
@@ -18,8 +19,9 @@ export function DropHero({
   clearingPriceCents: number | null;
 }) {
   return (
-    <div className="border-b border-rule-soft px-7 pt-14 md:px-16 md:pt-20">
-      <div className="flex flex-wrap items-baseline justify-between gap-4 border-b border-rule pb-8">
+    <div className="relative overflow-hidden border-b border-rule-soft px-7 pt-14 md:px-16 md:pt-20">
+      <Filigrane className="reveal-art pointer-events-none absolute -right-12 top-6 z-0 h-52 w-52 text-[var(--champagne-deep)] opacity-[0.06] md:right-2 md:top-4 md:h-64 md:w-64" />
+      <div className="relative z-10 flex flex-wrap items-baseline justify-between gap-4 border-b border-rule pb-8">
         <span className="font-serif text-[32px] italic">
           Drop No. {formatDropNumber(dropNumber)}
         </span>
@@ -29,13 +31,19 @@ export function DropHero({
           clearingPriceCents={clearingPriceCents}
         />
       </div>
-      <div className="py-12 md:py-14">
+      <div className="relative z-10 py-12 md:py-14">
         {brandName ? (
-          <div className="mb-4 text-[13px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+          <div
+            className="reveal mb-4 text-[13px] font-medium uppercase tracking-[0.22em] text-muted-foreground"
+            style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+          >
             {brandName}
           </div>
         ) : null}
-        <h1 className="font-display max-w-[12ch] text-[clamp(3.5rem,8vw,6.875rem)]">
+        <h1
+          className="font-display reveal max-w-[12ch] text-[clamp(3.5rem,8vw,6.875rem)]"
+          style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
+        >
           {title}
         </h1>
       </div>

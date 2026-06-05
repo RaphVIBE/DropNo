@@ -197,4 +197,27 @@
       filter: none;
     }
   }
+
+  /* Engrenages — rotation lente sur place (blueprint « mécanisme vivant »). */
+  .cog {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes dn-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .cog-spin {
+    animation: dn-spin 50s linear infinite;
+  }
+  .cog-spin-rev {
+    animation: dn-spin 64s linear infinite reverse;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cog-spin,
+    .cog-spin-rev {
+      animation: none;
+    }
+  }
 }

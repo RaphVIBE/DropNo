@@ -15,7 +15,7 @@ type Brand = {
   name: string;
   description: string | null;
   country_code: string | null;
-  logo_url: string | null;
+  kbis_verified: boolean;
 };
 
 type BrandDrop = {
@@ -24,13 +24,14 @@ type BrandDrop = {
   title: string | null;
   status: string | null;
   clearing_price_cents: number | null;
+  exemplaires: number | null;
 };
 
 async function getBrand(slug: string): Promise<Brand | null> {
   const supabase = createClient();
   const { data } = await supabase
     .from("brands")
-    .select("id, slug, name, description, country_code, logo_url")
+    .select("id, slug, name, description, country_code, kbis_verified")
     .eq("slug", slug)
     .eq("status", "active")
     .maybeSingle();
@@ -70,6 +71,18 @@ function statusLabel(status: string | null, clearingCents: number | null) {
   }
 }
 
+/** Bloc de fait — même gabarit pour toutes les maisons (label + valeur serif). */
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-background px-7 py-6 md:px-9">
+      <div className="eyebrow">{label}</div>
+      <div className="font-serif mt-2 text-[22px] italic leading-none text-foreground">
+        {value}
+      </div>
+    </div>
+  );
+}
+
 export default async function BrandPage({
   params,
 }: {
@@ -81,16 +94,30 @@ export default async function BrandPage({
   const supabase = createClient();
   const { data: dropsData } = await supabase
     .from("drops_public")
-    .select("id, drop_number, title, status, clearing_price_cents")
+    .select("id, drop_number, title, status, clearing_price_cents, exemplaires")
     .eq("brand_id", brand.id)
     .order("drop_number", { ascending: false });
 
   const drops = (dropsData ?? []) as BrandDrop[];
   const country = countryLabel(brand.country_code);
 
+  // Faits uniformes (mêmes slots pour chaque maison, calculés depuis les données)
+  const pieces = drops.reduce((sum, d) => sum + (d.exemplaires ?? 0), 0);
+  const facts = [
+    { label: "Pays", value: country ?? "—" },
+    { label: "Maison", value: brand.kbis_verified ? "Vérifiée" : "Indépendante" },
+    { label: "Drops", value: String(drops.length) },
+    { label: "Exemplaires", value: pieces > 0 ? String(pieces) : "—" },
+  ];
+
+  // Lead éditoriale : la description si présente, sinon une signature constante.
+  const lead =
+    brand.description ??
+    `${brand.name} ouvre ses drops sur Drop No., en direct de la maison — sans intermédiaire ni revente.`;
+
   return (
     <>
-      <div className="relative overflow-hidden border-b border-rule-soft px-7 pb-16 pt-20 md:px-16 md:pb-20 md:pt-28">
+      <div className="relative overflow-hidden border-b border-rule-soft px-7 pb-14 pt-20 md:px-16 md:pb-16 md:pt-28">
         <Filigrane className="reveal-art pointer-events-none absolute -right-10 top-1/2 z-0 h-60 w-60 -translate-y-1/2 text-[var(--champagne-deep)] opacity-[0.07] md:-right-4 md:h-80 md:w-80" />
         <div className="relative z-10 max-w-3xl">
           <Link
@@ -100,44 +127,39 @@ export default async function BrandPage({
           >
             ← Maisons
           </Link>
-          {country ? (
-            <span
-              className="eyebrow reveal mt-6 block"
-              style={{ "--reveal-delay": "160ms" } as React.CSSProperties}
-            >
-              {country}
-            </span>
-          ) : null}
           <h1
-            className="font-display reveal mt-3 text-[clamp(3rem,8vw,7rem)]"
-            style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
+            className="font-display reveal mt-7 text-[clamp(3rem,8vw,7rem)]"
+            style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
             {brand.name}
           </h1>
-          {brand.description ? (
-            <p
-              className="reveal mt-8 max-w-[58ch] text-lg leading-relaxed text-ink-2"
-              style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
-            >
-              {brand.description}
-            </p>
-          ) : null}
+          <p
+            className="reveal mt-8 max-w-[58ch] text-lg leading-relaxed text-ink-2"
+            style={{ "--reveal-delay": "340ms" } as React.CSSProperties}
+          >
+            {lead}
+          </p>
         </div>
       </div>
 
-      <div className="px-7 pb-28 pt-16 md:px-16 md:pt-24">
+      {/* Bandeau de faits — gabarit identique pour chaque maison */}
+      <div className="grid grid-cols-2 gap-px border-b border-rule-soft bg-rule-soft md:grid-cols-4">
+        {facts.map((f) => (
+          <Fact key={f.label} label={f.label} value={f.value} />
+        ))}
+      </div>
+
+      <div className="px-7 pb-28 pt-16 md:px-16 md:pt-20">
         <div className="mb-8 flex items-baseline justify-between border-b border-foreground pb-6">
           <h2 className="font-serif text-4xl italic">Ses drops</h2>
           <span className="text-[13px] tracking-wide text-muted-foreground">
-            {drops.length > 1
-              ? `${drops.length} drops`
-              : `${drops.length} drop`}
+            {drops.length > 1 ? `${drops.length} drops` : `${drops.length} drop`}
           </span>
         </div>
 
         {drops.length === 0 ? (
           <p className="py-8 text-ink-2">
-            Aucun drop pour cette maison pour l&apos;instant.
+            Le premier drop de cette maison sera annoncé très bientôt.
           </p>
         ) : (
           <ul>

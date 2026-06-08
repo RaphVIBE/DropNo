@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-08T00:00:00Z",
+  "title": "Design System: Drop No.",
+  "extensions": {
+    "colorMeta": {
+      "deep-ink": {
+        "role": "primary",
+        "displayName": "Deep Ink",
+        "canonical": "oklch(0.18 0.012 60)",
+        "tonalRamp": [
+          "oklch(0.12 0.012 60)",
+          "oklch(0.18 0.012 60)",
+          "oklch(0.26 0.012 60)",
+          "oklch(0.38 0.012 60)",
+          "oklch(0.52 0.010 60)",
+          "oklch(0.68 0.009 70)",
+          "oklch(0.85 0.008 75)",
+          "oklch(0.96 0.006 80)"
+        ]
+      },
+      "champagne": {
+        "role": "secondary",
+        "displayName": "Champagne",
+        "canonical": "oklch(0.72 0.07 80)",
+        "tonalRamp": [
+          "oklch(0.30 0.04 75)",
+          "oklch(0.40 0.05 76)",
+          "oklch(0.52 0.06 78)",
+          "oklch(0.62 0.07 80)",
+          "oklch(0.72 0.07 80)",
+          "oklch(0.82 0.06 82)",
+          "oklch(0.90 0.04 84)",
+          "oklch(0.96 0.02 84)"
+        ]
+      },
+      "warm-offwhite": {
+        "role": "neutral",
+        "displayName": "Warm Off-White",
+        "canonical": "oklch(0.975 0.006 80)",
+        "tonalRamp": [
+          "oklch(0.18 0.012 60)",
+          "oklch(0.32 0.012 60)",
+          "oklch(0.52 0.010 60)",
+          "oklch(0.72 0.009 70)",
+          "oklch(0.85 0.010 70)",
+          "oklch(0.92 0.008 70)",
+          "oklch(0.975 0.006 80)",
+          "oklch(0.99 0.004 80)"
+        ]
+      },
+      "champagne-deep": {
+        "role": "secondary",
+        "displayName": "Champagne Deep",
+        "canonical": "oklch(0.52 0.06 70)"
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "oklch(0.32 0.012 60)"
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(0.85 0.01 70)"
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero and page titles only. Fraunces italic 300, tight 0.92 leading." },
+      "title": { "displayName": "Title", "purpose": "Section headings, drop names, sealed-bid amounts. Fraunces italic." },
+      "body": { "displayName": "Body", "purpose": "Running copy, Inter, capped 50-75ch." },
+      "label": { "displayName": "Label", "purpose": "Eyebrows, field labels, status, step names. Uppercase 0.18em." },
+      "mono": { "displayName": "Mono", "purpose": "Blueprint annotations only. Champagne Deep, uppercase." }
+    },
+    "shadows": [
+      { "name": "soft-lift", "value": "0 1px 0 oklch(0.85 0.01 70 / 0.5), 0 24px 60px -30px oklch(0.18 0.012 60 / 0.18)", "purpose": "Rare lifted surface. Default is no shadow; structure comes from hairlines." }
+    ],
+    "motion": [
+      { "name": "ease-editorial", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Decelerating reveal cascade on page entrance (easeOutExpo). Long settle." },
+      { "name": "ease-soft", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Status-dot pulse and softer state transitions." },
+      { "name": "reveal-duration", "value": "1000ms", "purpose": "Default reveal duration; art panels 1350ms." },
+      { "name": "cog-spin", "value": "50s linear infinite", "purpose": "Background clockwork rotation on the mechanism flow. Disabled under prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "2xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink-filled primary action. Hover darkens (contrast up), champagne focus ring.",
+      "html": "<button class=\"ds-btn-primary\">Voir le calendrier</button>",
+      "css": ".ds-btn-primary { background: var(--primary); color: var(--primary-foreground); font-family: var(--font-sans), system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; padding: 0.625rem 2rem; height: 2.75rem; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; } .ds-btn-primary:hover { background: oklch(0.12 0.012 60); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--champagne); }"
+    },
+    {
+      "name": "CTA Block",
+      "kind": "button",
+      "refersTo": "cta-block",
+      "description": "Full-width square commitment button. Uppercase label. Forms and KYC flow.",
+      "html": "<button class=\"ds-cta-block\">Sceller mon offre</button>",
+      "css": ".ds-cta-block { display: block; width: 100%; background: var(--primary); color: var(--primary-foreground); font-family: var(--font-sans), system-ui, sans-serif; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; padding: 18px 24px; border: none; cursor: pointer; transition: background 0.2s; } .ds-cta-block:hover { background: oklch(0.12 0.012 60); } .ds-cta-block:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--champagne); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action. Hairline border, fills to soft hairline on hover.",
+      "html": "<button class=\"ds-btn-outline\">Rejoindre</button>",
+      "css": ".ds-btn-outline { background: var(--background); color: var(--foreground); font-family: var(--font-sans), system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; padding: 0.625rem 2rem; height: 2.75rem; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: background 0.2s; } .ds-btn-outline:hover { background: oklch(0.92 0.008 70); } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--champagne); }"
+    },
+    {
+      "name": "Underline Amount Field",
+      "kind": "input",
+      "refersTo": "input-underline",
+      "description": "Signature bid field: no box, a single rule under a large Fraunces italic value with a trailing euro. Underline turns champagne on focus.",
+      "html": "<div class=\"ds-field\"><input class=\"ds-field-input\" inputmode=\"numeric\" placeholder=\"3200\" aria-label=\"Votre offre en euros\" /><span class=\"ds-field-unit\">€</span></div>",
+      "css": ".ds-field { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.75rem 0; border-bottom: 1px solid var(--foreground); transition: border-color 0.2s; } .ds-field:focus-within { border-color: oklch(0.52 0.06 70); } .ds-field-input { flex: 1; min-width: 0; background: transparent; border: none; outline: none; font-family: var(--font-serif), 'Times New Roman', serif; font-style: italic; font-weight: 300; font-size: 2.25rem; font-variant-numeric: tabular-nums; color: var(--foreground); } .ds-field-input::placeholder { color: var(--border); } .ds-field-unit { font-family: var(--font-serif), serif; font-style: italic; font-size: 1.875rem; color: var(--muted-foreground); }"
+    },
+    {
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Square content panel on the page. Hairline border, no shadow, no radius.",
+      "html": "<div class=\"ds-panel\"><span class=\"ds-panel-label\">Votre offre scellée</span><p class=\"ds-panel-body\">Votre offre reste invisible jusqu'à la révélation.</p></div>",
+      "css": ".ds-panel { background: var(--card); border: 1px solid var(--border); padding: 1.75rem; } .ds-panel-label { display: block; font-family: var(--font-sans), system-ui, sans-serif; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted-foreground); } .ds-panel-body { margin: 0.75rem 0 0; font-family: var(--font-sans), system-ui, sans-serif; font-size: 0.875rem; line-height: 1.55; color: var(--ink-2); }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Top-bar navigation link. Muted by default, ink on hover, champagne focus ring.",
+      "html": "<a class=\"ds-nav-link\" href=\"#\">Calendrier</a>",
+      "css": ".ds-nav-link { font-family: var(--font-sans), system-ui, sans-serif; font-size: 13px; color: var(--ink-2); text-decoration: none; padding: 0.25rem 0; border-radius: 4px; transition: color 0.2s; } .ds-nav-link:hover { color: var(--foreground); } .ds-nav-link:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--champagne); }"
+    },
+    {
+      "name": "Status Dot",
+      "kind": "custom",
+      "refersTo": "status-dot",
+      "description": "Live champagne pulse marking an open drop. The only animated accent at rest.",
+      "html": "<span class=\"ds-status\"><span class=\"ds-status-dot\"></span>En cours</span>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-sans), system-ui, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.18em; color: oklch(0.52 0.06 70); } .ds-status-dot { width: 6px; height: 6px; border-radius: 9999px; background: oklch(0.52 0.06 70); box-shadow: 0 0 0 4px oklch(0.72 0.07 80 / 0.2); animation: ds-pulse 2400ms cubic-bezier(0.22, 1, 0.36, 1) infinite; } @keyframes ds-pulse { 0%, 100% { box-shadow: 0 0 0 4px oklch(0.72 0.07 80 / 0.2); } 50% { box-shadow: 0 0 0 8px oklch(0.72 0.07 80 / 0.06); } } @media (prefers-reduced-motion: reduce) { .ds-status-dot { animation: none; } }"
+    },
+    {
+      "name": "Filigrane",
+      "kind": "custom",
+      "refersTo": "filigrane",
+      "description": "Signature watermark dial dropped behind page headers at ~7% opacity. The maison's recurring mark. Decorative.",
+      "html": "<svg class=\"ds-filigrane\" viewBox=\"0 0 200 200\" fill=\"none\" stroke=\"currentColor\" aria-hidden=\"true\"><circle cx=\"100\" cy=\"100\" r=\"84\" stroke-width=\"1\"/><circle cx=\"100\" cy=\"100\" r=\"62\" stroke-width=\"1\" opacity=\"0.65\"/><g stroke-width=\"1\"><line x1=\"100\" y1=\"16\" x2=\"100\" y2=\"28\"/><line x1=\"100\" y1=\"172\" x2=\"100\" y2=\"184\"/><line x1=\"16\" y1=\"100\" x2=\"28\" y2=\"100\"/><line x1=\"172\" y1=\"100\" x2=\"184\" y2=\"100\"/></g><g stroke-width=\"0.8\" opacity=\"0.6\"><line x1=\"142\" y1=\"26\" x2=\"148\" y2=\"36\"/><line x1=\"174\" y1=\"58\" x2=\"164\" y2=\"64\"/><line x1=\"58\" y1=\"26\" x2=\"52\" y2=\"36\"/><line x1=\"26\" y1=\"58\" x2=\"36\" y2=\"64\"/></g><line x1=\"100\" y1=\"78\" x2=\"100\" y2=\"122\" stroke-width=\"1\"/><line x1=\"78\" y1=\"100\" x2=\"122\" y2=\"100\" stroke-width=\"1\"/><circle cx=\"100\" cy=\"100\" r=\"4\" stroke-width=\"1.2\"/><g stroke-width=\"1\"><path d=\"M14 30 V14 H30\"/><path d=\"M170 14 H186 V30\"/><path d=\"M186 170 V186 H170\"/><path d=\"M30 186 H14 V170\"/></g></svg>",
+      "css": ".ds-filigrane { width: 200px; height: 200px; color: oklch(0.52 0.06 70); opacity: 0.07; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La Vente Feutrée",
+    "overview": "Drop No. is a sealed-bid house for premium watches, and the interface behaves like a quiet auction room, not a marketplace. The mood is hushed authority: a maison that has nothing to prove and raises its voice for nothing. Restraint is the luxury. Vast warm off-white, a deep brown-black ink, and a champagne accent so rare it reads as gold leaf. The Fraunces italic display carries the entire emotional register; everything else recedes to let it speak. Depth comes from hairline rules and negative space, never shadows. The one flourish is the blueprint: technical line-art, annotated like a watchmaker's plan, over a slow background clockwork. Light-only and mobile-first, by doctrine.",
+    "keyCharacteristics": [
+      "Editorial silence: type and whitespace, not chrome.",
+      "Champagne as gold leaf: the one accent, rationed to ≤10%.",
+      "Hairlines over shadows: structure by 1px rules.",
+      "Blueprint as signature: line-art, watermark dials, slow gears.",
+      "Warm, never clinical: every neutral tinted toward the brand hue."
+    ],
+    "rules": [
+      { "name": "The Gold-Leaf Rule", "body": "Champagne covers ≤10% of any screen, marking exactly one thing. If two champagne elements compete, one is wrong.", "section": "colors" },
+      { "name": "The No-Pure-Black, No-Pure-White Rule", "body": "#000 and #fff are forbidden. Every neutral is tinted toward the warm brand hue (chroma 0.004-0.012).", "section": "colors" },
+      { "name": "The Italic-Voice Rule", "body": "The display serif is always italic, always 300. Upright or bold Fraunces is prohibited; reach for size before weight.", "section": "typography" },
+      { "name": "The No-Em-Dash Rule", "body": "Em dashes are forbidden in user-facing copy (also --). Use commas, colons, periods, parentheses, or a middot.", "section": "typography" },
+      { "name": "The Hairline-First Rule", "body": "Before reaching for a shadow or card, separate content with a 1px rule and space. Elevation is the exception, not the tool.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do let Fraunces italic 300 carry the hierarchy; reach for size before weight.",
+      "Do keep champagne to ≤10% of any screen, marking exactly one thing.",
+      "Do separate content with 1px hairlines and whitespace, not boxes or shadows.",
+      "Do tint every neutral toward the warm hue (chroma 0.004-0.012).",
+      "Do reveal page content in a slow decelerating cascade (cubic-bezier(0.16, 1, 0.3, 1)), disabled under prefers-reduced-motion.",
+      "Do increase contrast on hover (darken to Ink Press) and give every interactive element a champagne focus-visible ring.",
+      "Do carry the filigrane watermark onto every new screen as the maison's signature."
+    ],
+    "donts": [
+      "Don't use em dashes (or --) in any user-facing copy.",
+      "Don't ship a dark mode. The maison is light-only, by doctrine.",
+      "Don't use #000 or #fff, or any untinted clinical grey.",
+      "Don't fade interactive states with opacity; shift color instead.",
+      "Don't stack identical product cards in a grid, nest cards, or use side-stripe (border-left) accents.",
+      "Don't add marketplace urgency: countdown-pressure styling, selling-fast banners, price-war energy.",
+      "Don't spend champagne twice on one screen."
+    ]
+  }
+}

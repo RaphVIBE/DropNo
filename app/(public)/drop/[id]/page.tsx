@@ -2,11 +2,13 @@ import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import { DropHero, type DropStatus } from "@/components/drop/drop-hero";
-import { DropArt } from "@/components/drop/drop-art";
+import { DropGallery } from "@/components/drop/drop-gallery";
 import { DropSpecs } from "@/components/drop/drop-specs";
 import { DropDetail } from "@/components/drop/drop-detail";
 import { DropBidForm } from "@/components/drop/drop-bid-form";
 import { DropCountdown } from "@/components/drop/drop-countdown";
+import { ShareDrop } from "@/components/drop/share-drop";
+import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
 import type { Tables } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +24,7 @@ export default async function DropPage({
   const { data: drop } = await supabase
     .from("drops_public")
     .select(
-      "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, specs, brand:brands(name, slug)"
+      "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, brand:brands(name, slug)"
     )
     .eq("id", params.id)
     .maybeSingle();
@@ -56,6 +58,18 @@ export default async function DropPage({
 
   const loginHref = `/login?redirect=/drop/${params.id}`;
 
+  const dropLabel = `Drop No. ${formatDropNumber(drop.drop_number ?? 0)}`;
+  const shareTitle = `${drop.title ?? "Drop"} · ${dropLabel}`;
+  const shareSummary = [
+    `${dropLabel}${drop.title ? ` · ${drop.title}` : ""}`,
+    drop.floor_price_cents
+      ? `Prix plancher ${formatEuros(drop.floor_price_cents)}`
+      : null,
+    drop.reveal_at ? `Révélation ${formatRevealMoment(drop.reveal_at)}` : null,
+  ]
+    .filter(Boolean)
+    .join(". ");
+
   return (
     <>
       <DropHero
@@ -70,8 +84,9 @@ export default async function DropPage({
 
       <div className="grid grid-cols-1 px-7 pb-24 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32">
         <div>
-          <DropArt
+          <DropGallery
             heroImageUrl={drop.hero_image_url}
+            imagesUrls={(drop.images_urls as string[] | null) ?? null}
             title={drop.title ?? ""}
             seed={drop.drop_number ?? 0}
           />
@@ -107,6 +122,10 @@ export default async function DropPage({
             existingBidCents={existingBidCents}
             loginHref={loginHref}
           />
+
+          <div className="mt-8 border-t border-rule-soft pt-6">
+            <ShareDrop title={shareTitle} summary={shareSummary} />
+          </div>
         </div>
       </div>
 

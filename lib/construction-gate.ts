@@ -34,9 +34,19 @@ export function constructionGate(request: NextRequest): NextResponse | null {
     return null;
   }
 
+  // Re-verrouiller : ?preview=off retire le cookie et renvoie sur /bientot.
+  const preview = searchParams.get("preview");
+  if (preview === "off") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/bientot";
+    url.searchParams.delete("preview");
+    const res = NextResponse.redirect(url);
+    res.cookies.set(PREVIEW_COOKIE, "", { path: "/", maxAge: 0 });
+    return res;
+  }
+
   // Bypass équipe via ?preview=TOKEN -> pose le cookie puis nettoie l'URL.
   const token = process.env.PREVIEW_TOKEN;
-  const preview = searchParams.get("preview");
   if (token && preview && preview === token) {
     const clean = request.nextUrl.clone();
     clean.searchParams.delete("preview");

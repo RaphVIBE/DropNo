@@ -8,7 +8,7 @@ import { DropDetail } from "@/components/drop/drop-detail";
 import { DropBidForm } from "@/components/drop/drop-bid-form";
 import { DropCountdown } from "@/components/drop/drop-countdown";
 import { ShareDrop } from "@/components/drop/share-drop";
-import { AlertForm } from "@/components/drop/alert-form";
+import { DropAlertBell } from "@/components/drop/drop-alert-bell";
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
 import type { Tables } from "@/lib/supabase/types";
 
@@ -27,7 +27,7 @@ export default async function DropPage({
   const { data: drop } = await supabase
     .from("drops_public")
     .select(
-      "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, brand:brands(name, slug)"
+      "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, brand:brands(name, slug)"
     )
     .eq("id", params.id)
     .maybeSingle();
@@ -73,6 +73,15 @@ export default async function DropPage({
     .filter(Boolean)
     .join(". ");
 
+  // Compteur + cloche d'alerte : révélation (en cours) ou ouverture (à venir).
+  const counter =
+    isOpen && drop.reveal_at
+      ? { label: "Révélation dans", target: drop.reveal_at }
+      : status === "scheduled" && drop.bid_window_opens_at
+        ? { label: "Ouverture dans", target: drop.bid_window_opens_at }
+        : null;
+  const canAlert = status === "scheduled" || status === "open";
+
   return (
     <>
       <DropHero
@@ -96,13 +105,22 @@ export default async function DropPage({
         </div>
 
         <div className="pt-8 md:sticky md:top-24 md:self-start md:pt-0">
-          {isOpen && drop.reveal_at ? (
+          {counter ? (
             <div className="mb-8 border-y border-rule border-t-foreground py-6">
-              <div className="mb-3 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                Révélation dans
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  {counter.label}
+                </span>
+                {canAlert ? (
+                  <DropAlertBell
+                    dropId={params.id}
+                    status={status}
+                    flash={searchParams.alert}
+                  />
+                ) : null}
               </div>
               <DropCountdown
-                targetIso={drop.reveal_at}
+                targetIso={counter.target}
                 serverNowIso={serverNowIso}
                 variant="full"
               />
@@ -125,14 +143,6 @@ export default async function DropPage({
             existingBidCents={existingBidCents}
             loginHref={loginHref}
           />
-
-          {status === "scheduled" || status === "open" ? (
-            <AlertForm
-              dropId={params.id}
-              status={status}
-              flash={searchParams.alert}
-            />
-          ) : null}
 
           <div className="mt-8 border-t border-rule-soft pt-6">
             <ShareDrop title={shareTitle} summary={shareSummary} />

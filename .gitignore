@@ -41,5 +41,8 @@ next-env.d.ts
 # Local Netlify folder
 .netlify
 
+# Supabase CLI cache local
+supabase/.temp/
+
 # Config locale Claude Code (toute la dir)
 .claude/

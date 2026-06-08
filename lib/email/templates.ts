@@ -356,3 +356,53 @@ ${d.dropId ? button(copy.cta, url(`/drop/${d.dropId}`)) : ""}`;
   const text = `${copy.subject}\n${copy.body}${d.dropId ? `\n\n${copy.cta} : ${url(`/drop/${d.dropId}`)}` : ""}`;
   return { subject: copy.subject, html: layout(copy.title, inner), text };
 }
+
+// ---------------------------------------------------------------------------
+// Alertes "montre" (visiteur sans compte, double opt-in)
+// ---------------------------------------------------------------------------
+export function alertConfirmEmail(d: {
+  dropNumber: number;
+  title: string;
+  confirmUrl: string;
+}): EmailContent {
+  const num = formatDropNumber(d.dropNumber);
+  const subject = `Confirmez votre alerte · Drop No. ${num}`;
+  const inner = `${eyebrow(`Drop No. ${num} · ${esc(d.title)}`)}
+${h1("Confirmez votre alerte.")}
+${p(`Vous souhaitez suivre <strong style="color:${C.ink};">${esc(d.title)}</strong>. Confirmez votre adresse pour activer l'alerte, c'est la seule étape.`)}
+${button("Confirmer mon alerte", d.confirmUrl)}
+${p("Si vous n'êtes pas à l'origine de cette demande, ignorez cet email : aucune alerte ne sera créée.", 22)}`;
+  const text = `${subject}\n\nConfirmez votre alerte : ${d.confirmUrl}\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez cet email.`;
+  return { subject, html: layout("Confirmez votre alerte Drop No.", inner), text };
+}
+
+export function alertNoticeEmail(d: {
+  kind: "open" | "lock";
+  dropNumber: number;
+  title: string;
+  dropId: string;
+  unsubscribeUrl: string;
+}): EmailContent {
+  const num = formatDropNumber(d.dropNumber);
+  const copy = {
+    open: {
+      subject: `C'est ouvert · Drop No. ${num}`,
+      title: "Le drop est ouvert.",
+      body: "La fenêtre d'offres est ouverte. Scellez votre prix, caché jusqu'à la révélation et modifiable jusqu'à la dernière heure.",
+      cta: "Voir le drop",
+    },
+    lock: {
+      subject: `Dernière heure · Drop No. ${num}`,
+      title: "Dernière heure.",
+      body: "Les offres se verrouillent dans une heure. C'est le dernier moment pour faire ou ajuster votre offre.",
+      cta: "Faire mon offre",
+    },
+  }[d.kind];
+  const inner = `${eyebrow(`Drop No. ${num} · ${esc(d.title)}`)}
+${h1(copy.title)}
+${p(copy.body)}
+${button(copy.cta, url(`/drop/${d.dropId}`))}
+${textLink("Ne plus recevoir d'alerte pour ce drop", d.unsubscribeUrl)}`;
+  const text = `${copy.subject}\n${copy.body}\n\n${copy.cta} : ${url(`/drop/${d.dropId}`)}\nSe désinscrire : ${d.unsubscribeUrl}`;
+  return { subject: copy.subject, html: layout(copy.title, inner), text };
+}

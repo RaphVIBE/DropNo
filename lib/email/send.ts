@@ -3,6 +3,8 @@ import {
   bidConfirmationEmail,
   dropResultEmail,
   dropReminderEmail,
+  alertConfirmEmail,
+  alertNoticeEmail,
   type EmailContent,
 } from "./templates";
 
@@ -54,4 +56,18 @@ export function sendDropReminder(
   data: Parameters<typeof dropReminderEmail>[0]
 ): Promise<SendResult> {
   return deliver(to, dropReminderEmail(data));
+}
+
+export function sendAlertConfirm(
+  to: string,
+  data: Parameters<typeof alertConfirmEmail>[0]
+): Promise<SendResult> {
+  return deliver(to, alertConfirmEmail(data));
+}
+
+export function sendAlertNotice(
+  to: string,
+  data: Parameters<typeof alertNoticeEmail>[0]
+): Promise<SendResult> {
+  return deliver(to, alertNoticeEmail(data));
 }

@@ -16,6 +16,7 @@ type Brand = {
   description: string | null;
   country_code: string | null;
   kbis_verified: boolean;
+  website_url: string | null;
 };
 
 type BrandDrop = {
@@ -31,7 +32,9 @@ async function getBrand(slug: string): Promise<Brand | null> {
   const supabase = createClient();
   const { data } = await supabase
     .from("brands")
-    .select("id, slug, name, description, country_code, kbis_verified")
+    .select(
+      "id, slug, name, description, country_code, kbis_verified, website_url"
+    )
     .eq("slug", slug)
     .eq("status", "active")
     .maybeSingle();
@@ -139,6 +142,17 @@ export default async function BrandPage({
           >
             {lead}
           </p>
+          {brand.website_url ? (
+            <a
+              href={brand.website_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="reveal mt-7 inline-flex items-center gap-1.5 rounded-sm text-[13px] uppercase tracking-[0.16em] text-champagne-deep underline-offset-4 transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              style={{ "--reveal-delay": "440ms" } as React.CSSProperties}
+            >
+              Site officiel ↗
+            </a>
+          ) : null}
         </div>
       </div>
 

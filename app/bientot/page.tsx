@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { Wordmark } from "@/components/brand/wordmark";
+
 export const metadata: Metadata = {
   title: "Drop No. — Bientôt",
   description: "Une maison de drops scellés pour montres premium.",
@@ -11,9 +13,7 @@ export default function ComingSoonPage() {
     <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
       <div className="absolute left-0 right-0 top-0 h-[3px] bg-champagne" aria-hidden />
 
-      <span className="font-serif text-3xl font-light italic tracking-tight text-foreground">
-        Drop <sup className="align-super text-[0.6em] text-champagne-deep">N&ordm;</sup>
-      </span>
+      <Wordmark className="text-3xl text-foreground" />
 
       <h1 className="font-display mt-10 text-[clamp(3rem,10vw,6rem)] leading-[0.95]">
         Bientôt.

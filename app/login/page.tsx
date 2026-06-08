@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/browser";
 import { Button } from "@/components/ui/button";
+import { Wordmark } from "@/components/brand/wordmark";
 
 /** Messages lisibles pour les erreurs d'auth renvoyees par Supabase/GoTrue. */
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
@@ -59,9 +60,9 @@ function LoginForm() {
     <section className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-8 px-7 py-20">
       <Link
         href="/"
-        className="font-serif text-[22px] font-light italic tracking-tight"
+        className="rounded-sm text-[22px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        Drop <sup className="align-super text-[0.8em]">No.</sup>
+        <Wordmark />
       </Link>
 
       {status === "sent" ? (

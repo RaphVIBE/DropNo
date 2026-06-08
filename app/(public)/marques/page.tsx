@@ -67,34 +67,41 @@ export default async function BrandsPage() {
           Les premières maisons seront annoncées très bientôt.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-px border-t border-rule-soft bg-rule-soft sm:grid-cols-2 lg:grid-cols-3">
-          {brands.map((brand) => (
-            <Link
-              key={brand.slug}
-              href={`/marques/${brand.slug}`}
-              className="group flex min-h-[200px] flex-col justify-between bg-background p-7 transition-colors hover:bg-[var(--bg-elev,oklch(0.99_0.004_80))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:p-9"
-            >
-              <div>
-                {countryLabel(brand.country_code) ? (
-                  <span className="eyebrow">
-                    {countryLabel(brand.country_code)}
-                  </span>
-                ) : null}
-                <h2 className="font-serif mt-3 text-[28px] italic leading-tight text-foreground">
-                  {brand.name}
-                </h2>
-                {brand.description ? (
-                  <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-ink-2">
-                    {brand.description}
-                  </p>
-                ) : null}
-              </div>
-              <span className="mt-6 text-[13px] text-champagne-deep transition-transform group-hover:translate-x-0.5">
-                Découvrir →
-              </span>
-            </Link>
-          ))}
-        </div>
+        <ul className="border-t border-rule-soft px-7 md:px-16">
+          {brands.map((brand, i) => {
+            const country = countryLabel(brand.country_code);
+            return (
+              <li key={brand.slug} className="border-b border-rule-soft">
+                <Link
+                  href={`/marques/${brand.slug}`}
+                  className="group flex flex-col gap-3 py-7 transition-colors hover:bg-[oklch(0.99_0.004_80)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
+                >
+                  <div className="flex min-w-0 items-baseline gap-5">
+                    <span className="font-serif text-sm italic tabular-nums text-muted-foreground">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div className="min-w-0">
+                      <h2 className="font-serif text-[26px] italic leading-tight text-foreground transition-transform group-hover:translate-x-0.5">
+                        {brand.name}
+                      </h2>
+                      {brand.description ? (
+                        <p className="mt-1 max-w-[60ch] line-clamp-1 text-sm leading-relaxed text-ink-2">
+                          {brand.description}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-baseline gap-5 pl-10 text-[11px] uppercase tracking-[0.18em] sm:pl-0">
+                    {country ? (
+                      <span className="text-muted-foreground">{country}</span>
+                    ) : null}
+                    <span className="text-champagne-deep">Découvrir →</span>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       )}
     </>
   );

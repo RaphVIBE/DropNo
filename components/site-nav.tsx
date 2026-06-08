@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { Wordmark } from "@/components/brand/wordmark";
+
 /**
  * Navigation globale (chrome fixe). Reprend le wordmark serif du mockup.
  * Server Component : pas d'etat client necessaire pour le scaffold.
@@ -9,10 +11,9 @@ export function SiteNav() {
     <header className="reveal-nav fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-rule-soft bg-background/85 px-7 py-[18px] backdrop-blur-md backdrop-saturate-150">
       <Link
         href="/"
-        translate="no"
-        className="rounded-sm font-serif text-[22px] font-light italic tracking-tight text-foreground no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="rounded-sm text-[22px] text-foreground no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        Drop <sup className="align-super text-[0.8em]">No.</sup>
+        <Wordmark />
       </Link>
       <nav className="flex items-center gap-7">
         <Link

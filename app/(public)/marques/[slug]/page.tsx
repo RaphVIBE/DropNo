@@ -113,7 +113,7 @@ export default async function BrandPage({
   // Lead éditoriale : la description si présente, sinon une signature constante.
   const lead =
     brand.description ??
-    `${brand.name} ouvre ses drops sur Drop No., en direct de la maison — sans intermédiaire ni revente.`;
+    `${brand.name} ouvre ses drops sur Drop No., en direct de la maison, sans intermédiaire ni revente.`;
 
   return (
     <>

@@ -8,6 +8,7 @@ import { DropDetail } from "@/components/drop/drop-detail";
 import { DropBidForm } from "@/components/drop/drop-bid-form";
 import { DropCountdown } from "@/components/drop/drop-countdown";
 import { ShareDrop } from "@/components/drop/share-drop";
+import { AlertForm } from "@/components/drop/alert-form";
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
 import type { Tables } from "@/lib/supabase/types";
 
@@ -15,8 +16,10 @@ export const dynamic = "force-dynamic";
 
 export default async function DropPage({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams: { alert?: string };
 }) {
   const supabase = createClient();
   const serverNowIso = new Date().toISOString();
@@ -122,6 +125,14 @@ export default async function DropPage({
             existingBidCents={existingBidCents}
             loginHref={loginHref}
           />
+
+          {status === "scheduled" || status === "open" ? (
+            <AlertForm
+              dropId={params.id}
+              status={status}
+              flash={searchParams.alert}
+            />
+          ) : null}
 
           <div className="mt-8 border-t border-rule-soft pt-6">
             <ShareDrop title={shareTitle} summary={shareSummary} />

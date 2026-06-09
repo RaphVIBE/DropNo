@@ -173,6 +173,7 @@ export type Database = {
           status: string
           stripe_account_id: string | null
           updated_at: string
+          website_url: string | null
         }
         Insert: {
           contract_signed_at?: string | null
@@ -187,6 +188,7 @@ export type Database = {
           status?: string
           stripe_account_id?: string | null
           updated_at?: string
+          website_url?: string | null
         }
         Update: {
           contract_signed_at?: string | null
@@ -201,6 +203,7 @@ export type Database = {
           status?: string
           stripe_account_id?: string | null
           updated_at?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -241,6 +244,63 @@ export type Database = {
             columns: ["transaction_id"]
             isOneToOne: true
             referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drop_alerts: {
+        Row: {
+          confirm_token: string
+          confirmed_at: string | null
+          created_at: string
+          drop_id: string
+          email: string
+          id: string
+          lock_sent_at: string | null
+          notify_lock: boolean
+          notify_open: boolean
+          open_sent_at: string | null
+          status: string
+        }
+        Insert: {
+          confirm_token: string
+          confirmed_at?: string | null
+          created_at?: string
+          drop_id: string
+          email: string
+          id?: string
+          lock_sent_at?: string | null
+          notify_lock?: boolean
+          notify_open?: boolean
+          open_sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          confirm_token?: string
+          confirmed_at?: string | null
+          created_at?: string
+          drop_id?: string
+          email?: string
+          id?: string
+          lock_sent_at?: string | null
+          notify_lock?: boolean
+          notify_open?: boolean
+          open_sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drop_alerts_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: false
+            referencedRelation: "drops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drop_alerts_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: false
+            referencedRelation: "drops_public"
             referencedColumns: ["id"]
           },
         ]
@@ -398,6 +458,32 @@ export type Database = {
           },
         ]
       }
+      platform_admins: {
+        Row: {
+          created_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_admins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -436,6 +522,115 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      support_messages: {
+        Row: {
+          author_id: string | null
+          author_kind: string
+          body: string
+          created_at: string
+          id: string
+          is_internal: boolean
+          ticket_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          author_kind: string
+          body: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          ticket_id: string
+        }
+        Update: {
+          author_id?: string | null
+          author_kind?: string
+          body?: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          ticket_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_messages_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_messages_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "support_tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          created_at: string
+          id: string
+          last_activity_at: string
+          priority: string
+          related_transaction_id: string | null
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          priority?: string
+          related_transaction_id?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          last_activity_at?: string
+          priority?: string
+          related_transaction_id?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_tickets_related_transaction_id_fkey"
+            columns: ["related_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "support_tickets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {
@@ -587,22 +782,13 @@ export type Database = {
     }
     Functions: {
       close_drop: { Args: { p_drop_id: string }; Returns: Json }
-      dispatch_reminders: { Args: never; Returns: Json }
-      dispatch_ripe_drops: { Args: never; Returns: Json }
+      dispatch_reminders: { Args: Record<PropertyKey, never>; Returns: Json }
+      dispatch_ripe_drops: { Args: Record<PropertyKey, never>; Returns: Json }
       drop_notification_recipients: {
         Args: { p_drop_id: string }
         Returns: {
           email: string
           user_id: string
-        }[]
-      }
-      reminders_due: {
-        Args: never
-        Returns: {
-          drop_id: string
-          drop_number: number
-          kind: string
-          title: string
         }[]
       }
       drop_result_recipients: {
@@ -613,6 +799,44 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_client_overview: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          bids_count: number
+          created_at: string
+          display_name: string
+          email: string
+          id: string
+          kyc_status: string
+          newsletter_subscribed: boolean
+          orders_count: number
+          total_spent_cents: number
+        }[]
+      }
+      get_maison_drop_metrics: {
+        Args: { p_brand?: string }
+        Returns: {
+          bid_count: number
+          bid_lock_at: string
+          bid_window_opens_at: string
+          bidders: number
+          brand_id: string
+          clearing_price_cents: number
+          drop_id: string
+          drop_number: number
+          exemplaires: number
+          floor_price_cents: number
+          gross_cents: number
+          payout_cents: number
+          qualified_bids: number
+          reveal_at: string
+          status: string
+          title: string
+          units_sold: number
+          watchers: number
+        }[]
+      }
+      is_platform_admin: { Args: { uid?: string }; Returns: boolean }
       my_bid_for_drop: {
         Args: { p_drop_id: string }
         Returns: {
@@ -629,12 +853,16 @@ export type Database = {
           user_id: string
           withdrawn_at: string | null
         }
-        SetofOptions: {
-          from: "*"
-          to: "bids"
-          isOneToOne: true
-          isSetofReturn: false
-        }
+      }
+      open_ripe_drops: { Args: Record<PropertyKey, never>; Returns: Json }
+      reminders_due: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          drop_id: string
+          drop_number: number
+          kind: string
+          title: string
+        }[]
       }
     }
     Enums: {

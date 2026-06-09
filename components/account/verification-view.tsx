@@ -42,7 +42,7 @@ export function VerificationView({ status }: { status: string }) {
       </Link>
 
       <div className="relative mt-10 overflow-hidden">
-        <Filigrane className="reveal-art pointer-events-none absolute -right-12 -top-6 z-0 h-52 w-52 text-[var(--champagne-deep)] opacity-[0.07] md:right-0 md:h-64 md:w-64" />
+        <Filigrane className="reveal-art pointer-events-none absolute -right-12 -top-6 z-0 h-52 w-52 text-[var(--champagne-deep)] [--art-opacity:0.07] md:right-0 md:h-64 md:w-64" />
         <div className="relative z-10">
           <p
             className="eyebrow reveal"

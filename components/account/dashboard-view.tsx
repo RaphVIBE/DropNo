@@ -99,7 +99,7 @@ export function DashboardView({
   return (
     <section className="mx-auto max-w-3xl px-7 py-20 md:px-16">
       <div className="relative overflow-hidden">
-        <Filigrane className="reveal-art pointer-events-none absolute -right-10 -top-8 z-0 h-48 w-48 text-[var(--champagne-deep)] opacity-[0.06] md:right-0 md:h-60 md:w-60" />
+        <Filigrane className="reveal-art pointer-events-none absolute -right-10 -top-8 z-0 h-48 w-48 text-[var(--champagne-deep)] [--art-opacity:0.08] md:right-0 md:h-60 md:w-60" />
         <div className="relative z-10">
           <p
             className="eyebrow reveal"

@@ -15,7 +15,7 @@ const LINK_FOCUS =
 export default function AboutPage() {
   return (
     <section className="relative mx-auto max-w-2xl overflow-hidden px-7 py-24 md:py-32">
-      <Filigrane className="reveal-art pointer-events-none absolute -right-12 top-12 z-0 h-44 w-44 text-[var(--champagne-deep)] opacity-[0.06] md:-right-8 md:h-56 md:w-56" />
+      <Filigrane className="reveal-art pointer-events-none absolute -right-12 top-12 z-0 h-44 w-44 text-[var(--champagne-deep)] [--art-opacity:0.08] md:-right-8 md:h-56 md:w-56" />
 
       <div className="relative z-10">
         <span

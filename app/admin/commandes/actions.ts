@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getRole } from "@/lib/admin/auth";
 import { isValidCarrier, NEXT_DELIVERY, type DeliveryStatus } from "@/lib/admin/orders";
+import type { TablesUpdate } from "@/lib/supabase/types";
 
 async function requireAdmin() {
   const role = await getRole();
@@ -42,7 +43,7 @@ export async function advanceDelivery(fd: FormData): Promise<void> {
   if (!d) return;
   if (!(NEXT_DELIVERY[d.status as DeliveryStatus] ?? []).includes(target)) return;
 
-  const patch: Record<string, unknown> = { status: target };
+  const patch: TablesUpdate<"deliveries"> = { status: target };
   if (target === "shipped") patch.shipped_at = new Date().toISOString();
   if (target === "delivered") patch.delivered_at = new Date().toISOString();
   await supabase.from("deliveries").update(patch).eq("id", id);

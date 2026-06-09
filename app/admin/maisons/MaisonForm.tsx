@@ -11,7 +11,7 @@ import {
 } from "@/lib/admin/maisons";
 import type { ActionState } from "./actions";
 
-type Brand = {
+export type Brand = {
   id: string; name: string; slug: string; description: string | null;
   logo_url: string | null; website_url: string | null; country_code: string | null;
   status: BrandStatus; kbis_verified: boolean; stripe_account_id: string | null;

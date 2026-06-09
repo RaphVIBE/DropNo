@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/lib/admin/ui";
 import { STATUS_FR, STATUS_TONE, type BrandStatus } from "@/lib/admin/maisons";
 import { dateTime } from "@/lib/admin/format";
-import { MaisonForm } from "../MaisonForm";
+import { MaisonForm, type Brand } from "../MaisonForm";
 import { saveMaison, inviteManager, revokeManager } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +37,7 @@ export default async function MaisonDetail({ params }: { params: { id: string } 
       <div className="mt-4 grid items-start gap-4 lg:grid-cols-[1.3fr_1fr]">
         <Card>
           <h3 className="mb-3 font-display text-xl">Fiche maison</h3>
-          <MaisonForm action={saveMaison} brand={brand} />
+          <MaisonForm action={saveMaison} brand={brand as unknown as Brand} />
         </Card>
 
         <Card>
@@ -50,7 +50,10 @@ export default async function MaisonDetail({ params }: { params: { id: string } 
             <p className="mt-3 text-sm text-muted-foreground">Aucun responsable invité.</p>
           ) : (
             <div className="mt-3">
-              {((managers ?? []) as Record<string, any>[]).map((m) => (
+              {((managers ?? []) as unknown as {
+                user_id: string; role: string; created_at: string;
+                profiles: { email: string | null; display_name: string | null } | null;
+              }[]).map((m) => (
                 <div key={m.user_id} className="flex items-center justify-between gap-2 border-b border-border/60 py-2.5 last:border-0">
                   <div>
                     <div className="text-sm font-medium">{m.profiles?.display_name ?? m.profiles?.email ?? m.user_id}</div>

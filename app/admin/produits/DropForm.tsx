@@ -8,7 +8,7 @@ import { toLocalInput } from "@/lib/admin/format";
 import type { ActionState } from "./actions";
 
 type Brand = { id: string; name: string };
-type Drop = {
+export type Drop = {
   id: string; brand_id: string; title: string; piece_reference: string | null;
   description: string | null; floor_price_cents: number; exemplaires: number;
   bid_window_opens_at: string | null; bid_lock_at: string | null; reveal_at: string | null;

@@ -63,7 +63,10 @@ export default async function TicketDetail({ params }: { params: { id: string } 
       </div>
 
       <div className="mb-4 flex flex-col gap-2.5">
-        {((messages ?? []) as Record<string, any>[]).map((m) => {
+        {((messages ?? []) as unknown as {
+          id: string; author_kind: string; is_internal: boolean; body: string;
+          created_at: string; author_id: string | null;
+        }[]).map((m) => {
           const staff = m.author_kind === "staff";
           const internal = m.is_internal;
           return (

@@ -26,7 +26,9 @@ export default async function OrderDetail({ params }: { params: { id: string } }
     .maybeSingle();
   if (!t) notFound();
 
-  const delivery = ((t.deliveries as Record<string, unknown>[]) ?? [])[0] as Record<string, unknown> | undefined;
+  const delivery = ((t.deliveries as unknown as Record<string, unknown>[]) ?? [])[0] as
+    | Record<string, unknown>
+    | undefined;
   const status = t.status as TxStatus;
 
   return (

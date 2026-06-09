@@ -51,7 +51,11 @@ export default async function ClientDetail({ params }: { params: { id: string } 
           <table className="w-full text-sm">
             <thead className="border-b border-border"><tr><th className={th}>Date</th><th className={th}>Drop</th><th className={th}>Payé</th><th className={th}>Paiement</th><th className={th}>Livraison</th></tr></thead>
             <tbody>
-              {((txs ?? []) as Record<string, any>[]).map((t) => {
+              {((txs ?? []) as unknown as {
+                id: string; created_at: string; amount_paid_cents: number; status: string;
+                drops: { drop_number: number | null; title: string | null } | null;
+                deliveries: { status: string }[] | null;
+              }[]).map((t) => {
                 const del = t.deliveries?.[0]?.status as DeliveryStatus | undefined;
                 return (
                   <tr key={t.id} className="border-b border-border/60 last:border-0">
@@ -76,7 +80,10 @@ export default async function ClientDetail({ params }: { params: { id: string } 
           <table className="w-full text-sm">
             <thead className="border-b border-border"><tr><th className={th}>Date</th><th className={th}>Drop</th><th className={th}>Montant</th><th className={th}>Statut</th></tr></thead>
             <tbody>
-              {((bids ?? []) as Record<string, any>[]).map((b) => (
+              {((bids ?? []) as unknown as {
+                id: string; submitted_at: string; amount_cents: number; status: string;
+                drops: { drop_number: number | null; title: string | null; status: string | null } | null;
+              }[]).map((b) => (
                 <tr key={b.id} className="border-b border-border/60 last:border-0">
                   <td className={`${td} text-muted-foreground`}>{dateTime(b.submitted_at)}</td>
                   <td className={td}>№ {b.drops?.drop_number} {b.drops?.title} {b.drops?.status && <Badge tone={DROP_TONE[b.drops.status as DropStatus]} className="ml-1.5">{DROP_FR[b.drops.status as DropStatus]}</Badge>}</td>

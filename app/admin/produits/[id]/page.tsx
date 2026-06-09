@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge, Card } from "@/lib/admin/ui";
 import { STATUS_FR, STATUS_TONE, canPublish, canCancel, canDelete, type DropStatus } from "@/lib/admin/drops";
 import { eur, dateTime } from "@/lib/admin/format";
-import { DropForm } from "../DropForm";
+import { DropForm, type Drop } from "../DropForm";
 import { publishDrop, cancelDrop, deleteDrop, saveDrop } from "../actions";
 
 export const dynamic = "force-dynamic";
@@ -61,7 +61,7 @@ export default async function EditDropPage({ params }: { params: { id: string } 
       </Card>
 
       <Card className="max-w-2xl">
-        <DropForm action={saveDrop} brands={brands ?? []} drop={drop} status={status} />
+        <DropForm action={saveDrop} brands={brands ?? []} drop={drop as unknown as Drop} status={status} />
       </Card>
     </>
   );

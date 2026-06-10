@@ -110,7 +110,7 @@ export default async function DropsPage() {
           {past.length > 0 ? (
             <section className="px-7 pb-28 pt-16 md:px-16 md:pt-20">
               <details className="group border-t border-rule pt-5">
-                <summary className="flex cursor-pointer list-none items-baseline justify-between rounded-sm py-1 [&::-webkit-details-marker]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+                <summary className="flex cursor-pointer list-none items-baseline justify-between rounded-sm py-2.5 [&::-webkit-details-marker]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                   <span className="flex items-baseline gap-3">
                     <h3 className="font-serif text-2xl italic text-ink-2 transition-colors group-hover:text-foreground">Passés</h3>
                     <span className="text-[13px] text-muted-foreground">{plural(past.length, "drop clôturé", "drops clôturés")}</span>

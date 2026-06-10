@@ -78,7 +78,7 @@ export default async function DropsPage() {
             </div>
             {open.length === 0 ? (
               <p className="py-6 text-ink-2">
-                Aucun drop ouvert en ce moment — le prochain est juste en dessous.
+                Aucun drop ouvert en ce moment. Le prochain est juste en dessous.
               </p>
             ) : (
               open.map((drop) => (
@@ -110,7 +110,7 @@ export default async function DropsPage() {
           {past.length > 0 ? (
             <section className="px-7 pb-28 pt-16 md:px-16 md:pt-20">
               <details className="group border-t border-rule pt-5">
-                <summary className="flex cursor-pointer list-none items-baseline justify-between [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-baseline justify-between rounded-sm py-1 [&::-webkit-details-marker]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                   <span className="flex items-baseline gap-3">
                     <h3 className="font-serif text-2xl italic text-ink-2 transition-colors group-hover:text-foreground">Passés</h3>
                     <span className="text-[13px] text-muted-foreground">{plural(past.length, "drop clôturé", "drops clôturés")}</span>
@@ -123,7 +123,7 @@ export default async function DropsPage() {
                 <ul className="mt-4">
                   {past.map((drop) => (
                     <li key={drop.id} className="border-b border-rule-soft last:border-0">
-                      <Link href={drop.id ? `/drop/${drop.id}` : "#"} className="group/row flex items-baseline justify-between gap-6 py-4">
+                      <Link href={drop.id ? `/drop/${drop.id}` : "#"} className="group/row flex items-baseline justify-between gap-6 rounded-sm py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                         <span className="flex min-w-0 items-baseline gap-5">
                           <span className="shrink-0 font-serif text-sm italic tabular-nums text-muted-foreground">No. {formatDropNumber(drop.drop_number ?? 0)}</span>
                           <span className="truncate">

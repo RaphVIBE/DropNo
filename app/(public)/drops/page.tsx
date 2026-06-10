@@ -3,7 +3,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
 import { UpcomingCard } from "@/components/drop/upcoming-card";
-import { Filigrane } from "@/components/brand/filigrane";
 import { formatDropNumber, formatEuros, formatShortDate } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -48,19 +47,17 @@ export default async function DropsPage() {
 
   return (
     <>
-      <div className="relative overflow-hidden border-b border-rule-soft px-7 pb-16 pt-20 md:px-16 md:pb-20 md:pt-28">
-        <Filigrane className="reveal-art pointer-events-none absolute -right-10 top-1/2 z-0 h-60 w-60 -translate-y-1/2 text-[var(--champagne-deep)] [--art-opacity:0.07] md:-right-4 md:h-80 md:w-80" />
-        <div className="relative z-10">
-          <span className="eyebrow reveal" style={{ "--reveal-delay": "120ms" } as React.CSSProperties}>
-            Calendrier
-          </span>
-          <h1 className="font-display reveal mt-6 max-w-[11ch] text-[clamp(3.5rem,9vw,8rem)]" style={{ "--reveal-delay": "240ms" } as React.CSSProperties}>
-            Tous les drops, en un seul lieu.
-          </h1>
-          <p className="reveal mt-6 max-w-[50ch] text-base text-ink-2" style={{ "--reveal-delay": "380ms" } as React.CSSProperties}>
-            Les drops en cours acceptent les offres jusqu&apos;à la révélation.
-            Les prochains sont planifiés. Les précédents conservent leur prix
-            unitaire de clôture.
+      <div className="px-7 pt-24 md:px-16 md:pt-28">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-2 border-b border-rule-soft pb-5">
+          <div>
+            <span className="eyebrow">Calendrier</span>
+            <h1 className="font-display mt-1.5 text-[clamp(1.9rem,4vw,2.75rem)] leading-none">
+              Les drops
+            </h1>
+          </div>
+          <p className="max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
+            Offres scellées jusqu&apos;à la révélation. Tous les gagnants payent
+            le même prix : la dernière offre retenue.
           </p>
         </div>
       </div>
@@ -72,8 +69,8 @@ export default async function DropsPage() {
       ) : (
         <>
           {/* ── En cours : pleine largeur, prioritaire ── */}
-          <section className="px-7 pt-16 md:px-16 md:pt-24">
-            <div className="mb-8 flex items-baseline justify-between border-b border-foreground pb-6">
+          <section className="px-7 pt-12 md:px-16 md:pt-14">
+            <div className="mb-6 flex items-baseline justify-between border-b border-foreground pb-5">
               <h2 className="font-serif text-4xl italic">En cours</h2>
               <span className="text-[13px] tracking-wide text-muted-foreground">
                 {plural(open.length, "drop ouvert", "drops ouverts")}

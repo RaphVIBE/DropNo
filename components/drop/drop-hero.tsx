@@ -54,7 +54,7 @@ export function DropHero({
           </div>
         ) : null}
         <h1
-          className="font-display reveal max-w-[12ch] text-[clamp(3.5rem,8vw,6.875rem)]"
+          className="font-display reveal max-w-[12ch] text-balance break-words text-[clamp(3.5rem,8vw,6.875rem)]"
           style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
         >
           {title}

@@ -41,7 +41,7 @@ export function DropDetail({
             </p>
           ))}
           {specEntries.length > 0 ? (
-            <dl className="mt-8 grid grid-cols-[140px_1fr] md:grid-cols-[180px_1fr]">
+            <dl className="mt-8 grid grid-cols-[100px_1fr] sm:grid-cols-[140px_1fr] md:grid-cols-[180px_1fr]">
               {specEntries.map(([key, value]) => (
                 <DefRow key={key} term={key} def={String(value)} />
               ))}

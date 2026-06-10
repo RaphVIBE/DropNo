@@ -84,10 +84,10 @@ export function CalendarRow({
   return (
     <Link
       href={drop.id ? `/drop/${drop.id}` : "#"}
-      className="group grid grid-cols-1 gap-6 border-b border-rule-soft py-8 md:grid-cols-[clamp(260px,30vw,340px)_1fr] md:items-center md:gap-12 md:py-12"
+      className="group grid grid-cols-1 gap-6 rounded-sm border-b border-rule-soft py-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background md:grid-cols-[clamp(260px,30vw,340px)_1fr] md:items-center md:gap-12 md:py-12"
     >
       {/* Grand visuel — pleine largeur (mobile), carre imposant (desktop) */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] shadow-[0_18px_50px_-24px_oklch(0.2_0.02_60/0.55)] ring-1 ring-rule-soft transition-shadow duration-500 group-hover:shadow-[0_26px_70px_-26px_oklch(0.2_0.02_60/0.7)]">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] shadow-[0_18px_50px_-24px_oklch(0.2_0.02_60/0.55)] ring-1 ring-rule-soft transition-shadow duration-500 group-hover:shadow-[0_26px_70px_-26px_oklch(0.2_0.02_60/0.7)] md:aspect-square">
         <WatchArt
           seed={drop.drop_number ?? 0}
           className={`absolute inset-0 h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.04] ${

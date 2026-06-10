@@ -41,10 +41,16 @@ function LoginForm() {
     setMessage("");
 
     const supabase = createClient();
+    // Conserve la destination voulue (ex. /admin) à travers le lien magique :
+    // le callback la relira depuis ?redirect=… pour rediriger au bon endroit.
+    const redirect = searchParams.get("redirect");
+    const callbackUrl = `${window.location.origin}/auth/callback${
+      redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""
+    }`;
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: callbackUrl,
       },
     });
 

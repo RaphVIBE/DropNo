@@ -88,7 +88,7 @@ export default async function DropsPage() {
   return (
     <>
       <div className="relative overflow-hidden border-b border-rule-soft px-7 pb-16 pt-20 md:px-16 md:pb-20 md:pt-28">
-        <Filigrane className="reveal-art pointer-events-none absolute -right-10 top-1/2 z-0 h-60 w-60 -translate-y-1/2 text-[var(--champagne-deep)] opacity-[0.07] md:-right-4 md:h-80 md:w-80" />
+        <Filigrane className="reveal-art pointer-events-none absolute -right-10 top-1/2 z-0 h-60 w-60 -translate-y-1/2 text-[var(--champagne-deep)] [--art-opacity:0.07] md:-right-4 md:h-80 md:w-80" />
         <div className="relative z-10">
           <span
             className="eyebrow reveal"

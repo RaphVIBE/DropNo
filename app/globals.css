@@ -44,6 +44,48 @@
     --ink-2: oklch(0.32 0.012 60);
     --rule-soft: oklch(0.92 0.008 70);
   }
+
+  /*
+   * Back-office (/admin) — variante DARK du design system. Mêmes tokens,
+   * valeurs inversées : fond brun quasi-noir chaud, encre off-white, accent
+   * champagne conservé. Scopée sur .admin : le site vitrine reste en light.
+   */
+  .admin {
+    --background: oklch(0.205 0.012 65); /* warm near-black */
+    --foreground: oklch(0.94 0.006 85); /* warm off-white */
+
+    --card: oklch(0.245 0.012 65);
+    --card-foreground: oklch(0.94 0.006 85);
+
+    --popover: oklch(0.245 0.012 65);
+    --popover-foreground: oklch(0.94 0.006 85);
+
+    --primary: oklch(0.74 0.075 82); /* champagne — CTA pleins */
+    --primary-foreground: oklch(0.2 0.012 65);
+
+    --secondary: oklch(0.3 0.012 65);
+    --secondary-foreground: oklch(0.94 0.006 85);
+
+    --muted: oklch(0.3 0.012 65);
+    --muted-foreground: oklch(0.7 0.012 70);
+
+    --accent: oklch(0.74 0.075 82);
+    --accent-foreground: oklch(0.2 0.012 65);
+
+    --destructive: oklch(0.58 0.17 25);
+    --destructive-foreground: oklch(0.98 0 0);
+
+    --border: oklch(0.34 0.012 65);
+    --input: oklch(0.34 0.012 65);
+    --ring: oklch(0.74 0.075 82);
+
+    --champagne: oklch(0.74 0.075 82);
+    --champagne-deep: oklch(0.6 0.07 80);
+    --ink-2: oklch(0.8 0.01 70);
+    --rule-soft: oklch(0.3 0.012 65);
+
+    color-scheme: dark;
+  }
 }
 
 @layer base {
@@ -160,7 +202,9 @@
       transform: scale(1.045);
     }
     to {
-      opacity: 1;
+      /* Opacite cible pilotee par instance (--art-opacity) : sans elle,
+         l'animation terminait a 1 et ecrasait l'opacite du watermark. */
+      opacity: var(--art-opacity, 1);
       transform: scale(1);
     }
   }
@@ -195,6 +239,10 @@
       opacity: 1;
       transform: none;
       filter: none;
+    }
+    /* Le watermark garde son opacite cible meme sans animation. */
+    .reveal-art {
+      opacity: var(--art-opacity, 1);
     }
   }
 

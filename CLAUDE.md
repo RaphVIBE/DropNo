@@ -26,17 +26,21 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 - Publishable key : `sb_publishable_CCtEsFQO-3MxGwmIP-jjlg_dsJvjOKn`
 - ⚠️ Service role key : récupérer Dashboard → Settings → API. Jamais committée.
 
-## État backend (snapshot 2026-06-01)
+## État backend (snapshot 2026-06-09)
 
 | Composant | État |
 |---|---|
-| Schéma DB (9 tables, RLS strict, FORCE RLS sur bids) | ✅ déployé (migration 0001) |
-| Hardening sécurité (search_path, REVOKE RPC, deny-all audit_log) | ✅ déployé (migration 0002) |
+| Schéma DB (RLS strict, FORCE RLS sur bids) | ✅ déployé (migrations 0001+) |
+| Hardening sécurité (search_path, REVOKE RPC, deny-all audit_log) | ✅ déployé (0002) |
 | Fonction SQL `close_drop()` atomique | ✅ déployée |
 | Edge function `close-drop` (TS, Stripe capture/release) | ✅ déployée v1 ACTIVE |
 | Vault secrets (`edge_function_url`, `service_role_key`) | ✅ configurés |
-| Cron `dispatch_ripe_drops_every_minute` | ✅ actif (smoke test OK) |
+| Cron `dispatch_ripe_drops` / `open_ripe_drops` / `dispatch_reminders` | ✅ actifs |
 | Edge function secret `STRIPE_SECRET_KEY` | ✅ configuré (mode test) |
+| **Back-office** (`/admin` opérateur + `/maison` responsables, thème dark) | ✅ intégré — voir `BACKOFFICE.md` |
+| Rôle admin-plateforme (`platform_admins` + `is_platform_admin()`) | ✅ déployé (0010) |
+| Policies admin + fonctions agrégées + support + contraintes maison | ✅ déployé (0011–0015) |
+| ⚠️ Correctif bug `log_bid_change` (digest hors search_path → bids bloqués) | ✅ déployé (0016) ; cause racine à patcher aussi dans 0002 |
 
 Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas superuser sur Supabase). Lookup via `vault.decrypted_secrets`, update via `vault.update_secret(<uuid>, ...)`.
 
@@ -67,6 +71,8 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 - **RLS** : sacrée. Le client n'utilise JAMAIS service_role. Vérifier RLS sur chaque nouvelle table.
 - **Tests** : Vitest unit, Playwright e2e.
 - **Dates** : tout en UTC côté DB, conversion vers Europe/Paris côté UI.
+- **Back-office** (`/admin`, `/maison`) : Next 14 → `createClient()` **synchrone**, `params`/`searchParams` synchrones ; formulaires en **`useFormState`/`useFormStatus`** (pas `useActionState`) ; thème **dark** via le scope `.admin` dans `globals.css` (ne pas dupliquer les tokens). Détails dans `BACKOFFICE.md`.
+- **Prix provisoire N-ième** (clôture en cours) : affiché **uniquement** dans `/admin`. Côté maison/client : agrégés masqués jusqu'au reveal.
 
 ## Fichiers à lire avant de coder
 
@@ -76,6 +82,7 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 4. `db/security-review.md` — modèle de menace + walkthrough attaques
 5. `supabase/README.md` — architecture backend + déploiement
 6. `mockups/dropno-mockups.html` — rendu visuel des 3 écrans clés
+7. `BACKOFFICE.md` — **back-office `/admin` + `/maison`** : architecture, surfaces, conventions, migrations 0010–0016, accès dev, données démo
 
 ## Design tokens (depuis le mockup)
 

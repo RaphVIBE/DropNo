@@ -24,7 +24,7 @@ export function DropHero({
 }) {
   return (
     <div className="relative overflow-hidden border-b border-rule-soft px-7 pt-14 md:px-16 md:pt-20">
-      <Filigrane className="reveal-art pointer-events-none absolute -right-12 top-6 z-0 h-52 w-52 text-[var(--champagne-deep)] opacity-[0.06] md:right-2 md:top-4 md:h-64 md:w-64" />
+      <Filigrane className="reveal-art pointer-events-none absolute -right-12 top-6 z-0 h-52 w-52 text-[var(--champagne-deep)] [--art-opacity:0.08] md:right-2 md:top-4 md:h-64 md:w-64" />
       <div className="relative z-10 flex flex-wrap items-baseline justify-between gap-4 border-b border-rule pb-8">
         <span className="font-serif text-[32px] italic">
           Drop No. {formatDropNumber(dropNumber)}

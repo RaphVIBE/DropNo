@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
-import { Filigrane } from "@/components/brand/filigrane";
+import { BoutiqueHero } from "@/components/brand/boutique-hero";
 import { countryLabel } from "@/lib/countries";
 import { formatDropNumber, formatEuros } from "@/lib/format";
 
@@ -120,40 +120,48 @@ export default async function BrandPage({
 
   return (
     <>
-      <div className="relative overflow-hidden border-b border-rule-soft px-7 pb-14 pt-20 md:px-16 md:pb-16 md:pt-28">
-        <Filigrane className="reveal-art pointer-events-none absolute -right-10 top-1/2 z-0 h-60 w-60 -translate-y-1/2 text-[var(--champagne-deep)] opacity-[0.07] md:-right-4 md:h-80 md:w-80" />
-        <div className="relative z-10 max-w-3xl">
+      {/* Hero « vitrine » — bandeau pleine largeur, nom de la maison en
+          surimpression sur un voile degrade pour la lisibilite. */}
+      <section className="relative overflow-hidden border-b border-rule-soft">
+        <BoutiqueHero
+          seed={brand.name}
+          className="reveal-art h-64 w-full [--art-opacity:1] sm:h-80 md:h-[26rem]"
+        />
+        {/* Voile : sombre en bas (sous le nom) et en haut (sous le fil
+            d'Ariane), transparent au centre pour laisser voir la vitrine. */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[oklch(0.16_0.012_60)]/85 via-[oklch(0.16_0.012_60)]/15 to-[oklch(0.16_0.012_60)]/60" />
+        <div className="absolute inset-0 flex flex-col justify-between px-7 py-7 md:px-16 md:py-9">
           <Link
             href="/marques"
-            className="eyebrow reveal inline-block text-muted-foreground underline-offset-4 transition-colors hover:text-foreground"
+            className="reveal inline-flex w-fit items-center rounded-sm text-[11px] uppercase tracking-[0.18em] text-[oklch(0.94_0.01_80)]/85 underline-offset-4 drop-shadow-[0_1px_8px_oklch(0.16_0.012_60/0.8)] transition-colors hover:text-[oklch(0.98_0.006_80)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
           >
             ← Maisons
           </Link>
           <h1
-            className="font-display reveal mt-7 text-[clamp(3rem,8vw,7rem)]"
+            className="font-display reveal max-w-[14ch] text-[clamp(2.6rem,7vw,6rem)] text-[oklch(0.97_0.008_82)] drop-shadow-[0_2px_18px_oklch(0.16_0.012_60/0.6)]"
             style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
             {brand.name}
           </h1>
-          <p
-            className="reveal mt-8 max-w-[58ch] text-lg leading-relaxed text-ink-2"
-            style={{ "--reveal-delay": "340ms" } as React.CSSProperties}
-          >
-            {lead}
-          </p>
-          {brand.website_url ? (
-            <a
-              href={brand.website_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="reveal mt-7 inline-flex items-center gap-1.5 rounded-sm text-[13px] uppercase tracking-[0.16em] text-champagne-deep underline-offset-4 transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              style={{ "--reveal-delay": "440ms" } as React.CSSProperties}
-            >
-              Site officiel ↗
-            </a>
-          ) : null}
         </div>
+      </section>
+
+      {/* Lead editoriale + lien officiel */}
+      <div className="border-b border-rule-soft px-7 pb-14 pt-12 md:px-16 md:pb-16 md:pt-14">
+        <p className="reveal max-w-[58ch] text-lg leading-relaxed text-ink-2">
+          {lead}
+        </p>
+        {brand.website_url ? (
+          <a
+            href={brand.website_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="reveal mt-7 inline-flex items-center gap-1.5 rounded-sm text-[13px] uppercase tracking-[0.16em] text-champagne-deep underline-offset-4 transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            Site officiel ↗
+          </a>
+        ) : null}
       </div>
 
       {/* Bandeau de faits — gabarit identique pour chaque maison */}

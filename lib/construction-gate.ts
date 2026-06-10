@@ -28,6 +28,9 @@ export function constructionGate(request: NextRequest): NextResponse | null {
     pathname === "/bientot" ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
+    pathname.startsWith("/admin") || // back-office : protégé par auth + rôle, hors vitrine
+    pathname.startsWith("/maison") || // espace responsables maison : protégé par auth + rôle
+    pathname === "/dev-login" || // connexion dev par mot de passe (désactivée en prod)
     pathname === "/robots.txt" ||
     pathname === "/favicon.ico"
   ) {

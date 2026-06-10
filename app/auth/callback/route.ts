@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
-  const redirectTo = searchParams.get("redirect") ?? "/account/dashboard";
+  const redirectParam = searchParams.get("redirect");
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=missing_code`);
@@ -36,5 +36,17 @@ export async function GET(request: NextRequest) {
       );
   }
 
-  return NextResponse.redirect(`${origin}${redirectTo}`);
+  // Destination : une cible explicite (?redirect=…) prime ; sinon les
+  // opérateurs vont au back-office, les clients à leur compte.
+  let dest = redirectParam;
+  if (!dest && user) {
+    const { data: admin } = await supabase
+      .from("platform_admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    dest = admin ? "/admin" : "/account/dashboard";
+  }
+
+  return NextResponse.redirect(`${origin}${dest ?? "/account/dashboard"}`);
 }

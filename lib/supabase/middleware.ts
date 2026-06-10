@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "./types";
 
 /** Routes necessitant une session authentifiee. */
-const PROTECTED_PREFIXES = ["/account"];
+const PROTECTED_PREFIXES = ["/account", "/admin", "/maison"];
 
 /**
  * Rafraichit la session Supabase a chaque requete et redirige vers /login

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
-import { Badge, PageHeader } from "@/lib/admin/ui";
+import { Badge, PageHeader, FilterTabs, Pagination } from "@/lib/admin/ui";
 import { eur, dateTime } from "@/lib/admin/format";
 import { TX_FR, TX_TONE, DELIVERY_FR, DELIVERY_TONE, type TxStatus, type DeliveryStatus } from "@/lib/admin/orders";
 
@@ -17,21 +17,46 @@ type Row = {
 const th = "px-4 py-2.5 text-left text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground";
 const td = "px-4 py-3 align-middle";
 
-export default async function CommandesPage() {
+const PAGE = 20;
+const TX_STATUSES: TxStatus[] = ["pending", "captured", "refunded", "failed"];
+
+export default async function CommandesPage({
+  searchParams,
+}: {
+  searchParams: { status?: string; page?: string };
+}) {
+  const active = TX_STATUSES.includes(searchParams.status as TxStatus)
+    ? (searchParams.status as TxStatus)
+    : "all";
+  const page = Math.max(1, parseInt(searchParams.page ?? "1", 10) || 1);
+  const from = (page - 1) * PAGE;
+  const statusParam = active !== "all" ? active : undefined;
+
   const supabase = createClient();
-  const { data } = await supabase
+  let query = supabase
     .from("transactions")
     .select("id, created_at, amount_paid_cents, status, drops(drop_number, title, brands(name)), profiles(email, display_name), deliveries(status)")
-    .order("created_at", { ascending: false });
-  const rows = (data ?? []) as unknown as Row[];
+    .order("created_at", { ascending: false })
+    .range(from, from + PAGE);
+  if (statusParam) query = query.eq("status", statusParam);
+  const { data } = await query;
+  const all = (data ?? []) as unknown as Row[];
+  const hasNext = all.length > PAGE;
+  const rows = all.slice(0, PAGE);
 
   return (
     <>
       <PageHeader title="Commandes & livraisons" subtitle="Chaque commande naît d'une enchère gagnante capturée au reveal." />
 
+      <FilterTabs
+        basePath="/admin/commandes"
+        active={active}
+        tabs={[{ key: "all", label: "Toutes" }, ...TX_STATUSES.map((s) => ({ key: s, label: TX_FR[s] }))]}
+      />
+
       {rows.length === 0 ? (
         <div className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-          Aucune commande pour l&apos;instant.
+          {statusParam ? "Aucune commande dans ce statut." : "Aucune commande pour l'instant."}
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-card">
@@ -63,6 +88,8 @@ export default async function CommandesPage() {
           </table>
         </div>
       )}
+
+      <Pagination basePath="/admin/commandes" page={page} hasNext={hasNext} params={{ status: statusParam }} />
     </>
   );
 }

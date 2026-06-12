@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
 import { Filigrane } from "@/components/brand/filigrane";
 import { formatEuros } from "@/lib/format";
 
-export const metadata: Metadata = {
-  title: "Le mécanisme · Drop No.",
-  description:
-    "Offre scellée, révélation, prix unique : comment fonctionne un drop Drop No., avec un exemple chiffré.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("mecanisme");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
 /**
  * Page pédagogique : le mécanisme sealed-bid uniform price expliqué en entier,
@@ -23,38 +25,23 @@ const EXAMPLE_FLOOR_CENTS = 300_000;
 const EXAMPLE_BIDS_CENTS = [620_000, 540_000, 490_000, 460_000, 410_000, 380_000, 320_000];
 const CLEARING_CENTS = EXAMPLE_BIDS_CENTS[EXAMPLE_N - 1];
 
-const FAQ: { q: string; a: string }[] = [
-  {
-    q: "Que se passe-t-il si je ne gagne pas ?",
-    a: "Rien. La pré-autorisation posée sur votre carte est libérée dans les meilleurs délais et vous n'êtes débité de rien. Participer ne coûte rien.",
-  },
-  {
-    q: "Pourquoi une pré-autorisation au moment de l'offre ?",
-    a: "Elle garantit que chaque offre est sérieuse : le montant exact de votre offre est réservé sur votre carte, sans débit. Si vous gagnez, seul le prix unique (souvent inférieur à votre offre) est capturé. Sinon, tout est libéré.",
-  },
-  {
-    q: "Pourquoi une vérification d'identité ?",
-    a: "La réglementation européenne sur les biens de luxe (lutte anti-blanchiment) impose de vérifier l'identité des acheteurs. C'est fait une seule fois, via Stripe Identity : une pièce d'identité, un selfie, quelques minutes.",
-  },
-  {
-    q: "Puis-je modifier mon offre ?",
-    a: "Oui, autant de fois que vous voulez, jusqu'à une heure avant la révélation. Passé ce verrou, les offres sont figées.",
-  },
-  {
-    q: "Combien payent les gagnants, exactement ?",
-    a: "Tous les gagnants payent le même montant : celui de la dernière offre gagnante, c'est-à-dire la plus basse parmi les retenues. Si vous avez offert davantage, vous payez quand même ce prix unique, jamais votre montant.",
-  },
-  {
-    q: "Et si je change d'avis après la livraison ?",
-    a: "Vous disposez du droit de rétractation européen : 14 jours après réception, remboursement intégral, sans frais de réapprovisionnement.",
-  },
-  {
-    q: "Combien coûte Drop No. pour l'acheteur ?",
-    a: "Zéro. Aucun frais acheteur : le prix unique affiché est le prix payé. La commission de la plateforme est à la charge de la maison.",
-  },
-];
+const FAQ_KEYS = ["lose", "preauth", "identity", "edit", "winners", "withdraw", "fees"] as const;
 
-export default function MechanismPage() {
+export default async function MechanismPage() {
+  const t = await getTranslations("mecanisme");
+  const locale = await getLocale();
+
+  const FAQ = FAQ_KEYS.map((k) => ({
+    q: t(`faq.${k}.q`),
+    a: t(`faq.${k}.a`),
+  }));
+
+  const STEPS = (["open", "sealed", "lock", "reveal"] as const).map((k) => ({
+    t: t(`timeline.${k}.t`),
+    title: t(`timeline.${k}.title`),
+    body: t(`timeline.${k}.body`),
+  }));
+
   return (
     <>
       {/* En-tête éditorial */}
@@ -65,21 +52,19 @@ export default function MechanismPage() {
             className="eyebrow reveal"
             style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
           >
-            Le mécanisme
+            {t("eyebrow")}
           </span>
           <h1
             className="font-display reveal mt-6 max-w-[14ch] text-[clamp(2.75rem,7vw,5.5rem)]"
             style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
           >
-            Un prix juste naît scellé.
+            {t("heroTitle")}
           </h1>
           <p
             className="reveal mt-6 max-w-[54ch] text-lg leading-relaxed text-ink-2"
             style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
           >
-            Pas d&apos;enchères en direct, pas de course contre la montre.
-            Chacun scelle l&apos;offre que la pièce vaut pour lui ; à la
-            révélation, les plus hautes gagnent et toutes payent le même prix.
+            {t("heroBody")}
           </p>
         </div>
       </div>
@@ -93,24 +78,23 @@ export default function MechanismPage() {
       <section className="border-t border-rule-soft px-7 py-16 md:px-16 md:py-24">
         <div className="grid max-w-6xl grid-cols-1 gap-12 md:grid-cols-[1fr_1.4fr] md:gap-24">
           <div>
-            <span className="eyebrow">Exemple</span>
+            <span className="eyebrow">{t("example.eyebrow")}</span>
             <h2 className="font-display mt-4 text-[clamp(1.9rem,4vw,2.75rem)]">
-              Cinq exemplaires, sept offres.
+              {t("example.title")}
             </h2>
             <p className="mt-6 max-w-[44ch] text-base leading-relaxed text-ink-2">
-              Une maison ouvre un drop de {EXAMPLE_N} exemplaires, prix
-              plancher {formatEuros(EXAMPLE_FLOOR_CENTS)}. À la révélation,
-              les offres sont triées. Les {EXAMPLE_N} plus hautes gagnent, et
-              toutes payent le montant de la {EXAMPLE_N}ᵉ :{" "}
-              <span className="text-foreground">
-                {formatEuros(CLEARING_CENTS)}
-              </span>
-              . Offrir plus n&apos;augmente jamais votre facture, seulement vos
-              chances.
+              {t.rich("example.body", {
+                n: EXAMPLE_N,
+                floor: formatEuros(EXAMPLE_FLOOR_CENTS, locale),
+                clearing: formatEuros(CLEARING_CENTS, locale),
+                strong: (chunks) => (
+                  <span className="text-foreground">{chunks}</span>
+                ),
+              })}
             </p>
           </div>
 
-          <ol className="self-start" aria-label="Offres triées à la révélation">
+          <ol className="self-start" aria-label={t("example.listLabel")}>
             {EXAMPLE_BIDS_CENTS.map((cents, i) => {
               const rank = i + 1;
               const isWinner = rank <= EXAMPLE_N;
@@ -131,7 +115,7 @@ export default function MechanismPage() {
                         isWinner ? "text-foreground" : "text-muted-foreground"
                       }`}
                     >
-                      {formatEuros(cents)}
+                      {formatEuros(cents, locale)}
                     </span>
                   </span>
                   <span
@@ -144,10 +128,14 @@ export default function MechanismPage() {
                     }`}
                   >
                     {isClearing
-                      ? `Prix unique · ${formatEuros(CLEARING_CENTS)}`
+                      ? t("example.tagClearing", {
+                          price: formatEuros(CLEARING_CENTS, locale),
+                        })
                       : isWinner
-                        ? `Gagne · paye ${formatEuros(CLEARING_CENTS)}`
-                        : "Libérée, rien à payer"}
+                        ? t("example.tagWinner", {
+                            price: formatEuros(CLEARING_CENTS, locale),
+                          })
+                        : t("example.tagReleased")}
                   </span>
                 </li>
               );
@@ -158,33 +146,12 @@ export default function MechanismPage() {
 
       {/* Chronologie d'un drop */}
       <section className="border-t border-rule-soft px-7 py-16 md:px-16 md:py-24">
-        <span className="eyebrow">Chronologie</span>
+        <span className="eyebrow">{t("timeline.eyebrow")}</span>
         <h2 className="font-display mt-4 text-[clamp(1.9rem,4vw,2.75rem)]">
-          Cinq jours, une révélation.
+          {t("timeline.title")}
         </h2>
         <ol className="mt-10 grid max-w-5xl grid-cols-1 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-10">
-          {[
-            {
-              t: "Jour 1",
-              title: "Ouverture",
-              body: "Le drop ouvre : pièce, exemplaires et prix plancher sont publics. La fenêtre d'offres dure cinq jours.",
-            },
-            {
-              t: "Jours 1 à 5",
-              title: "Offres scellées",
-              body: "Vous scellez votre offre, invisible de tous, modifiable à volonté jusqu'à une heure avant la révélation.",
-            },
-            {
-              t: "T − 1 h",
-              title: "Verrouillage",
-              body: "Les offres sont figées. Plus aucune soumission ni modification : le tri peut commencer.",
-            },
-            {
-              t: "Révélation",
-              title: "Prix unique",
-              body: "Les gagnants sont notifiés et payent tous le même prix. Les autres pré-autorisations sont libérées.",
-            },
-          ].map((step, i) => (
+          {STEPS.map((step, i) => (
             <li key={step.t} className="border-t border-rule pt-5">
               <div className="flex items-baseline justify-between">
                 <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -207,9 +174,9 @@ export default function MechanismPage() {
       <section className="border-t border-rule-soft px-7 py-16 md:px-16 md:py-24">
         <div className="grid max-w-6xl grid-cols-1 gap-12 md:grid-cols-[1fr_1.4fr] md:gap-24">
           <div>
-            <span className="eyebrow">Questions</span>
+            <span className="eyebrow">{t("faq.eyebrow")}</span>
             <h2 className="font-display mt-4 text-[clamp(1.9rem,4vw,2.75rem)]">
-              Ce que l&apos;on nous demande.
+              {t("faq.title")}
             </h2>
           </div>
           <div>
@@ -239,13 +206,13 @@ export default function MechanismPage() {
       {/* CTA final */}
       <section className="border-t border-rule-soft px-7 py-20 text-center md:px-16 md:py-28">
         <p className="font-display mx-auto max-w-[20ch] text-[clamp(1.75rem,4vw,2.75rem)]">
-          Le prochain drop est déjà au calendrier.
+          {t("cta.title")}
         </p>
         <Link
           href="/drops"
           className="mt-9 inline-block bg-primary px-10 py-[18px] text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          Voir le calendrier
+          {t("cta.button")}
         </Link>
       </section>
     </>

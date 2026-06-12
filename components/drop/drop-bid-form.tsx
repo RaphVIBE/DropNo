@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   Elements,
   PaymentElement,
@@ -26,9 +27,6 @@ type Props = {
   loginHref: string;
 };
 
-const FINE_PRINT =
-  "Votre offre reste invisible jusqu'à la révélation. Une pré-autorisation Stripe est émise pour le montant exact, libérée si vous ne gagnez pas. Vérification d'identité requise au premier bid.";
-
 export function DropBidForm(props: Props) {
   const {
     dropId,
@@ -42,13 +40,14 @@ export function DropBidForm(props: Props) {
     loginHref,
   } = props;
 
+  const t = useTranslations("bidForm");
+  const locale = useLocale();
+
   // --- Drop pas ouvert ---
   if (!isOpen) {
     return (
       <Panel>
-        <p className="text-sm text-ink-2">
-          Les offres ne sont pas ouvertes pour ce drop.
-        </p>
+        <p className="text-sm text-ink-2">{t("notOpen")}</p>
       </Panel>
     );
   }
@@ -60,16 +59,14 @@ export function DropBidForm(props: Props) {
         <Head bidCount={bidCount} />
         {existingBidCents ? (
           <p className="text-sm text-ink-2">
-            Votre offre scellée : {" "}
+            {t("lockedWithBidPrefix")}{" "}
             <span className="font-serif text-lg italic text-foreground">
-              {formatEuros(existingBidCents)}
+              {formatEuros(existingBidCents, locale)}
             </span>
-            . Les offres sont verrouillées jusqu&apos;à la révélation.
+            {t("lockedWithBidSuffix")}
           </p>
         ) : (
-          <p className="text-sm text-ink-2">
-            Les offres sont verrouillées (dernière heure avant révélation).
-          </p>
+          <p className="text-sm text-ink-2">{t("lockedNoBid")}</p>
         )}
       </Panel>
     );
@@ -80,11 +77,9 @@ export function DropBidForm(props: Props) {
     return (
       <Panel>
         <Head bidCount={bidCount} />
-        <p className="mb-5 text-sm text-ink-2">
-          Connectez-vous pour sceller une offre sur cette pièce.
-        </p>
+        <p className="mb-5 text-sm text-ink-2">{t("loginPrompt")}</p>
         <Cta as="link" href={loginHref}>
-          Se connecter pour faire une offre
+          {t("loginCta")}
         </Cta>
         <Fine />
       </Panel>
@@ -118,6 +113,8 @@ function BidEntry({
   bidCount: number;
   existingBidCents: number | null;
 }) {
+  const t = useTranslations("bidForm");
+  const locale = useLocale();
   const [raw, setRaw] = useState(
     existingBidCents ? String(Math.round(existingBidCents / 100)) : ""
   );
@@ -149,7 +146,7 @@ function BidEntry({
       const data = await res.json();
       if (!res.ok) {
         setStatus("error");
-        setMessage(data.error ?? "Une erreur est survenue.");
+        setMessage(data.error ?? t("errorGeneric"));
         return;
       }
       setStatus("idle");
@@ -164,7 +161,7 @@ function BidEntry({
       }
     } catch {
       setStatus("error");
-      setMessage("Impossible de joindre le serveur.");
+      setMessage(t("errorServer"));
     }
   }
 
@@ -180,12 +177,9 @@ function BidEntry({
       <Panel>
         <Head bidCount={bidCount} />
         <p className="font-serif text-lg italic">
-          Offre scellée : {formatEuros(sealedCents)}
+          {t("sealedAmount", { amount: formatEuros(sealedCents, locale) })}
         </p>
-        <p className="mt-2 text-sm text-ink-2">
-          Modifiable jusqu&apos;à une heure avant la révélation. Vous recevrez
-          le résultat par email.
-        </p>
+        <p className="mt-2 text-sm text-ink-2">{t("sealedNote")}</p>
         <button
           type="button"
           onClick={() => {
@@ -194,7 +188,7 @@ function BidEntry({
           }}
           className="mt-4 rounded-sm text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          Modifier mon offre
+          {t("modifyBid")}
         </button>
       </Panel>
     );
@@ -206,12 +200,9 @@ function BidEntry({
       <Panel>
         <Head bidCount={bidCount} />
         <p className="mb-1 font-serif text-lg italic">
-          {formatEuros(amountCents)}
+          {formatEuros(amountCents, locale)}
         </p>
-        <p className="mb-5 text-sm text-ink-2">
-          Une pré-autorisation de ce montant est posée sur votre carte. Aucun
-          débit tant que vous ne gagnez pas ce drop.
-        </p>
+        <p className="mb-5 text-sm text-ink-2">{t("cardPreauthNote")}</p>
         <Elements
           stripe={getStripe()}
           options={{ clientSecret, appearance: { theme: "flat" } }}
@@ -238,7 +229,7 @@ function BidEntry({
             value={raw}
             onChange={(e) => setRaw(e.target.value.replace(/[^0-9]/g, ""))}
             placeholder={String(Math.round(floorPriceCents / 100))}
-            aria-label="Votre offre en euros"
+            aria-label={t("amountInputLabel")}
             className="w-full flex-1 bg-transparent font-serif text-4xl italic tabular-nums text-foreground outline-none placeholder:text-rule"
           />
           <span className="font-serif text-3xl italic text-muted-foreground">
@@ -248,8 +239,7 @@ function BidEntry({
 
         {belowFloor ? (
           <p className="mt-3 text-sm text-destructive">
-            L&apos;offre doit être au moins égale au prix plancher (
-            {formatEuros(floorPriceCents)}).
+            {t("belowFloor", { floor: formatEuros(floorPriceCents, locale) })}
           </p>
         ) : null}
         {status === "error" ? (
@@ -261,12 +251,12 @@ function BidEntry({
           disabled={status === "submitting" || !amountCents || belowFloor}
         >
           {status === "submitting"
-            ? "Préparation..."
+            ? t("preparing")
             : isModify
-              ? "Modifier mon offre"
+              ? t("modifyBid")
               : STRIPE_ENABLED
-                ? "Continuer"
-                : "Sceller mon offre"}
+                ? t("continue")
+                : t("sealBid")}
         </Cta>
       </form>
       <Fine />
@@ -286,6 +276,7 @@ function CardStep({
   onConfirmed: () => void;
   onBack: () => void;
 }) {
+  const t = useTranslations("bidForm");
   const stripe = useStripe();
   const elements = useElements();
   const [submitting, setSubmitting] = useState(false);
@@ -302,7 +293,7 @@ function CardStep({
     });
 
     if (confirmError) {
-      setError(confirmError.message ?? "La pré-autorisation a échoué.");
+      setError(confirmError.message ?? t("preauthFailed"));
       setSubmitting(false);
       return;
     }
@@ -317,7 +308,7 @@ function CardStep({
       return;
     }
 
-    setError("La carte n'a pas pu être pré-autorisée. Réessayez.");
+    setError(t("cardPreauthError"));
     setSubmitting(false);
   }
 
@@ -328,7 +319,7 @@ function CardStep({
         <p className="mt-3 text-sm text-destructive">{error}</p>
       ) : null}
       <Cta as="button" onClick={confirm} disabled={!stripe || submitting}>
-        {submitting ? "Scellement..." : "Sceller mon offre"}
+        {submitting ? t("sealing") : t("sealBid")}
       </Cta>
       <button
         type="button"
@@ -336,13 +327,15 @@ function CardStep({
         disabled={submitting}
         className="mt-3 block w-full rounded-sm text-center text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
       >
-        Modifier le montant
+        {t("modifyAmount")}
       </button>
     </div>
   );
 }
 
 function KycGate({ status, bidCount }: { status: string; bidCount: number }) {
+  const t = useTranslations("bidForm");
+
   // Vérification en cours : le webhook Stripe n'a pas encore confirmé.
   if (status === "verifying") {
     return (
@@ -351,13 +344,10 @@ function KycGate({ status, bidCount }: { status: string; bidCount: number }) {
         <div className="mb-3 flex items-center gap-2 text-ink-2">
           <span className="status-dot" aria-hidden />
           <span className="text-[11px] font-medium uppercase tracking-[0.18em]">
-            Vérification en cours
+            {t("kycVerifyingLabel")}
           </span>
         </div>
-        <p className="text-sm text-ink-2">
-          Votre identité est en cours de vérification. Vous pourrez sceller une
-          offre dès qu&apos;elle est confirmée, généralement en quelques minutes.
-        </p>
+        <p className="text-sm text-ink-2">{t("kycVerifyingNote")}</p>
       </Panel>
     );
   }
@@ -367,12 +357,10 @@ function KycGate({ status, bidCount }: { status: string; bidCount: number }) {
     <Panel>
       <Head bidCount={bidCount} />
       <p className="mb-5 text-sm text-ink-2">
-        {rejected
-          ? "Votre dernière vérification n'a pas abouti. Reprenez-la pour pouvoir faire une offre."
-          : "Une vérification d'identité est requise avant votre première offre. Quelques minutes, une pièce d'identité et un selfie."}
+        {rejected ? t("kycRejectedNote") : t("kycRequiredNote")}
       </p>
       <Link href="/account/verification" className={CTA_CLASS}>
-        {rejected ? "Reprendre la vérification" : "Vérifier mon identité"}
+        {rejected ? t("kycResumeCta") : t("kycVerifyCta")}
       </Link>
       <Fine />
     </Panel>
@@ -388,27 +376,29 @@ function Panel({ children }: { children: React.ReactNode }) {
 }
 
 function Head({ bidCount }: { bidCount: number }) {
+  const t = useTranslations("bidForm");
   return (
     <div className="mb-4 flex items-baseline justify-between">
       <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-        Votre offre scellée
+        {t("headLabel")}
       </span>
       <span className="font-serif text-sm italic text-ink-2">
-        {bidCount} {bidCount > 1 ? "offres soumises" : "offre soumise"}
+        {t("bidsSubmitted", { count: bidCount })}
       </span>
     </div>
   );
 }
 
 function Fine() {
+  const t = useTranslations("bidForm");
   return (
     <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-      {FINE_PRINT}{" "}
+      {t("finePrint")}{" "}
       <Link
         href="/mecanisme"
         className="rounded-sm underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        Comment fonctionne un drop
+        {t("howDropWorks")}
       </Link>
     </p>
   );

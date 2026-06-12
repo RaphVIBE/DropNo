@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Check, Link as LinkIcon, Mail, Share2 } from "lucide-react";
 
 /**
@@ -15,6 +16,7 @@ export function ShareDrop({
   title: string;
   summary: string;
 }) {
+  const t = useTranslations("dropDetail");
   const [url, setUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [canShare, setCanShare] = useState(false);
@@ -54,7 +56,7 @@ export function ShareDrop({
       {canShare ? (
         <button type="button" onClick={share} className={action}>
           <Share2 className="size-4" strokeWidth={1.5} aria-hidden="true" />
-          Partager
+          {t("shareNative")}
         </button>
       ) : null}
       <button type="button" onClick={copy} className={action}>
@@ -63,11 +65,11 @@ export function ShareDrop({
         ) : (
           <LinkIcon className="size-4" strokeWidth={1.5} aria-hidden="true" />
         )}
-        {copied ? "Lien copié" : "Copier le lien"}
+        {copied ? t("linkCopied") : t("copyLink")}
       </button>
       <a href={mailto} className={action}>
         <Mail className="size-4" strokeWidth={1.5} aria-hidden="true" />
-        S&apos;envoyer les détails
+        {t("emailDetails")}
       </a>
     </div>
   );

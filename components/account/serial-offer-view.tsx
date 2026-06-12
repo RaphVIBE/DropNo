@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   Elements,
   PaymentElement,
@@ -34,6 +35,8 @@ export type SerialOfferData = {
 };
 
 export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
+  const t = useTranslations("accountOffer");
+  const locale = useLocale() as "fr" | "en";
   const [phase, setPhase] = useState<
     "offer" | "card" | "accepted" | "declined"
   >(offer.status === "accepted" ? "accepted" : "offer");
@@ -43,7 +46,10 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
 
   const serial = formatSerial(offer.serialNo, offer.exemplaires);
   const expired = useCountdownExpired(offer.expiresAt);
-  const remaining = useRemainingLabel(offer.expiresAt);
+  const remaining = useRemainingLabel(offer.expiresAt, {
+    hm: (h, m) => t("remainingHoursMinutes", { hours: h, minutes: m }),
+    m: (m) => t("remainingMinutes", { minutes: m }),
+  });
 
   async function startPayment() {
     setBusy(true);
@@ -54,7 +60,7 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Une erreur est survenue.");
+        setError(data.error ?? t("errorGeneric"));
         return;
       }
       if (data.accepted) {
@@ -65,7 +71,7 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
       setClientSecret(data.clientSecret as string);
       setPhase("card");
     } catch {
-      setError("Impossible de joindre le serveur.");
+      setError(t("errorNetwork"));
     } finally {
       setBusy(false);
     }
@@ -80,12 +86,12 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Une erreur est survenue.");
+        setError(data.error ?? t("errorGeneric"));
         return;
       }
       setPhase("declined");
     } catch {
-      setError("Impossible de joindre le serveur.");
+      setError(t("errorNetwork"));
     } finally {
       setBusy(false);
     }
@@ -95,13 +101,12 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
   if (phase === "accepted") {
     return (
       <Shell>
-        <Eyebrow>Drop № {pad(offer.dropNumber)}</Eyebrow>
-        <h1 className="font-display mb-6 text-4xl">Le № 001 est à vous.</h1>
+        <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
+        <h1 className="font-display mb-6 text-4xl">{t("acceptedTitle")}</h1>
         <p className="text-sm leading-relaxed text-ink-2">
-          {offer.title}, numéro de série {serial}. Votre certificat et votre
-          livraison seront établis à ce numéro.
+          {t("acceptedBody", { title: offer.title, serial })}
         </p>
-        <BackLink />
+        <BackLink label={t("backLink")} />
       </Shell>
     );
   }
@@ -109,13 +114,12 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
   if (phase === "declined" || offer.status === "declined") {
     return (
       <Shell>
-        <Eyebrow>Drop № {pad(offer.dropNumber)}</Eyebrow>
-        <h1 className="font-display mb-6 text-4xl">C&apos;est noté.</h1>
+        <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
+        <h1 className="font-display mb-6 text-4xl">{t("declinedTitle")}</h1>
         <p className="text-sm leading-relaxed text-ink-2">
-          Vous conservez votre numéro attribué. Votre commande suit son cours
-          normalement.
+          {t("declinedBody")}
         </p>
-        <BackLink />
+        <BackLink label={t("backLink")} />
       </Shell>
     );
   }
@@ -123,14 +127,14 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
   if (offer.status !== "pending" || expired) {
     return (
       <Shell>
-        <Eyebrow>Drop № {pad(offer.dropNumber)}</Eyebrow>
+        <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
         <h1 className="font-display mb-6 text-4xl">
-          Cette offre a expiré.
+          {t("expiredTitle")}
         </h1>
         <p className="text-sm leading-relaxed text-ink-2">
-          Votre commande suit son cours normalement, avec un numéro attribué.
+          {t("expiredBody")}
         </p>
-        <BackLink />
+        <BackLink label={t("backLink")} />
       </Shell>
     );
   }
@@ -139,14 +143,17 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
   if (phase === "card" && clientSecret) {
     return (
       <Shell>
-        <Eyebrow>Drop № {pad(offer.dropNumber)}</Eyebrow>
-        <h1 className="font-display mb-2 text-4xl">Réserver le № 001</h1>
+        <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
+        <h1 className="font-display mb-2 text-4xl">{t("reserveTitle")}</h1>
         <p className="mb-1 font-serif text-lg italic">
-          {formatEuros(offer.supplementCents)}
+          {formatEuros(offer.supplementCents, locale)}
         </p>
         <p className="mb-6 text-sm text-ink-2">
-          Supplément débité immédiatement, en sus du prix du drop déjà réglé
-          {offer.paidCents ? ` (${formatEuros(offer.paidCents)})` : ""}.
+          {offer.paidCents
+            ? t("supplementNotePaid", {
+                paid: formatEuros(offer.paidCents, locale),
+              })
+            : t("supplementNote")}
         </p>
         <Elements
           stripe={getStripe()}
@@ -165,28 +172,35 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
   // --- Offre active ---
   return (
     <Shell>
-      <Eyebrow>Drop № {pad(offer.dropNumber)}</Eyebrow>
-      <h1 className="font-display mb-6 text-4xl">Une dernière chose.</h1>
+      <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
+      <h1 className="font-display mb-6 text-4xl">{t("offerTitle")}</h1>
       <p className="text-sm leading-relaxed text-ink-2">
-        Votre offre était la plus haute de ce drop. À ce titre, la pièce
-        maîtresse, le numéro de série{" "}
-        <span className="font-serif italic text-foreground">{serial}</span>,
-        vous est réservée.
+        {t.rich("offerLead", {
+          serial,
+          em: (chunks) => (
+            <span className="font-serif italic text-foreground">{chunks}</span>
+          ),
+        })}
       </p>
       <p className="mt-4 text-sm leading-relaxed text-ink-2">
-        Vous pouvez la faire vôtre pour un supplément de{" "}
-        <span className="font-serif italic text-foreground">
-          {formatEuros(offer.supplementCents)}
-        </span>
-        . Cette offre est strictement personnelle. Personne d&apos;autre ne la
-        recevra.
+        {t.rich("offerSupplement", {
+          amount: formatEuros(offer.supplementCents, locale),
+          em: (chunks) => (
+            <span className="font-serif italic text-foreground">{chunks}</span>
+          ),
+        })}
       </p>
 
       <dl className="mt-8 grid gap-3 border-y border-rule py-5 text-sm">
-        <Row label="Pièce" value={offer.title} />
-        <Row label="Numéro de série" value={serial} />
-        <Row label="Supplément" value={formatEuros(offer.supplementCents)} />
-        {remaining ? <Row label="Expire dans" value={remaining} /> : null}
+        <Row label={t("rowPiece")} value={offer.title} />
+        <Row label={t("rowSerial")} value={serial} />
+        <Row
+          label={t("rowSupplement")}
+          value={formatEuros(offer.supplementCents, locale)}
+        />
+        {remaining ? (
+          <Row label={t("rowExpiresIn")} value={remaining} />
+        ) : null}
       </dl>
 
       {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
@@ -197,7 +211,7 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
         disabled={busy}
         className={CTA_CLASS}
       >
-        {busy ? "Préparation..." : "Réserver le № 001"}
+        {busy ? t("preparing") : t("reserveCta")}
       </button>
       <button
         type="button"
@@ -205,7 +219,7 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
         disabled={busy}
         className="mt-4 block w-full rounded-sm text-center text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
       >
-        Conserver mon numéro attribué
+        {t("keepNumber")}
       </button>
     </Shell>
   );
@@ -220,6 +234,7 @@ function CardStep({
   onConfirmed: () => void;
   onBack: () => void;
 }) {
+  const t = useTranslations("accountOffer");
   const stripe = useStripe();
   const elements = useElements();
   const [submitting, setSubmitting] = useState(false);
@@ -236,7 +251,7 @@ function CardStep({
     });
 
     if (confirmError) {
-      setError(confirmError.message ?? "Le paiement a échoué.");
+      setError(confirmError.message ?? t("paymentFailed"));
       setSubmitting(false);
       return;
     }
@@ -263,7 +278,7 @@ function CardStep({
       return;
     }
 
-    setError("Le paiement n'a pas pu aboutir. Réessayez.");
+    setError(t("paymentIncomplete"));
     setSubmitting(false);
   }
 
@@ -277,7 +292,7 @@ function CardStep({
         disabled={!stripe || submitting}
         className={CTA_CLASS}
       >
-        {submitting ? "Paiement..." : "Confirmer et réserver"}
+        {submitting ? t("paying") : t("confirmCta")}
       </button>
       <button
         type="button"
@@ -285,7 +300,7 @@ function CardStep({
         disabled={submitting}
         className="mt-3 block w-full rounded-sm text-center text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
       >
-        Revenir
+        {t("back")}
       </button>
     </div>
   );
@@ -307,16 +322,22 @@ function useCountdownExpired(expiresAt: string): boolean {
   return expired;
 }
 
-function useRemainingLabel(expiresAt: string): string | null {
+function useRemainingLabel(
+  expiresAt: string,
+  fmt: {
+    hm: (hours: number, minutes: string) => string;
+    m: (minutes: number) => string;
+  }
+): string | null {
   const compute = useMemo(
     () => () => {
       const ms = new Date(expiresAt).getTime() - Date.now();
       if (ms <= 0) return null;
       const h = Math.floor(ms / 3_600_000);
       const m = Math.floor((ms % 3_600_000) / 60_000);
-      return h > 0 ? `${h}h ${String(m).padStart(2, "0")}min` : `${m} min`;
+      return h > 0 ? fmt.hm(h, String(m).padStart(2, "0")) : fmt.m(m);
     },
-    [expiresAt]
+    [expiresAt, fmt]
   );
   const [label, setLabel] = useState<string | null>(compute);
   useEffect(() => {
@@ -351,13 +372,13 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function BackLink() {
+function BackLink({ label }: { label: string }) {
   return (
     <Link
       href="/account/dashboard"
       className="mt-8 inline-block rounded-sm text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
-      Retour à mon compte
+      {label}
     </Link>
   );
 }

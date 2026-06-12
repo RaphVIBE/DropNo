@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { BoutiqueHero } from "@/components/brand/boutique-hero";
 import { countryLabel } from "@/lib/countries";
 import { formatDropNumber, formatEuros } from "@/lib/format";
+import type { Locale } from "@/i18n/routing";
 
 export const dynamic = "force-dynamic";
 
@@ -46,29 +48,34 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
+  const t = await getTranslations("marques");
   const brand = await getBrand(params.slug);
-  if (!brand) return { title: "Maison introuvable · Drop No." };
+  if (!brand) return { title: t("notFoundMetaTitle") };
   return {
-    title: `${brand.name} · Drop No.`,
+    title: t("brandMetaTitle", { name: brand.name }),
     description:
-      brand.description ??
-      `Les drops de ${brand.name} sur Drop No., en direct de la maison.`,
+      brand.description ?? t("brandMetaDescription", { name: brand.name }),
   };
 }
 
-function statusLabel(status: string | null, clearingCents: number | null) {
+function statusLabel(
+  status: string | null,
+  clearingCents: number | null,
+  t: (key: string, values?: Record<string, string>) => string,
+  locale: Locale
+) {
   switch (status) {
     case "open":
-      return { text: "En cours", cls: "text-champagne-deep" };
+      return { text: t("statusOpen"), cls: "text-champagne-deep" };
     case "scheduled":
-      return { text: "À venir", cls: "text-ink-2" };
+      return { text: t("statusScheduled"), cls: "text-ink-2" };
     case "cancelled":
-      return { text: "Annulé", cls: "text-muted-foreground" };
+      return { text: t("statusCancelled"), cls: "text-muted-foreground" };
     default:
       return {
         text: clearingCents
-          ? `Clôturé · ${formatEuros(clearingCents)}`
-          : "Clôturé",
+          ? t("statusClosedPrice", { price: formatEuros(clearingCents, locale) })
+          : t("statusClosed"),
         cls: "text-muted-foreground",
       };
   }
@@ -91,6 +98,8 @@ export default async function BrandPage({
 }: {
   params: { slug: string };
 }) {
+  const t = await getTranslations("marques");
+  const locale = (await getLocale()) as Locale;
   const brand = await getBrand(params.slug);
   if (!brand) notFound();
 
@@ -107,16 +116,17 @@ export default async function BrandPage({
   // Faits uniformes (mêmes slots pour chaque maison, calculés depuis les données)
   const pieces = drops.reduce((sum, d) => sum + (d.exemplaires ?? 0), 0);
   const facts = [
-    { label: "Pays", value: country ?? "—" },
-    { label: "Maison", value: brand.kbis_verified ? "Vérifiée" : "Indépendante" },
-    { label: "Drops", value: String(drops.length) },
-    { label: "Exemplaires", value: pieces > 0 ? String(pieces) : "—" },
+    { label: t("factCountry"), value: country ?? "—" },
+    {
+      label: t("factHouse"),
+      value: brand.kbis_verified ? t("verified") : t("independent"),
+    },
+    { label: t("factDrops"), value: String(drops.length) },
+    { label: t("factPieces"), value: pieces > 0 ? String(pieces) : "—" },
   ];
 
   // Lead éditoriale : la description si présente, sinon une signature constante.
-  const lead =
-    brand.description ??
-    `${brand.name} ouvre ses drops sur Drop No., en direct de la maison, sans intermédiaire ni revente.`;
+  const lead = brand.description ?? t("leadFallback", { name: brand.name });
 
   return (
     <>
@@ -136,7 +146,7 @@ export default async function BrandPage({
             className="reveal inline-flex w-fit items-center rounded-sm text-[11px] uppercase tracking-[0.18em] text-[oklch(0.94_0.01_80)]/85 underline-offset-4 drop-shadow-[0_1px_8px_oklch(0.16_0.012_60/0.8)] transition-colors hover:text-[oklch(0.98_0.006_80)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
           >
-            ← Maisons
+            {t("backToBrands")}
           </Link>
           <h1
             className="font-display reveal max-w-[14ch] text-[clamp(2.6rem,7vw,6rem)] text-[oklch(0.97_0.008_82)] drop-shadow-[0_2px_18px_oklch(0.16_0.012_60/0.6)]"
@@ -159,7 +169,7 @@ export default async function BrandPage({
             rel="noopener noreferrer"
             className="reveal mt-7 inline-flex items-center gap-1.5 rounded-sm text-[13px] uppercase tracking-[0.16em] text-champagne-deep underline-offset-4 transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            Site officiel ↗
+            {t("officialSite")}
           </a>
         ) : null}
       </div>
@@ -173,20 +183,23 @@ export default async function BrandPage({
 
       <div className="px-7 pb-28 pt-16 md:px-16 md:pt-20">
         <div className="mb-8 flex items-baseline justify-between border-b border-foreground pb-6">
-          <h2 className="font-serif text-4xl italic">Ses drops</h2>
+          <h2 className="font-serif text-4xl italic">{t("itsDrops")}</h2>
           <span className="text-[13px] tracking-wide text-muted-foreground">
-            {drops.length > 1 ? `${drops.length} drops` : `${drops.length} drop`}
+            {t("dropsCount", { count: drops.length })}
           </span>
         </div>
 
         {drops.length === 0 ? (
-          <p className="py-8 text-ink-2">
-            Le premier drop de cette maison sera annoncé très bientôt.
-          </p>
+          <p className="py-8 text-ink-2">{t("dropsEmpty")}</p>
         ) : (
           <ul>
             {drops.map((drop) => {
-              const s = statusLabel(drop.status, drop.clearing_price_cents);
+              const s = statusLabel(
+                drop.status,
+                drop.clearing_price_cents,
+                t,
+                locale
+              );
               return (
                 <li key={drop.id} className="border-b border-rule-soft">
                   <Link

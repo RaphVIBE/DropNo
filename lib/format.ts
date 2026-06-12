@@ -5,14 +5,15 @@
  * Chaque helper accepte une locale (defaut "fr") pour rester retro-compatible :
  * les appels existants sans locale gardent le rendu FR.
  */
-import type { Locale } from "@/i18n/routing";
-
-const BCP47: Record<Locale, string> = { fr: "fr-FR", en: "en-GB" };
+// La locale vient de next-intl (getLocale/useLocale) typée `string` ; on accepte
+// donc `string` et on retombe sur fr-FR pour toute valeur inattendue.
+const BCP47: Record<string, string> = { fr: "fr-FR", en: "en-GB" };
+const bcp = (locale: string) => BCP47[locale] ?? "fr-FR";
 const PARIS = "Europe/Paris";
 
 /** Formate un montant en cents vers une chaine euros (ex: 300000 -> "3 000 €"). */
-export function formatEuros(cents: number, locale: Locale = "fr"): string {
-  return new Intl.NumberFormat(BCP47[locale], {
+export function formatEuros(cents: number, locale: string = "fr"): string {
+  return new Intl.NumberFormat(bcp(locale), {
     style: "currency",
     currency: "EUR",
     maximumFractionDigits: 0,
@@ -25,8 +26,8 @@ export function formatDropNumber(n: number): string {
 }
 
 /** Date courte en heure de Paris : "7 juin" / "7 June". */
-export function formatShortDate(iso: string, locale: Locale = "fr"): string {
-  return new Intl.DateTimeFormat(BCP47[locale], {
+export function formatShortDate(iso: string, locale: string = "fr"): string {
+  return new Intl.DateTimeFormat(bcp(locale), {
     day: "numeric",
     month: "long",
     timeZone: PARIS,
@@ -34,9 +35,9 @@ export function formatShortDate(iso: string, locale: Locale = "fr"): string {
 }
 
 /** Moment de revelation lisible : "Jeudi 18h" (FR) / "Thursday, 18:00" (EN). */
-export function formatRevealMoment(iso: string, locale: Locale = "fr"): string {
+export function formatRevealMoment(iso: string, locale: string = "fr"): string {
   const d = new Date(iso);
-  const weekday = new Intl.DateTimeFormat(BCP47[locale], {
+  const weekday = new Intl.DateTimeFormat(bcp(locale), {
     weekday: "long",
     timeZone: PARIS,
   }).format(d);

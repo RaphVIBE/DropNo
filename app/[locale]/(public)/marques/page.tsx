@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Filigrane } from "@/components/brand/filigrane";
 import { countryLabel } from "@/lib/countries";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Maisons · Drop No.",
-  description:
-    "Les maisons horlogères qui ouvrent leurs drops sur Drop No., en direct des marques.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("marques");
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
 type BrandRow = {
   slug: string;
@@ -21,6 +24,7 @@ type BrandRow = {
 };
 
 export default async function BrandsPage() {
+  const t = await getTranslations("marques");
   const supabase = createClient();
 
   const { data, error } = await supabase
@@ -40,31 +44,30 @@ export default async function BrandsPage() {
             className="eyebrow reveal"
             style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
           >
-            Maisons
+            {t("eyebrow")}
           </span>
           <h1
             className="font-display reveal mt-6 max-w-[12ch] text-[clamp(3.5rem,9vw,8rem)]"
             style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
           >
-            En direct des marques.
+            {t("heroTitle")}
           </h1>
           <p
             className="reveal mt-6 max-w-[52ch] text-base text-ink-2"
             style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
           >
-            Chaque drop est ouvert par une maison, sans intermédiaire ni
-            revente. L&apos;authenticité vient de la marque elle-même.
+            {t("heroLead")}
           </p>
         </div>
       </div>
 
       {error ? (
         <p className="px-7 py-16 text-destructive md:px-16">
-          Impossible de charger les maisons pour le moment.
+          {t("loadError")}
         </p>
       ) : brands.length === 0 ? (
         <p className="px-7 py-16 text-ink-2 md:px-16">
-          Les premières maisons seront annoncées très bientôt.
+          {t("empty")}
         </p>
       ) : (
         <ul className="border-t border-rule-soft px-7 md:px-16">
@@ -95,7 +98,7 @@ export default async function BrandsPage() {
                     {country ? (
                       <span className="text-muted-foreground">{country}</span>
                     ) : null}
-                    <span className="text-champagne-deep">Découvrir →</span>
+                    <span className="text-champagne-deep">{t("discover")}</span>
                   </div>
                 </Link>
               </li>

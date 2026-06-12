@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Parts = {
   done: boolean;
@@ -36,6 +37,7 @@ export function DropCountdown({
   variant?: "compact" | "full";
   className?: string;
 }) {
+  const t = useTranslations("dropDetail");
   const targetMs = Date.parse(targetIso);
   // Etat initial calcule depuis l'horloge serveur => SSR et 1er rendu client
   // concordent (pas de mismatch d'hydratation).
@@ -55,7 +57,7 @@ export function DropCountdown({
   if (parts.done) {
     return (
       <span className={className} suppressHydrationWarning>
-        Révélation imminente
+        {t("revealImminent")}
       </span>
     );
   }
@@ -66,10 +68,10 @@ export function DropCountdown({
         className={`flex items-baseline gap-2 font-serif italic ${className ?? ""}`}
         suppressHydrationWarning
       >
-        <Unit n={pad(parts.d)} u="j" />
-        <Unit n={pad(parts.h)} u="h" />
-        <Unit n={pad(parts.m)} u="min" />
-        <Unit n={pad(parts.s)} u="s" />
+        <Unit n={pad(parts.d)} u={t("unitDay")} />
+        <Unit n={pad(parts.h)} u={t("unitHour")} />
+        <Unit n={pad(parts.m)} u={t("unitMinute")} />
+        <Unit n={pad(parts.s)} u={t("unitSecond")} />
       </span>
     );
   }
@@ -80,7 +82,7 @@ export function DropCountdown({
       className={`font-serif italic tabular-nums ${className ?? ""}`}
       suppressHydrationWarning
     >
-      {parts.d}j {pad(parts.h)}h {pad(parts.m)}min
+      {parts.d}{t("unitDay")} {pad(parts.h)}{t("unitHour")} {pad(parts.m)}{t("unitMinute")}
     </span>
   );
 }

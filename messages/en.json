@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "title": "Drop No. · Sealed drops for premium watches",
+    "description": "A house of sealed drops for premium watchmaking. Hidden bid, single price set at the reveal."
+  },
+  "common": {
+    "skipToContent": "Skip to content"
+  },
+  "nav": {
+    "calendar": "Calendar",
+    "houses": "Houses",
+    "mechanism": "Mechanism",
+    "about": "About",
+    "signIn": "Sign in"
+  },
+  "footer": {
+    "tagline": "A house of sealed drops for premium watches. One piece a week, a single price set at the reveal.",
+    "exploreTitle": "Explore",
+    "exploreCalendar": "Drop calendar",
+    "exploreHouses": "Houses",
+    "exploreMechanism": "The mechanism",
+    "exploreAbout": "About",
+    "commitmentsTitle": "Our commitments",
+    "commitment1": "Pieces direct from the houses, never resold",
+    "commitment2": "Secure payment and verified identity (Stripe)",
+    "commitment3": "Insured delivery, hand-carried above €10,000",
+    "commitment4": "14-day right of withdrawal, full refund",
+    "rights": "All rights reserved."
+  },
+  "home": {
+    "eyebrow": "House of sealed drops · premium watchmaking",
+    "title": "One piece. One price. Set at the reveal.",
+    "intro": "Each week, a house opens a drop. You seal your bid. The highest bids win, and all pay the same price: that of the last winning bid. No overbidding, no price war.",
+    "ctaCalendar": "View the calendar",
+    "ctaMechanism": "Understand the mechanism",
+    "mechanismDetail": "The mechanism in detail, with a worked example →",
+    "nowTitle": "Right now",
+    "nextTitle": "Next drop",
+    "allCalendar": "Full calendar →",
+    "housesTitle": "The houses",
+    "housesDirect": "Direct from the brands →",
+    "manifesto": "Not a marketplace. One house, one piece, one appointment a week.",
+    "manifestoSub": "Direct from the houses, no resale, no middleman. Insured delivery, verified identity, 14-day withdrawal. No buyer fees.",
+    "aboutLink": "The Drop No. house →"
+  },
+  "locale": {
+    "switchLabel": "Language",
+    "fr": "FR",
+    "en": "EN"
+  }
+}

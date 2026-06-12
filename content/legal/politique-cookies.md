@@ -38,7 +38,8 @@ Améliorent l'expérience utilisateur. Désactivables sans empêcher l'usage du 
 | Cookie | Finalité | Durée |
 |---|---|---|
 | `crisp-client/*` | Widget de support client Crisp | 6 mois |
-| `dropno-preferences` | Mémorisation de préférences (langue, fuseau horaire) | 12 mois |
+| `NEXT_LOCALE` | Mémorisation de votre langue (FR / EN) | 12 mois |
+| `dropno-preferences` | Autres préférences d'affichage (fuseau horaire) | 12 mois |
 
 ### 3.3. Analytics (consentement requis)
 

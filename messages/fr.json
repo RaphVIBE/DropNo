@@ -1,0 +1,51 @@
+{
+  "meta": {
+    "title": "Drop No. · Drops scellés pour montres premium",
+    "description": "Une maison de drops scellés dédiée à l'horlogerie premium. Offre cachée, prix unique à la révélation."
+  },
+  "common": {
+    "skipToContent": "Aller au contenu"
+  },
+  "nav": {
+    "calendar": "Calendrier",
+    "houses": "Maisons",
+    "mechanism": "Mécanisme",
+    "about": "À propos",
+    "signIn": "Se connecter"
+  },
+  "footer": {
+    "tagline": "Maison de drops scellés pour montres premium. Une pièce par semaine, un prix unique décidé à la révélation.",
+    "exploreTitle": "Explorer",
+    "exploreCalendar": "Calendrier des drops",
+    "exploreHouses": "Maisons",
+    "exploreMechanism": "Le mécanisme",
+    "exploreAbout": "À propos",
+    "commitmentsTitle": "Nos engagements",
+    "commitment1": "Pièces en direct des maisons, jamais de revente",
+    "commitment2": "Paiement sécurisé et identité vérifiée (Stripe)",
+    "commitment3": "Livraison assurée, main propre au-delà de 10 000 €",
+    "commitment4": "Rétractation 14 jours, remboursement intégral",
+    "rights": "Tous droits réservés."
+  },
+  "home": {
+    "eyebrow": "Maison de drops scellés · horlogerie premium",
+    "title": "Une pièce. Un prix unique. Décidé à la révélation.",
+    "intro": "Chaque semaine, une maison ouvre un drop. Vous scellez votre offre. Les plus hautes gagnent, et toutes payent le même prix : celui de la dernière offre gagnante. Pas de surenchère, pas de guerre des prix.",
+    "ctaCalendar": "Voir le calendrier",
+    "ctaMechanism": "Comprendre le mécanisme",
+    "mechanismDetail": "Le mécanisme en détail, avec un exemple chiffré →",
+    "nowTitle": "En ce moment",
+    "nextTitle": "Prochain drop",
+    "allCalendar": "Tout le calendrier →",
+    "housesTitle": "Les maisons",
+    "housesDirect": "En direct des marques →",
+    "manifesto": "Pas une marketplace. Une maison, une pièce, un rendez-vous par semaine.",
+    "manifestoSub": "En direct des maisons, sans revente ni intermédiaire. Livraison assurée, identité vérifiée, rétractation 14 jours. Aucun frais pour l'acheteur.",
+    "aboutLink": "La maison Drop No. →"
+  },
+  "locale": {
+    "switchLabel": "Langue",
+    "fr": "FR",
+    "en": "EN"
+  }
+}

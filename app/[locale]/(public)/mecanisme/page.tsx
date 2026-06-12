@@ -4,12 +4,14 @@ import { Link } from "@/i18n/navigation";
 import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
 import { Filigrane } from "@/components/brand/filigrane";
 import { formatEuros } from "@/lib/format";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export async function generateMetadata() {
   const t = await getTranslations("mecanisme");
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
+    alternates: localizedAlternates("/mecanisme", await getLocale()),
   };
 }
 

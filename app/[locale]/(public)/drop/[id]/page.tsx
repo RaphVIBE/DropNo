@@ -15,6 +15,7 @@ import { DropAlertBell } from "@/components/drop/drop-alert-bell";
 import { DropViewTracker } from "@/components/analytics/DropViewTracker";
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 import type { Tables } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
@@ -58,6 +59,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: localizedAlternates(`/drop/${params.id}`, locale),
     openGraph: {
       title,
       description,

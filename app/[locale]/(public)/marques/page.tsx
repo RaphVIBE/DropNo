@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Filigrane } from "@/components/brand/filigrane";
 import { countryLabel } from "@/lib/countries";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
+    alternates: localizedAlternates("/marques", await getLocale()),
   };
 }
 

@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -6,8 +6,15 @@ import { Button } from "@/components/ui/button";
 import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
 import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
 import { isAnnounced } from "@/lib/admin/drops";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export const dynamic = "force-dynamic";
+
+// Métadonnées : titre/description héritent du layout racine ; on ajoute ici
+// les alternates hreflang propres à la home (chemin racine).
+export async function generateMetadata() {
+  return { alternates: localizedAlternates("/", await getLocale()) };
+}
 
 const SELECT =
   "id, drop_number, title, status, floor_price_cents, clearing_price_cents, reveal_at, bid_window_opens_at, revealed_at, format, hero_image_url, brand:brands(name, slug)";

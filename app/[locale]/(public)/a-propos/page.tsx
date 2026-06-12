@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { Filigrane } from "@/components/brand/filigrane";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("about");
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
+    alternates: localizedAlternates("/a-propos", await getLocale()),
   };
 }
 

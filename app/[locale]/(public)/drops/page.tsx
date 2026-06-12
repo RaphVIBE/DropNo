@@ -7,12 +7,14 @@ import { UpcomingCard } from "@/components/drop/upcoming-card";
 import { isAnnounced } from "@/lib/admin/drops";
 import { formatDropNumber, formatEuros, formatShortDate } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const t = await getTranslations("drops");
   return {
+    alternates: localizedAlternates("/drops", await getLocale()),
     title: t("metaTitle"),
     description: t("metaDescription"),
   };

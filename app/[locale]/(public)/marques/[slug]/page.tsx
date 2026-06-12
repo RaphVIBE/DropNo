@@ -8,6 +8,7 @@ import { BoutiqueHero } from "@/components/brand/boutique-hero";
 import { countryLabel } from "@/lib/countries";
 import { formatDropNumber, formatEuros } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export const dynamic = "force-dynamic";
 
@@ -51,10 +52,12 @@ export async function generateMetadata({
   const t = await getTranslations("marques");
   const brand = await getBrand(params.slug);
   if (!brand) return { title: t("notFoundMetaTitle") };
+  const locale = await getLocale();
   return {
     title: t("brandMetaTitle", { name: brand.name }),
     description:
       brand.description ?? t("brandMetaDescription", { name: brand.name }),
+    alternates: localizedAlternates(`/marques/${params.slug}`, locale),
   };
 }
 

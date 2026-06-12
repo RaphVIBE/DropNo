@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { formatDropNumber, formatEuros, formatShortDate } from "@/lib/format";
-import { WatchArt } from "@/components/drop/watch-art";
+import { formatEuros, formatShortDate } from "@/lib/format";
+import { DropVisual } from "@/components/drop/drop-visual";
 import type { CalendarDrop } from "@/components/drop/calendar-row";
 
 // Au-delà de ce délai avant l'ouverture, le visuel reste flouté (on ne dévoile
@@ -35,21 +35,13 @@ export function UpcomingCard({
       className="group flex flex-col gap-5 rounded-sm border-t border-rule-soft py-7 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:flex-row sm:items-center sm:gap-7"
     >
       <div className="relative aspect-[5/4] w-full overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] ring-1 ring-rule-soft sm:w-44 sm:shrink-0">
-        <WatchArt
-          seed={drop.drop_number ?? 0}
-          className={`absolute inset-0 h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.04] ${teaseLocked ? "scale-110 blur-[8px]" : ""}`}
+        <DropVisual
+          dropNumber={drop.drop_number ?? 0}
+          title={drop.title ?? ""}
+          heroImageUrl={drop.hero_image_url}
+          teaseLocked={teaseLocked}
+          compact
         />
-        <span className="absolute left-2.5 top-2.5 rounded-full bg-[oklch(0.16_0.012_60)]/72 px-2.5 py-0.5 font-serif text-xs italic text-[oklch(0.95_0.005_80)] ring-1 ring-[oklch(0.72_0.07_80)]/30 backdrop-blur-sm">
-          No. {formatDropNumber(drop.drop_number ?? 0)}
-        </span>
-        {teaseLocked ? (
-          <span className="absolute inset-0 flex items-center justify-center bg-[oklch(0.16_0.012_60)]/35" aria-label="Visuel dévoilé une semaine avant l'ouverture">
-            <svg viewBox="0 0 24 24" className="h-6 w-6 text-[oklch(0.95_0.005_80)]" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-              <rect x="5" y="11" width="14" height="9" rx="2" />
-              <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-            </svg>
-          </span>
-        ) : null}
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col gap-3">
@@ -61,11 +53,11 @@ export function UpcomingCard({
         </h4>
         <div className="flex flex-wrap gap-x-8 gap-y-3">
           <div>
-            <span className="block text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Plancher</span>
+            <span className="block text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Plancher</span>
             <span className="mt-0.5 block font-serif text-lg italic text-foreground">{drop.floor_price_cents ? formatEuros(drop.floor_price_cents) : "—"}</span>
           </div>
           <div>
-            <span className="block text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Ouverture</span>
+            <span className="block text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Ouverture</span>
             <span className="mt-0.5 block font-serif text-lg italic text-foreground">{drop.bid_window_opens_at ? formatShortDate(drop.bid_window_opens_at) : "—"}</span>
           </div>
         </div>

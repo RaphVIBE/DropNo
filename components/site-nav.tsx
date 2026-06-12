@@ -15,9 +15,10 @@ import { NavLink } from "@/components/nav-link";
  */
 
 const NAV_ITEMS = [
-  { href: "/a-propos", label: "À propos" },
-  { href: "/marques", label: "Maisons" },
   { href: "/drops", label: "Calendrier" },
+  { href: "/marques", label: "Maisons" },
+  { href: "/mecanisme", label: "Mécanisme" },
+  { href: "/a-propos", label: "À propos" },
 ];
 
 export function SiteNav() {
@@ -53,7 +54,7 @@ export function SiteNav() {
 
       {/* Seconde barre — mobile uniquement. Subtile : separateur fin,
           liens centres, fond legerement teinte. */}
-      <nav className="flex items-center justify-center gap-9 border-t border-rule-soft/70 bg-card/40 px-7 py-2.5 sm:hidden">
+      <nav className="flex items-center justify-center gap-6 border-t border-rule-soft/70 bg-card/40 px-7 py-2.5 sm:hidden">
         {NAV_ITEMS.map((item) => (
           <NavLink key={item.href} href={item.href} label={item.label} />
         ))}

@@ -30,7 +30,7 @@ function Spec({
         bordered ? "border-l pl-4" : "pr-4"
       }`}
     >
-      <div className="mb-1.5 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+      <div className="mb-1.5 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
         {label}
       </div>
       <div className="font-serif text-2xl italic">{value}</div>

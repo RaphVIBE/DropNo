@@ -8,7 +8,7 @@ import { countryLabel } from "@/lib/countries";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Maisons — Drop No.",
+  title: "Maisons · Drop No.",
   description:
     "Les maisons horlogères qui ouvrent leurs drops sur Drop No., en direct des marques.",
 };

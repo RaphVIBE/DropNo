@@ -1,13 +1,12 @@
 import Link from "next/link";
 
 import {
-  formatDropNumber,
   formatEuros,
   formatRevealMoment,
   formatShortDate,
 } from "@/lib/format";
 import { DropCountdown } from "@/components/drop/drop-countdown";
-import { WatchArt } from "@/components/drop/watch-art";
+import { DropVisual } from "@/components/drop/drop-visual";
 
 // Au-dela de ce delai avant l'ouverture, le visuel d'un drop a venir reste
 // floute (on ne devoile pas la piece trop tot).
@@ -23,6 +22,8 @@ export type CalendarDrop = {
   reveal_at: string | null;
   bid_window_opens_at: string | null;
   revealed_at: string | null;
+  format: string | null;
+  hero_image_url: string | null;
   brand: { name: string; slug: string } | null;
 };
 
@@ -49,7 +50,7 @@ function Arrow() {
 function Meta({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="block text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+      <span className="block text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
         {label}
       </span>
       <span className="mt-1 block font-serif text-xl italic text-foreground">
@@ -88,37 +89,12 @@ export function CalendarRow({
     >
       {/* Grand visuel — pleine largeur (mobile), carre imposant (desktop) */}
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] shadow-[0_18px_50px_-24px_oklch(0.2_0.02_60/0.55)] ring-1 ring-rule-soft transition-shadow duration-500 group-hover:shadow-[0_26px_70px_-26px_oklch(0.2_0.02_60/0.7)] md:aspect-square">
-        <WatchArt
-          seed={drop.drop_number ?? 0}
-          className={`absolute inset-0 h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.04] ${
-            teaseLocked ? "scale-110 blur-[8px]" : ""
-          }`}
+        <DropVisual
+          dropNumber={drop.drop_number ?? 0}
+          title={drop.title ?? ""}
+          heroImageUrl={drop.hero_image_url}
+          teaseLocked={teaseLocked}
         />
-
-        {/* No. du drop sur un ribbon ink translucide — contraste garanti
-            quelle que soit la palette du visuel (cadran clair ou sombre). */}
-        <span className="absolute left-3 top-3 rounded-full bg-[oklch(0.16_0.012_60)]/72 px-3 py-1 font-serif text-sm italic text-[oklch(0.95_0.005_80)] shadow-sm ring-1 ring-[oklch(0.72_0.07_80)]/30 backdrop-blur-sm">
-          No. {formatDropNumber(drop.drop_number ?? 0)}
-        </span>
-
-        {teaseLocked ? (
-          <span
-            className="absolute inset-0 flex items-center justify-center bg-[oklch(0.16_0.012_60)]/35"
-            aria-label="Visuel devoile une semaine avant l'ouverture"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-7 w-7 text-[oklch(0.95_0.005_80)]"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden
-            >
-              <rect x="5" y="11" width="14" height="9" rx="2" />
-              <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-            </svg>
-          </span>
-        ) : null}
       </div>
 
       {/* Informations */}

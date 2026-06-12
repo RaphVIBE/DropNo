@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Drop No. — Drops scellés pour montres premium",
+  title: "Drop No. · Drops scellés pour montres premium",
   description:
     "Une maison de drops scellés dédiée à l'horlogerie premium. Offre cachée, prix unique à la révélation.",
 };

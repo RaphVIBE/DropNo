@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { DropAssurance } from "@/components/drop/drop-assurance";
 import { DropHero, type DropStatus } from "@/components/drop/drop-hero";
 import { DropGallery } from "@/components/drop/drop-gallery";
 import { DropSpecs } from "@/components/drop/drop-specs";
@@ -13,6 +15,49 @@ import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format"
 import type { Tables } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
+
+/**
+ * Metadata par drop : titre, description et image OG (photo réelle si la
+ * maison l'a fournie). Un drop partagé doit se présenter seul.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const supabase = createClient();
+  const { data: drop } = await supabase
+    .from("drops_public")
+    .select(
+      "drop_number, title, floor_price_cents, reveal_at, hero_image_url, brand:brands(name)"
+    )
+    .eq("id", params.id)
+    .maybeSingle();
+
+  if (!drop) return { title: "Drop introuvable · Drop No." };
+
+  const brandName = (drop.brand as { name: string } | null)?.name;
+  const title = `${drop.title ?? "Drop"}${brandName ? ` · ${brandName}` : ""} · Drop No. ${formatDropNumber(drop.drop_number ?? 0)}`;
+  const description = [
+    drop.floor_price_cents
+      ? `Prix plancher ${formatEuros(drop.floor_price_cents)}`
+      : null,
+    drop.reveal_at ? `révélation ${formatRevealMoment(drop.reveal_at)}` : null,
+    "offre scellée, prix unique pour tous les gagnants.",
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      ...(drop.hero_image_url ? { images: [{ url: drop.hero_image_url }] } : {}),
+    },
+  };
+}
 
 export default async function DropPage({
   params,
@@ -108,7 +153,7 @@ export default async function DropPage({
           {counter ? (
             <div className="mb-8 border-y border-rule border-t-foreground py-6">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                <span className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                   {counter.label}
                 </span>
                 {canAlert ? (
@@ -143,6 +188,8 @@ export default async function DropPage({
             existingBidCents={existingBidCents}
             loginHref={loginHref}
           />
+
+          <DropAssurance />
 
           <div className="mt-8 border-t border-rule-soft pt-6">
             <ShareDrop title={shareTitle} summary={shareSummary} />

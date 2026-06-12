@@ -28,7 +28,7 @@ export function DropDetail({
         <div>
           <span className="eyebrow">La pièce</span>
           <h3 className="font-display mt-4 text-[clamp(2rem,4vw,3rem)]">
-            Une ligne, peu de mots.
+            Racontée par la maison.
           </h3>
         </div>
         <div>

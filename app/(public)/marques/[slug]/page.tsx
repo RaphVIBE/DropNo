@@ -47,9 +47,9 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const brand = await getBrand(params.slug);
-  if (!brand) return { title: "Maison introuvable — Drop No." };
+  if (!brand) return { title: "Maison introuvable · Drop No." };
   return {
-    title: `${brand.name} — Drop No.`,
+    title: `${brand.name} · Drop No.`,
     description:
       brand.description ??
       `Les drops de ${brand.name} sur Drop No., en direct de la maison.`,
@@ -195,7 +195,7 @@ export default async function BrandPage({
                   >
                     <div className="flex items-baseline gap-5">
                       <span className="font-serif text-sm italic tabular-nums text-muted-foreground">
-                        N° {formatDropNumber(drop.drop_number ?? 0)}
+                        No. {formatDropNumber(drop.drop_number ?? 0)}
                       </span>
                       <span className="font-serif text-[22px] italic text-foreground transition-transform group-hover:translate-x-0.5">
                         {drop.title}

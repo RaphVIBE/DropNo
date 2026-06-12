@@ -319,10 +319,59 @@ ${button("Voir le calendrier", url("/"))}`;
 }
 
 // ---------------------------------------------------------------------------
+// Privilège № 001 : offre privée au top bidder (voir Privilege_001.md)
+// ---------------------------------------------------------------------------
+export function serialOfferEmail(d: {
+  dropNumber: number;
+  title: string;
+  exemplaires: number;
+  supplementCents: number;
+  expiresAt: string;
+  offerId: string;
+}): EmailContent {
+  const num = formatDropNumber(d.dropNumber);
+  const serial = `001/${String(d.exemplaires).padStart(3, "0")}`;
+  const subject = `Une dernière chose · Drop No. ${num}`;
+  const offerUrl = url(`/account/offre/${d.offerId}`);
+  const rows = `${statRow("Pièce", esc(d.title))}
+${statRow("Numéro de série", serial)}
+${statRow("Supplément", formatEuros(d.supplementCents))}
+${statRow("Expire le", fullTimestamp(d.expiresAt))}`;
+  const inner = `${eyebrow(`Drop No. ${num}`)}
+${h1("Une dernière chose.")}
+${p(
+    `Votre offre était la plus haute de ce drop. À ce titre, la pièce maîtresse, le numéro de série <strong style="color:${C.ink};font-weight:500;">${serial}</strong>, vous est réservée.`
+  )}
+${p(
+    "Vous pouvez la faire vôtre pour le supplément indiqué ci-dessous. Cette offre est strictement personnelle et expire dans 24 heures. Personne d'autre ne la recevra.",
+    18
+  )}
+${stats(rows)}
+${button(`Réserver le № 001`, offerUrl)}
+${textLink("Ou conserver mon numéro attribué", offerUrl)}`;
+  const text = `Une dernière chose · Drop No. ${num}
+
+Votre offre était la plus haute de ce drop. À ce titre, la pièce maîtresse, le numéro de série ${serial}, vous est réservée.
+
+Pièce : ${d.title}
+Supplément : ${formatEuros(d.supplementCents)}
+Expire le : ${fullTimestamp(d.expiresAt)}
+
+Cette offre est strictement personnelle et expire dans 24 heures.
+
+Réserver le № 001 : ${offerUrl}`;
+  return {
+    subject,
+    html: layout("Votre offre était la plus haute de ce drop.", inner),
+    text,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // US-22 : rappels événementiels (ouverture, T-24h, T-1h)
 // ---------------------------------------------------------------------------
 export function dropReminderEmail(d: {
-  kind: "open" | "h24" | "h1";
+  kind: "open" | "h72" | "h24" | "h1";
   dropNumber: number;
   title: string;
   dropId?: string;
@@ -334,6 +383,12 @@ export function dropReminderEmail(d: {
       title: "Le drop est ouvert.",
       body: "Vous avez cinq jours pour sceller votre offre. Une seule offre, cachée jusqu'à la révélation, modifiable à tout moment avant la dernière heure.",
       cta: "Sceller mon offre",
+    },
+    h72: {
+      subject: `Plus que 3 jours · Drop No. ${num}`,
+      title: "Plus que trois jours.",
+      body: "La révélation approche. Si vous n'avez pas encore scellé votre offre, c'est le moment de la préparer. Vous pourrez la modifier jusqu'à la dernière heure.",
+      cta: "Préparer mon offre",
     },
     h24: {
       subject: `Plus que 24h · Drop No. ${num}`,

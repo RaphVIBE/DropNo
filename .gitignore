@@ -46,3 +46,6 @@ supabase/.temp/
 
 # Config locale Claude Code (toute la dir)
 .claude/
+
+# Impeccable skill scratch output
+.impeccable/

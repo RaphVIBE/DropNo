@@ -1,14 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
 import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
 import { UpcomingCard } from "@/components/drop/upcoming-card";
+import { isAnnounced } from "@/lib/admin/drops";
 import { formatDropNumber, formatEuros, formatShortDate } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
+export const metadata: Metadata = {
+  title: "Calendrier des drops · Drop No.",
+  description:
+    "Drop en cours, drops à venir et résultats passés. Offres scellées jusqu'à la révélation, prix unique pour tous les gagnants.",
+};
+
 const SELECT =
-  "id, drop_number, title, status, floor_price_cents, clearing_price_cents, reveal_at, bid_window_opens_at, revealed_at, brand:brands(name, slug)";
+  "id, drop_number, title, status, floor_price_cents, clearing_price_cents, reveal_at, bid_window_opens_at, revealed_at, format, hero_image_url, brand:brands(name, slug)";
 
 function plural(n: number, one: string, many: string): string {
   return `${n} ${n > 1 ? many : one}`;
@@ -31,8 +39,12 @@ export default async function DropsPage() {
     .filter((d) => d.status === "open")
     .sort((a, b) => (a.reveal_at ?? "").localeCompare(b.reveal_at ?? ""));
 
+  // Un drop programmé n'apparaît « À venir » qu'à partir de sa date d'annonce
+  // (ouverture − lead du format) — on ne dévoile pas le calendrier trop tôt.
   const upcoming = drops
-    .filter((d) => d.status === "scheduled")
+    .filter(
+      (d) => d.status === "scheduled" && isAnnounced(d.bid_window_opens_at, d.format, serverNowIso)
+    )
     .sort((a, b) =>
       (a.bid_window_opens_at ?? "").localeCompare(b.bid_window_opens_at ?? "")
     );
@@ -57,7 +69,7 @@ export default async function DropsPage() {
           </div>
           <p className="max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
             Offres scellées jusqu&apos;à la révélation. Tous les gagnants payent
-            le même prix : la dernière offre retenue.
+            le même prix : celui de la dernière offre gagnante.
           </p>
         </div>
       </div>

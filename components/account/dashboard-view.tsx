@@ -79,6 +79,11 @@ export type DeliveryRow = {
   transaction: { drop: DropRef } | null;
 };
 
+export type SerialOfferRef = {
+  id: string;
+  expires_at: string;
+} | null;
+
 export type DashboardData = {
   email: string;
   displayName?: string | null;
@@ -86,6 +91,8 @@ export type DashboardData = {
   bids: BidRow[];
   txs: TxRow[];
   deliveries: DeliveryRow[];
+  /** Privilège № 001 en attente (discret : visible du seul destinataire). */
+  serialOffer?: SerialOfferRef;
 };
 
 export function DashboardView({
@@ -95,7 +102,8 @@ export function DashboardView({
   data: DashboardData;
   footer?: React.ReactNode;
 }) {
-  const { email, displayName, kycStatus, bids, txs, deliveries } = data;
+  const { email, displayName, kycStatus, bids, txs, deliveries, serialOffer } =
+    data;
   return (
     <section className="mx-auto max-w-3xl px-7 py-20 md:px-16">
       <div className="relative overflow-hidden">
@@ -128,6 +136,19 @@ export function DashboardView({
       </dl>
 
       <KycBlock status={kycStatus} />
+
+      {serialOffer &&
+      new Date(serialOffer.expires_at).getTime() > Date.now() ? (
+        <Link
+          href={`/account/offre/${serialOffer.id}`}
+          className="mb-8 block border border-[var(--champagne-deep,#8c7a52)] bg-card p-5 transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <p className="eyebrow mb-1">Une dernière chose</p>
+          <p className="text-sm text-ink-2">
+            Une offre personnelle vous attend. Elle expire bientôt.
+          </p>
+        </Link>
+      ) : null}
 
       <AccountSection
         title="Mes offres"

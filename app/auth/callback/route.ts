@@ -1,15 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { resolveLoginDest } from "@/lib/auth/finalize-login";
 
 /**
- * Callback magic link. Echange le code OAuth contre une session, puis
- * upsert la row `profiles` si nouvel utilisateur, et redirige.
+ * Callback magic link. Echange le code contre une session, puis upsert la row
+ * `profiles` (via resolveLoginDest) et redirige. Le code OTP saisi à la main
+ * passe lui par `/auth/post-login` (session posée côté client).
  */
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
-  const redirectParam = searchParams.get("redirect");
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=missing_code`);
@@ -22,31 +23,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/login?error=auth`);
   }
 
-  // Upsert du profil (idempotent). RLS : l'utilisateur ne touche que sa row.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const dest = await resolveLoginDest(searchParams.get("redirect"));
 
-  if (user) {
-    await supabase
-      .from("profiles")
-      .upsert(
-        { id: user.id, email: user.email ?? "" },
-        { onConflict: "id", ignoreDuplicates: true }
-      );
-  }
-
-  // Destination : une cible explicite (?redirect=…) prime ; sinon les
-  // opérateurs vont au back-office, les clients à leur compte.
-  let dest = redirectParam;
-  if (!dest && user) {
-    const { data: admin } = await supabase
-      .from("platform_admins")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    dest = admin ? "/admin" : "/account/dashboard";
-  }
-
-  return NextResponse.redirect(`${origin}${dest ?? "/account/dashboard"}`);
+  return NextResponse.redirect(`${origin}${dest ?? "/login?error=auth"}`);
 }

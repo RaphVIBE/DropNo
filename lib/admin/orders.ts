@@ -29,7 +29,7 @@ export const CARRIERS: { value: Carrier; label: string }[] = [
 export const carrierLabel = (c: string | null) =>
   CARRIERS.find((x) => x.value === c)?.label ?? c ?? "—";
 
-// Étapes autorisées du workflow d'expédition.
+// Étapes autorisées du workflow d'expédition (trajet aller).
 export const NEXT_DELIVERY: Record<DeliveryStatus, DeliveryStatus[]> = {
   pending: ["preparing", "shipped"],
   preparing: ["shipped"],
@@ -42,3 +42,45 @@ export const NEXT_DELIVERY: Record<DeliveryStatus, DeliveryStatus[]> = {
 
 export const isValidCarrier = (c: string): c is Carrier =>
   c === "dhl" || c === "malca_amit" || c === "brinks";
+
+// ── Direction (0025) : aller vs retour rétractation ─────────────────────────
+export type DeliveryDirection = "outbound" | "return";
+
+export const parseDirection = (v: string | null | undefined): DeliveryDirection =>
+  v === "return" ? "return" : "outbound";
+
+// Mêmes statuts DB, sémantique différente côté retour : le client renvoie,
+// « delivered » = pièce reçue (chez nous / la maison).
+export const RETURN_FR: Record<DeliveryStatus, string> = {
+  pending: "À organiser",
+  preparing: "Étiquette envoyée",
+  shipped: "Déposée par le client",
+  in_transit: "En transit",
+  delivered: "Reçue",
+  returned: "—",
+  lost: "Perdue",
+};
+
+export const deliveryLabel = (direction: DeliveryDirection, s: DeliveryStatus) =>
+  direction === "return" ? RETURN_FR[s] : DELIVERY_FR[s];
+
+const NEXT_RETURN: Record<DeliveryStatus, DeliveryStatus[]> = {
+  pending: ["preparing", "shipped"],
+  preparing: ["shipped"],
+  shipped: ["in_transit", "delivered"],
+  in_transit: ["delivered", "lost"],
+  delivered: [],
+  returned: [],
+  lost: [],
+};
+
+export const nextDeliverySteps = (direction: DeliveryDirection, s: DeliveryStatus) =>
+  (direction === "return" ? NEXT_RETURN : NEXT_DELIVERY)[s] ?? [];
+
+/** Lien de suivi public quand le transporteur en a un (DHL). */
+export function trackingUrl(carrier: string | null, tracking: string | null): string | null {
+  if (!tracking) return null;
+  if (carrier === "dhl")
+    return `https://www.dhl.com/fr-fr/home/tracking.html?tracking-id=${encodeURIComponent(tracking)}`;
+  return null; // Malca-Amit / Brink's : suivi hors ligne (concierge)
+}

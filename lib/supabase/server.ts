@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 import type { Database } from "./types";
+import { SESSION_ONLY_COOKIE, withPersistence } from "./cookie-persistence";
 
 /**
  * Client Supabase cote serveur (Server Components, Route Handlers, Server Actions).
@@ -20,8 +21,14 @@ export function createClient() {
         },
         setAll(cookiesToSet) {
           try {
+            const sessionOnly =
+              cookieStore.get(SESSION_ONLY_COOKIE)?.value === "1";
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(
+                name,
+                value,
+                withPersistence(value, options, sessionOnly)
+              )
             );
           } catch {
             // Appele depuis un Server Component : le refresh de session

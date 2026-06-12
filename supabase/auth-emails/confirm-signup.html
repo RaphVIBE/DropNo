@@ -22,13 +22,12 @@
 </td></tr>
 <tr><td style="padding:40px 40px 36px;">
 <p style="margin:0 0 14px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#8a8175;">Bienvenue</p>
-<h1 style="margin:0 0 18px;font-family:'Fraunces',Georgia,'Times New Roman',serif;font-style:italic;font-weight:300;font-size:32px;line-height:1.08;letter-spacing:-0.02em;color:#221d17;">Confirmez votre email.</h1>
-<p style="margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.62;color:#4a4339;">Une dernière étape pour rejoindre Drop No. Confirmez cette adresse et vous pourrez sceller votre première offre. Ce lien expire dans 24 heures.</p>
-<table role="presentation" cellpadding="0" cellspacing="0" style="margin:30px 0 4px;">
-<tr><td bgcolor="#221d17" style="background:#221d17;">
-<a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 30px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#f6f3ec;text-decoration:none;">Confirmer mon email</a>
-</td></tr></table>
-<p style="margin:24px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Si le bouton ne fonctionne pas, copiez ce lien :<br/><a href="{{ .ConfirmationURL }}" style="color:#8c7a52;text-decoration:none;word-break:break-all;">{{ .ConfirmationURL }}</a></p>
+<h1 style="margin:0 0 18px;font-family:'Fraunces',Georgia,'Times New Roman',serif;font-style:italic;font-weight:300;font-size:32px;line-height:1.08;letter-spacing:-0.02em;color:#221d17;">Votre code de bienvenue.</h1>
+<p style="margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.62;color:#4a4339;">Une dernière étape pour rejoindre Drop No. Saisissez ce code dans la fenêtre de connexion pour confirmer votre adresse, et vous pourrez sceller votre première offre. Il expire dans une heure.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:30px 0 6px;">
+<tr><td align="center" style="border:1px solid #e6e0d3;background:#faf8f3;padding:18px 34px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:33px;font-weight:500;letter-spacing:0.34em;color:#221d17;">{{ .Token }}</td></tr>
+</table>
+<p style="margin:22px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Vous préférez un lien ? <a href="{{ .ConfirmationURL }}" style="color:#8c7a52;text-decoration:none;">Confirmez en un clic.</a></p>
 <p style="margin:18px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Vous n'avez pas créé de compte ? Ignorez simplement cet email.</p>
 <div style="border-top:1px dashed #c4ac82;line-height:0;font-size:0;margin:32px 0 0;">&nbsp;</div>
 <p style="margin:22px 0 12px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#8a8175;">Comment ça marche</p>

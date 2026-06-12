@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
+
+import { PostHogScript } from "@/components/analytics/PostHogScript";
+import { PageviewTracker } from "@/components/analytics/PageviewTracker";
 
 // Display serif editorial — Fraunces italic 300 (titres)
 const fraunces = Fraunces({
@@ -18,7 +22,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Drop No. — Drops scellés pour montres premium",
+  title: "Drop No. · Drops scellés pour montres premium",
   description:
     "Une maison de drops scellés dédiée à l'horlogerie premium. Offre cachée, prix unique à la révélation.",
 };
@@ -37,6 +41,10 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${fraunces.variable} ${inter.variable}`}>
       <body className="min-h-screen antialiased">
+        <PostHogScript />
+        <Suspense fallback={null}>
+          <PageviewTracker />
+        </Suspense>
         <a href="#main-content" className="skip-link">
           Aller au contenu
         </a>

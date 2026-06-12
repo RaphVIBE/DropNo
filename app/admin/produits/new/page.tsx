@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/lib/admin/ui";
+import { nextRevealSlots } from "@/lib/admin/drops";
 import { DropForm } from "../DropForm";
 import { createDraft } from "../actions";
 
@@ -10,6 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function NewDropPage() {
   const supabase = createClient();
   const { data: brands } = await supabase.from("brands").select("id, name").order("name");
+  const revealSlots = nextRevealSlots(new Date().toISOString(), 16);
 
   return (
     <>
@@ -19,7 +21,7 @@ export default async function NewDropPage() {
         Créé en brouillon. Tu le publieras (→ programmé) une fois prêt ; le cron l&apos;ouvrira à l&apos;heure d&apos;ouverture.
       </p>
       <Card className="max-w-2xl">
-        <DropForm action={createDraft} brands={brands ?? []} />
+        <DropForm action={createDraft} brands={brands ?? []} revealSlots={revealSlots} />
       </Card>
     </>
   );

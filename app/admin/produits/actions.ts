@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getRole } from "@/lib/admin/auth";
 import {
   validateDrop, isPlannable, canPublish, canCancel, canDelete,
+  parseDropFormat, formatPreset, openFromReveal, lockFromReveal,
   type DropInput, type DropStatus,
 } from "@/lib/admin/drops";
 
@@ -24,6 +25,13 @@ const isoOrNull = (v: string) => {
 
 function parseInput(fd: FormData): DropInput {
   const euros = parseFloat(str(fd, "floor_price").replace(",", "."));
+  // Le reveal est l'ancre saisie par l'opérateur ; ouverture et verrouillage sont
+  // dérivés du preset du format, sauf surcharge « Paramètres avancés ».
+  const format = parseDropFormat(str(fd, "format"));
+  const preset = formatPreset(format);
+  const revealIso = isoOrNull(str(fd, "reveal_at")) ?? "";
+  const openIso = isoOrNull(str(fd, "bid_window_opens_at")) ?? openFromReveal(revealIso, preset);
+  const lockIso = isoOrNull(str(fd, "bid_lock_at")) ?? lockFromReveal(revealIso, preset);
   return {
     brand_id: str(fd, "brand_id"),
     title: str(fd, "title"),
@@ -31,9 +39,10 @@ function parseInput(fd: FormData): DropInput {
     description: str(fd, "description") || null,
     floor_price_cents: Number.isFinite(euros) ? Math.round(euros * 100) : NaN,
     exemplaires: parseInt(str(fd, "exemplaires"), 10),
-    bid_window_opens_at: isoOrNull(str(fd, "bid_window_opens_at")) ?? "",
-    bid_lock_at: isoOrNull(str(fd, "bid_lock_at")),
-    reveal_at: isoOrNull(str(fd, "reveal_at")) ?? "",
+    format,
+    bid_window_opens_at: openIso,
+    bid_lock_at: lockIso,
+    reveal_at: revealIso,
     hero_image_url: str(fd, "hero_image_url") || null,
     images_urls: str(fd, "images_urls").split("\n").map((s) => s.trim()).filter(Boolean),
   };

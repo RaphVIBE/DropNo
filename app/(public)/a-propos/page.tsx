@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Filigrane } from "@/components/brand/filigrane";
 
 export const metadata: Metadata = {
-  title: "À propos — Drop No.",
+  title: "À propos · Drop No.",
   description:
     "Drop No. est une maison de drops scellés pour montres premium, en direct des marques.",
 };
@@ -66,7 +66,7 @@ export default function AboutPage() {
           style={{ "--reveal-delay": "480ms" } as React.CSSProperties}
         >
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Drop No. est édité depuis Paris. Pour toute question, écrivez-nous à{" "}
+            Drop No. est édité depuis Bruxelles. Pour toute question, écrivez-nous à{" "}
             <a
               href="mailto:hello@dropno.eu"
               className={`text-champagne-deep underline-offset-4 hover:underline ${LINK_FOCUS}`}

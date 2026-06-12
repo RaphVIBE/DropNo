@@ -180,7 +180,7 @@ function BidEntry({
       <Panel>
         <Head bidCount={bidCount} />
         <p className="font-serif text-lg italic">
-          Offre scellée — {formatEuros(sealedCents)}
+          Offre scellée : {formatEuros(sealedCents)}
         </p>
         <p className="mt-2 text-sm text-ink-2">
           Modifiable jusqu&apos;à une heure avant la révélation. Vous recevrez
@@ -403,7 +403,13 @@ function Head({ bidCount }: { bidCount: number }) {
 function Fine() {
   return (
     <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-      {FINE_PRINT}
+      {FINE_PRINT}{" "}
+      <Link
+        href="/mecanisme"
+        className="rounded-sm underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
+        Comment fonctionne un drop
+      </Link>
     </p>
   );
 }

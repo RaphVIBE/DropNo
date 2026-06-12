@@ -3,7 +3,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Badge, PageHeader, FilterTabs, Pagination } from "@/lib/admin/ui";
 import { eur, dateTime } from "@/lib/admin/format";
-import { TX_FR, TX_TONE, DELIVERY_FR, DELIVERY_TONE, type TxStatus, type DeliveryStatus } from "@/lib/admin/orders";
+import {
+  TX_FR, TX_TONE, DELIVERY_FR, DELIVERY_TONE, RETURN_FR,
+  type TxStatus, type DeliveryStatus,
+} from "@/lib/admin/orders";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +14,7 @@ type Row = {
   id: string; created_at: string; amount_paid_cents: number; status: TxStatus;
   drops: { drop_number: number; title: string; brands: { name: string } | null } | null;
   profiles: { email: string; display_name: string | null } | null;
-  deliveries: { status: DeliveryStatus }[] | null;
+  deliveries: { status: DeliveryStatus; direction: string }[] | null;
 };
 
 const th = "px-4 py-2.5 text-left text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground";
@@ -35,7 +38,7 @@ export default async function CommandesPage({
   const supabase = createClient();
   let query = supabase
     .from("transactions")
-    .select("id, created_at, amount_paid_cents, status, drops(drop_number, title, brands(name)), profiles(email, display_name), deliveries(status)")
+    .select("id, created_at, amount_paid_cents, status, drops(drop_number, title, brands(name)), profiles(email, display_name), deliveries(status, direction)")
     .order("created_at", { ascending: false })
     .range(from, from + PAGE);
   if (statusParam) query = query.eq("status", statusParam);
@@ -69,7 +72,8 @@ export default async function CommandesPage({
             </thead>
             <tbody>
               {rows.map((t) => {
-                const del = t.deliveries?.[0]?.status;
+                const del = t.deliveries?.find((d) => d.direction !== "return")?.status;
+                const ret = t.deliveries?.find((d) => d.direction === "return")?.status;
                 return (
                   <tr key={t.id} className="border-b border-border/60 last:border-0 hover:bg-white/[0.02]">
                     <td className={`${td} text-muted-foreground`}>{dateTime(t.created_at)}</td>
@@ -80,7 +84,10 @@ export default async function CommandesPage({
                     <td className={`${td} text-muted-foreground`}>{t.profiles?.display_name ?? t.profiles?.email ?? "—"}</td>
                     <td className={td}>{eur(t.amount_paid_cents)}</td>
                     <td className={td}><Badge tone={TX_TONE[t.status]}>{TX_FR[t.status]}</Badge></td>
-                    <td className={td}>{del ? <Badge tone={DELIVERY_TONE[del]}>{DELIVERY_FR[del]}</Badge> : <span className="text-xs text-muted-foreground">— à créer</span>}</td>
+                    <td className={td}>
+                      {del ? <Badge tone={DELIVERY_TONE[del]}>{DELIVERY_FR[del]}</Badge> : <span className="text-xs text-muted-foreground">— à créer</span>}
+                      {ret && <div className="mt-1"><Badge tone="amber">↩ Retour · {RETURN_FR[ret]}</Badge></div>}
+                    </td>
                   </tr>
                 );
               })}

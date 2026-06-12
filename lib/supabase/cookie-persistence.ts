@@ -36,7 +36,9 @@ export function withPersistence(
   if (!value) return base; // suppression : on laisse passer tel quel
 
   if (sessionOnly) {
-    const { maxAge: _maxAge, expires: _expires, ...rest } = base;
+    const rest: CookieOptions = { ...base };
+    delete rest.maxAge;
+    delete rest.expires;
     return rest;
   }
   return { ...base, maxAge: base.maxAge ?? PERSISTENT_MAX_AGE };

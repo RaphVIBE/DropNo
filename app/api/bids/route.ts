@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { getStripe, mapPaymentIntentStatus } from "@/lib/stripe/client";
 import { sendBidConfirmation } from "@/lib/email/send";
 import type { Tables } from "@/lib/supabase/types";
@@ -110,7 +111,9 @@ export async function POST(request: NextRequest) {
         metadata: { user_id: user.id },
       });
       customerId = customer.id;
-      await supabase
+      // stripe_customer_id n'est plus modifiable par l'utilisateur (verrou
+      // migration 0027) : on persiste via le service role, borné à sa row.
+      await createServiceClient()
         .from("profiles")
         .update({ stripe_customer_id: customerId })
         .eq("id", user.id);

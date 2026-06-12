@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { getStripe } from "@/lib/stripe/client";
 
 export const dynamic = "force-dynamic";
@@ -45,8 +46,10 @@ export async function POST(request: NextRequest) {
     return_url: returnUrl,
   });
 
-  // Trace le statut côté profil (RLS : update sa propre row).
-  await supabase
+  // Trace le statut côté profil via le SERVICE ROLE : kyc_status n'est plus
+  // modifiable par l'utilisateur (verrou anti-bypass KYC, migration 0027).
+  // L'écriture reste bornée à la row de l'utilisateur authentifié ci-dessus.
+  await createServiceClient()
     .from("profiles")
     .update({
       kyc_status: "verifying",

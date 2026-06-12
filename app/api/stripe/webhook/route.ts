@@ -99,6 +99,9 @@ async function updateKyc(
       kyc_status: status,
       kyc_stripe_session_id: session.id,
       kyc_verified_at: status === "verified" ? new Date().toISOString() : null,
+      // Tag de provenance : seulement à la vérification, sinon on n'écrase pas
+      // un éventuel kyc_provider existant (cohérence avec le canal itsme).
+      ...(status === "verified" ? { kyc_provider: "stripe" as const } : {}),
     })
     .eq("id", userId);
 }

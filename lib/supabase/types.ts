@@ -611,6 +611,8 @@ export type Database = {
           display_name: string | null
           email: string
           id: string
+          identity_attributes: Json | null
+          kyc_provider: string | null
           kyc_status: string
           kyc_stripe_session_id: string | null
           kyc_verified_at: string | null
@@ -623,6 +625,8 @@ export type Database = {
           display_name?: string | null
           email: string
           id: string
+          identity_attributes?: Json | null
+          kyc_provider?: string | null
           kyc_status?: string
           kyc_stripe_session_id?: string | null
           kyc_verified_at?: string | null
@@ -635,6 +639,8 @@ export type Database = {
           display_name?: string | null
           email?: string
           id?: string
+          identity_attributes?: Json | null
+          kyc_provider?: string | null
           kyc_status?: string
           kyc_stripe_session_id?: string | null
           kyc_verified_at?: string | null

@@ -39,7 +39,7 @@
     "allCalendar": "Tout le calendrier →",
     "housesTitle": "Les maisons",
     "housesDirect": "En direct des marques →",
-    "manifesto": "Pas une marketplace. Une maison, une pièce, un rendez-vous par semaine.",
+    "manifesto": "Pas une marketplace. Une maison, une pièce, un rendez-vous : le jeudi, 18 heures.",
     "manifestoSub": "En direct des maisons, sans revente ni intermédiaire. Livraison assurée, identité vérifiée, rétractation 14 jours. Aucun frais pour l'acheteur.",
     "aboutLink": "La maison Drop No. →"
   },
@@ -87,8 +87,8 @@
         "body": "Les offres sont figées. Plus aucune soumission ni modification : le tri peut commencer."
       },
       "reveal": {
-        "t": "Révélation",
-        "title": "Prix unique",
+        "t": "Jeudi 18h",
+        "title": "Révélation",
         "body": "Les gagnants sont notifiés et payent tous le même prix. Les autres pré-autorisations sont libérées."
       }
     },
@@ -296,7 +296,7 @@
     "metaDescription": "Drop No. est une maison de drops scellés pour montres premium, en direct des marques.",
     "eyebrow": "À propos",
     "title": "Une maison de drops scellés.",
-    "para1": "Drop No. réunit, une fois par semaine, une marque et une pièce. Un nombre limité d'exemplaires, un prix plancher, une fenêtre d'offres de cinq jours. Chaque drop est numéroté, attendu, ritualisé.",
+    "para1": "Drop No. réunit, chaque jeudi à 18 heures, une maison et une pièce. Un nombre limité d'exemplaires, un prix plancher, une fenêtre d'offres de cinq jours. Chaque drop est numéroté, attendu, ritualisé.",
     "para2Lead": "Vous soumettez une offre cachée, modifiable jusqu'à la dernière heure. À la révélation, les offres les plus hautes l'emportent et",
     "para2Emphasis": "tous les gagnants payent le même prix",
     "para2Tail": ": celui de la dernière offre retenue. Pas de surenchère en temps réel, pas de guerre des prix. Un calendrier que vous pouvez tenir.",

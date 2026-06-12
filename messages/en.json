@@ -39,7 +39,7 @@
     "allCalendar": "Full calendar →",
     "housesTitle": "The houses",
     "housesDirect": "Direct from the brands →",
-    "manifesto": "Not a marketplace. One house, one piece, one appointment a week.",
+    "manifesto": "Not a marketplace. One house, one piece, one appointment: Thursday, 6 PM.",
     "manifestoSub": "Direct from the houses, no resale, no middleman. Insured delivery, verified identity, 14-day withdrawal. No buyer fees.",
     "aboutLink": "The Drop No. house →"
   },
@@ -87,8 +87,8 @@
         "body": "The bids are frozen. No further submission or change: the sorting can begin."
       },
       "reveal": {
-        "t": "Reveal",
-        "title": "Single price",
+        "t": "Thursday 6 PM",
+        "title": "Reveal",
         "body": "The winners are notified and all pay the same price. The other pre-authorisations are released."
       }
     },
@@ -296,7 +296,7 @@
     "metaDescription": "Drop No. is a house of sealed drops for premium watches, direct from the brands.",
     "eyebrow": "About",
     "title": "A house of sealed drops.",
-    "para1": "Once a week, Drop No. brings together a brand and a single piece. A limited number of examples, a floor price, a five-day bidding window. Every drop is numbered, awaited, made into a ritual.",
+    "para1": "Every Thursday at 6 PM, Drop No. brings together a house and a single piece. A limited number of examples, a floor price, a five-day bidding window. Every drop is numbered, awaited, made into a ritual.",
     "para2Lead": "You submit a hidden bid, adjustable until the final hour. At the reveal, the highest bids prevail and",
     "para2Emphasis": "every winner pays the same price",
     "para2Tail": ": that of the last bid accepted. No real-time overbidding, no price war. A calendar you can keep.",

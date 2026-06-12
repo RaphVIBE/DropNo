@@ -1,31 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
-import { Fraunces, Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
 
+import { fontVariables } from "@/lib/fonts";
 import { PostHogScript } from "@/components/analytics/PostHogScript";
 import { PageviewTracker } from "@/components/analytics/PageviewTracker";
 
-// Display serif editorial — Fraunces italic 300 (titres)
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap",
-  style: ["italic", "normal"],
-});
-
-// Corps de texte — Inter
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-export const metadata: Metadata = {
-  title: "Drop No. · Drops scellés pour montres premium",
-  description:
-    "Une maison de drops scellés dédiée à l'horlogerie premium. Offre cachée, prix unique à la révélation.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return { title: t("title"), description: t("description") };
+}
 
 export const viewport: Viewport = {
   colorScheme: "light",
@@ -33,22 +19,31 @@ export const viewport: Viewport = {
   themeColor: "#f6f3ec",
 };
 
-export default function RootLayout({
+/**
+ * Racine HTML unique. `lang` est dérivé de la locale courante (getLocale) :
+ * `en` sous /en/*, `fr` partout ailleurs (vitrine FR + back-office non localisé).
+ * NextIntlClientProvider hérite locale + messages du contexte serveur (v4) et
+ * les rend disponibles aux composants client (ex. le sélecteur de langue).
+ */
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const t = await getTranslations("common");
+
   return (
-    <html lang="fr" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang={locale} className={fontVariables}>
       <body className="min-h-screen antialiased">
         <PostHogScript />
         <Suspense fallback={null}>
           <PageviewTracker />
         </Suspense>
         <a href="#main-content" className="skip-link">
-          Aller au contenu
+          {t("skipToContent")}
         </a>
-        {children}
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

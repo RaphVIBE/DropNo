@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Bell, BellRing, Check } from "lucide-react";
 
 /**
@@ -21,6 +22,7 @@ export function DropAlertBell({
   status: string;
   flash?: string;
 }) {
+  const t = useTranslations("dropDetail");
   const storageKey = `dropno_alert_${dropId}`;
   const ref = useRef<HTMLDivElement>(null);
 
@@ -82,7 +84,7 @@ export function DropAlertBell({
     e.preventDefault();
     if (!notifyOpen && !notifyLock) {
       setState("error");
-      setMessage("Choisissez au moins un rappel.");
+      setMessage(t("alertErrorPickOne"));
       return;
     }
     setState("sending");
@@ -96,7 +98,7 @@ export function DropAlertBell({
       const data = await res.json();
       if (!res.ok) {
         setState("error");
-        setMessage(data.error ?? "Une erreur est survenue.");
+        setMessage(data.error ?? t("alertErrorGeneric"));
         return;
       }
       setState("sent");
@@ -108,7 +110,7 @@ export function DropAlertBell({
       }
     } catch {
       setState("error");
-      setMessage("Impossible de joindre le serveur.");
+      setMessage(t("alertErrorNetwork"));
     }
   }
 
@@ -117,11 +119,11 @@ export function DropAlertBell({
   const BellIcon = active ? BellRing : Bell;
   const flashMsg =
     flash === "confirmed"
-      ? "Alerte confirmée. Vous serez prévenu par email."
+      ? t("alertFlashConfirmed")
       : flash === "off"
-        ? "Vous ne recevrez plus d'alerte pour ce drop."
+        ? t("alertFlashOff")
         : flash === "invalid"
-          ? "Ce lien d'alerte n'est plus valide."
+          ? t("alertFlashInvalid")
           : null;
 
   return (
@@ -131,9 +133,7 @@ export function DropAlertBell({
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="dialog"
-        aria-label={
-          active ? "Alerte active pour ce drop" : "Être prévenu de ce drop"
-        }
+        aria-label={active ? t("bellAriaActive") : t("bellAriaInactive")}
         className={`relative -my-1 inline-flex size-8 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
           active
             ? "text-champagne-deep"
@@ -152,7 +152,7 @@ export function DropAlertBell({
       {open ? (
         <div
           role="dialog"
-          aria-label="Être prévenu de ce drop"
+          aria-label={t("bellAriaInactive")}
           className="absolute right-0 top-full z-30 mt-2 w-[min(20rem,calc(100vw-3.5rem))] border border-rule bg-card p-5 text-left shadow-soft"
         >
           <div className="mb-3 flex items-center gap-2">
@@ -162,10 +162,10 @@ export function DropAlertBell({
               }`}
             >
               {active
-                ? "Alerte active"
+                ? t("statusActive")
                 : pending
-                  ? "Confirmation en attente"
-                  : "Me tenir informé"}
+                  ? t("statusPending")
+                  : t("statusIdle")}
             </span>
           </div>
 
@@ -178,19 +178,15 @@ export function DropAlertBell({
 
           {state === "sent" ? (
             <p className="text-sm text-ink-2">
-              Vérifiez vos emails : un lien de confirmation vient d&apos;être
-              envoyé à <span className="text-foreground">{email}</span>.
+              {t.rich("alertSentTo", {
+                email: () => <span className="text-foreground">{email}</span>,
+              })}
             </p>
           ) : active ? (
-            <p className="text-sm text-ink-2">
-              Vous serez prévenu par email aux moments choisis. Pour vous
-              désinscrire, utilisez le lien présent dans nos emails.
-            </p>
+            <p className="text-sm text-ink-2">{t("alertActiveBody")}</p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <p className="text-sm text-ink-2">
-                Un email, sans créer de compte. Confirmation requise.
-              </p>
+              <p className="text-sm text-ink-2">{t("alertFormIntro")}</p>
               <fieldset className="space-y-2">
                 <label className="flex cursor-pointer items-start gap-2.5">
                   <input
@@ -200,7 +196,7 @@ export function DropAlertBell({
                     className="mt-0.5 size-4 accent-[var(--champagne-deep)]"
                   />
                   <span className="text-sm text-foreground">
-                    À l&apos;ouverture des offres
+                    {t("notifyOpenLabel")}
                   </span>
                 </label>
                 <label className="flex cursor-pointer items-start gap-2.5">
@@ -211,7 +207,7 @@ export function DropAlertBell({
                     className="mt-0.5 size-4 accent-[var(--champagne-deep)]"
                   />
                   <span className="text-sm text-foreground">
-                    1 h avant la clôture
+                    {t("notifyLockLabel")}
                   </span>
                 </label>
               </fieldset>
@@ -221,7 +217,7 @@ export function DropAlertBell({
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="vous@exemple.com"
+                placeholder={t("emailPlaceholder")}
                 className="w-full border border-input bg-background px-3 py-2.5 text-[15px] outline-none transition-colors focus-visible:border-champagne-deep focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               />
               {state === "error" ? (
@@ -232,7 +228,7 @@ export function DropAlertBell({
                 disabled={state === "sending"}
                 className="block w-full bg-primary px-5 py-3 text-center text-[12px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {state === "sending" ? "Envoi..." : "Me prévenir"}
+                {state === "sending" ? t("submitSending") : t("submitNotify")}
               </button>
             </form>
           )}

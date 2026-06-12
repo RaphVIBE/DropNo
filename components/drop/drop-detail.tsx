@@ -1,15 +1,18 @@
+import { getTranslations } from "next-intl/server";
+
 /**
  * Story marque + fiche technique. La description est decoupee en paragraphes
  * (separes par double saut de ligne). Les specs viennent de drops.specs (JSON
  * objet cle->valeur), affichees en dl si presentes.
  */
-export function DropDetail({
+export async function DropDetail({
   description,
   specs,
 }: {
   description: string | null;
   specs: Record<string, unknown> | null;
 }) {
+  const t = await getTranslations("dropDetail");
   const paragraphs = (description ?? "")
     .split(/\n{2,}/)
     .map((p) => p.trim())
@@ -26,9 +29,9 @@ export function DropDetail({
     <div className="border-t border-rule-soft px-7 py-24 md:px-16 md:py-32">
       <div className="grid max-w-6xl grid-cols-1 gap-16 md:grid-cols-[1fr_1.4fr] md:gap-24">
         <div>
-          <span className="eyebrow">La pièce</span>
+          <span className="eyebrow">{t("storyEyebrow")}</span>
           <h3 className="font-display mt-4 text-[clamp(2rem,4vw,3rem)]">
-            Racontée par la maison.
+            {t("storyHeading")}
           </h3>
         </div>
         <div>

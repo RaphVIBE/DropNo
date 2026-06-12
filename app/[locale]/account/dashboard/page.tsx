@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ async function signOut() {
 }
 
 export default async function DashboardPage() {
+  const t = await getTranslations("accountDashboard");
   const supabase = createClient();
   const {
     data: { user },
@@ -72,7 +74,7 @@ export default async function DashboardPage() {
       footer={
         <form action={signOut}>
           <Button type="submit" variant="outline">
-            Se déconnecter
+            {t("signOut")}
           </Button>
         </form>
       }

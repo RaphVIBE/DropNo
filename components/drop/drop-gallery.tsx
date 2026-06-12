@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { WatchArt } from "@/components/drop/watch-art";
 
@@ -20,6 +21,7 @@ export function DropGallery({
   title: string;
   seed?: number;
 }) {
+  const t = useTranslations("dropDetail");
   const all = [heroImageUrl, ...(imagesUrls ?? [])].filter(
     (u): u is string => typeof u === "string" && u.length > 0
   );
@@ -57,7 +59,10 @@ export function DropGallery({
               <button
                 type="button"
                 onClick={() => setActive(i)}
-                aria-label={`Voir la photo ${i + 1} sur ${images.length}`}
+                aria-label={t("galleryThumbAria", {
+                  index: i + 1,
+                  total: images.length,
+                })}
                 aria-current={i === active}
                 className={`relative block aspect-square w-full overflow-hidden bg-card ring-1 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   i === active

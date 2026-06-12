@@ -1,5 +1,8 @@
-import Link from "next/link";
+"use client";
 
+import { useTranslations } from "next-intl";
+
+import { Link } from "@/i18n/navigation";
 import { formatDropNumber } from "@/lib/format";
 
 export function AccountSection({
@@ -46,6 +49,7 @@ export function AccountRow({
   secondary?: string;
   badge: { label: string; tone: "live" | "win" | "muted" | "neutral" };
 }) {
+  const t = useTranslations("accountDashboard");
   const toneClass = {
     live: "text-champagne-deep",
     win: "text-foreground",
@@ -59,7 +63,7 @@ export function AccountRow({
         {dropNumber != null ? `No. ${formatDropNumber(dropNumber)}` : "—"}
       </span>
       <span className="font-serif text-lg italic md:text-xl">
-        {title ?? "Drop"}
+        {title ?? t("dropFallback")}
       </span>
       <span className="text-sm text-ink-2">
         <span className="block font-serif text-base italic text-foreground">

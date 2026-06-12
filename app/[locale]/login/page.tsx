@@ -1,23 +1,22 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/browser";
 import { SESSION_ONLY_COOKIE } from "@/lib/supabase/cookie-persistence";
 import { Button } from "@/components/ui/button";
 import { Wordmark } from "@/components/brand/wordmark";
 
-/** Messages lisibles pour les erreurs d'auth renvoyees par Supabase/GoTrue. */
-const AUTH_ERROR_MESSAGES: Record<string, string> = {
-  otp_expired:
-    "Ce lien de connexion a expiré ou a déjà été utilisé. Demandez-en un nouveau ci-dessous.",
-  access_denied:
-    "Ce lien de connexion n'est plus valide. Demandez-en un nouveau ci-dessous.",
-  auth: "La connexion a échoué. Réessayez avec un nouveau code.",
-  missing_code: "Lien de connexion incomplet. Demandez-en un nouveau ci-dessous.",
-};
+/** Clés des erreurs d'auth renvoyées par Supabase/GoTrue. */
+const AUTH_ERROR_KEYS = new Set([
+  "otp_expired",
+  "access_denied",
+  "auth",
+  "missing_code",
+]);
 
 export default function LoginPage() {
   return (
@@ -28,6 +27,7 @@ export default function LoginPage() {
 }
 
 function LoginForm() {
+  const t = useTranslations("login");
   const searchParams = useSearchParams();
   const authError = searchParams.get("auth_error") ?? searchParams.get("error");
   const redirect = searchParams.get("redirect");
@@ -95,9 +95,7 @@ function LoginForm() {
 
     if (error) {
       setStatus("error");
-      setMessage(
-        "Code incorrect ou expiré. Vérifiez les six chiffres, ou demandez un nouveau code."
-      );
+      setMessage(t("codeError"));
       return;
     }
 
@@ -137,10 +135,12 @@ function LoginForm() {
       {step === "code" ? (
         <form onSubmit={handleCodeSubmit} className="space-y-6">
           <div className="space-y-2">
-            <h1 className="font-display text-3xl">Entrez votre code</h1>
+            <h1 className="font-display text-3xl">{t("codeTitle")}</h1>
             <p className="text-ink-2">
-              Un code à six chiffres a été envoyé à <strong>{email}</strong>.
-              Saisissez-le ci-dessous pour vous connecter.
+              {t.rich("codeIntro", {
+                email,
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
             </p>
           </div>
           <input
@@ -154,7 +154,7 @@ function LoginForm() {
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             placeholder="••••••"
-            aria-label="Code à six chiffres"
+            aria-label={t("codeAriaLabel")}
             className="w-full border border-input bg-card px-4 py-3 text-center text-2xl tracking-[0.5em] outline-none focus:ring-2 focus:ring-ring"
           />
           <Button
@@ -163,7 +163,7 @@ function LoginForm() {
             className="w-full"
             disabled={status === "verifying" || code.length < 6}
           >
-            {status === "verifying" ? "Connexion..." : "Se connecter"}
+            {status === "verifying" ? t("connecting") : t("submitCode")}
           </Button>
           {status === "error" ? (
             <p className="text-sm text-destructive">{message}</p>
@@ -175,30 +175,28 @@ function LoginForm() {
               disabled={status === "sending"}
               className="rounded-sm underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
             >
-              {status === "sending" ? "Envoi..." : "Renvoyer le code"}
+              {status === "sending" ? t("sending") : t("resendCode")}
             </button>
             <button
               type="button"
               onClick={backToEmail}
               className="rounded-sm underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              Modifier l&apos;email
+              {t("changeEmail")}
             </button>
           </div>
         </form>
       ) : (
         <form onSubmit={handleEmailSubmit} className="space-y-6">
           <div className="space-y-2">
-            <h1 className="font-display text-3xl">Connexion</h1>
-            <p className="text-ink-2">
-              Entrez votre email. Nous vous envoyons un code à six chiffres, sans
-              mot de passe.
-            </p>
+            <h1 className="font-display text-3xl">{t("emailTitle")}</h1>
+            <p className="text-ink-2">{t("emailIntro")}</p>
           </div>
           {authError ? (
             <p className="border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
-              {AUTH_ERROR_MESSAGES[authError] ??
-                "La connexion a échoué. Demandez un nouveau code ci-dessous."}
+              {AUTH_ERROR_KEYS.has(authError)
+                ? t(`authError.${authError}`)
+                : t("authError.fallback")}
             </p>
           ) : null}
           <input
@@ -207,7 +205,7 @@ function LoginForm() {
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="vous@exemple.com"
+            placeholder={t("emailPlaceholder")}
             className="w-full border border-input bg-card px-4 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
           />
           <label className="flex cursor-pointer select-none items-center gap-2.5 text-sm text-ink-2">
@@ -217,7 +215,7 @@ function LoginForm() {
               onChange={(e) => setKeepLoggedIn(e.target.checked)}
               className="h-4 w-4 rounded-sm border-input accent-[oklch(0.72_0.07_80)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
-            Rester connecté sur cet appareil
+            {t("keepLoggedIn")}
           </label>
           <Button
             type="submit"
@@ -225,7 +223,7 @@ function LoginForm() {
             className="w-full"
             disabled={status === "sending"}
           >
-            {status === "sending" ? "Envoi..." : "Recevoir le code"}
+            {status === "sending" ? t("sending") : t("requestCode")}
           </Button>
           {status === "error" ? (
             <p className="text-sm text-destructive">{message}</p>

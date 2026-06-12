@@ -1,12 +1,20 @@
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
 import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
 import { isAnnounced } from "@/lib/admin/drops";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export const dynamic = "force-dynamic";
+
+// Métadonnées : titre/description héritent du layout racine ; on ajoute ici
+// les alternates hreflang propres à la home (chemin racine).
+export async function generateMetadata() {
+  return { alternates: localizedAlternates("/", await getLocale()) };
+}
 
 const SELECT =
   "id, drop_number, title, status, floor_price_cents, clearing_price_cents, reveal_at, bid_window_opens_at, revealed_at, format, hero_image_url, brand:brands(name, slug)";
@@ -17,6 +25,7 @@ const SELECT =
  * annoncé) — et les maisons. Le footer global porte légal et engagements.
  */
 export default async function HomePage() {
+  const t = await getTranslations("home");
   const supabase = createClient();
   const serverNowIso = new Date().toISOString();
 
@@ -52,22 +61,19 @@ export default async function HomePage() {
             className="eyebrow reveal"
             style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
           >
-            Maison de drops scellés · horlogerie premium
+            {t("eyebrow")}
           </p>
           <h1
             className="font-display reveal text-balance text-5xl md:text-7xl"
             style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
           >
-            Une pièce. Un prix unique. Décidé à la révélation.
+            {t("title")}
           </h1>
           <p
             className="reveal max-w-xl text-lg text-ink-2"
             style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
           >
-            Chaque semaine, une maison ouvre un drop. Vous scellez votre offre.
-            Les plus hautes gagnent, et toutes payent le même prix{" "}: celui
-            de la dernière offre gagnante. Pas de surenchère, pas de guerre des
-            prix.
+            {t("intro")}
           </p>
           <div className="flex flex-wrap gap-4">
             <Button
@@ -76,7 +82,7 @@ export default async function HomePage() {
               className="reveal"
               style={{ "--reveal-delay": "520ms" } as React.CSSProperties}
             >
-              <Link href="/drops">Voir le calendrier</Link>
+              <Link href="/drops">{t("ctaCalendar")}</Link>
             </Button>
             <Button
               asChild
@@ -85,7 +91,7 @@ export default async function HomePage() {
               className="reveal"
               style={{ "--reveal-delay": "600ms" } as React.CSSProperties}
             >
-              <Link href="/mecanisme">Comprendre le mécanisme</Link>
+              <Link href="/mecanisme">{t("ctaMechanism")}</Link>
             </Button>
           </div>
         </div>
@@ -98,7 +104,7 @@ export default async function HomePage() {
               href="/mecanisme"
               className="rounded-sm text-[13px] text-ink-2 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              Le mécanisme en détail, avec un exemple chiffré →
+              {t("mechanismDetail")}
             </Link>
           </div>
         </div>
@@ -109,13 +115,13 @@ export default async function HomePage() {
         <section className="border-t border-rule-soft px-7 pb-8 pt-14 md:px-16 md:pt-16">
           <div className="flex items-baseline justify-between border-b border-foreground pb-5">
             <h2 className="font-serif text-3xl italic md:text-4xl">
-              {open ? "En ce moment" : "Prochain drop"}
+              {open ? t("nowTitle") : t("nextTitle")}
             </h2>
             <Link
               href="/drops"
               className="rounded-sm text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              Tout le calendrier →
+              {t("allCalendar")}
             </Link>
           </div>
           <CalendarRow
@@ -130,12 +136,12 @@ export default async function HomePage() {
       {brands.length > 0 ? (
         <section className="border-t border-rule-soft px-7 py-14 md:px-16 md:py-16">
           <div className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-2">
-            <span className="eyebrow">Les maisons</span>
+            <span className="eyebrow">{t("housesTitle")}</span>
             <Link
               href="/marques"
               className="rounded-sm text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              En direct des marques →
+              {t("housesDirect")}
             </Link>
           </div>
           <ul className="mt-7 flex flex-wrap items-baseline gap-x-10 gap-y-4">
@@ -156,20 +162,17 @@ export default async function HomePage() {
       {/* Manifeste court */}
       <section className="border-t border-rule-soft px-7 py-20 md:px-16 md:py-28">
         <p className="font-display mx-auto max-w-[26ch] text-center text-[clamp(1.6rem,3.5vw,2.5rem)]">
-          Pas une marketplace. Une maison, une pièce, un rendez-vous par
-          semaine.
+          {t("manifesto")}
         </p>
         <p className="mx-auto mt-6 max-w-[52ch] text-center text-base leading-relaxed text-ink-2">
-          En direct des maisons, sans revente ni intermédiaire. Livraison
-          assurée, identité vérifiée, rétractation 14 jours. Aucun frais pour
-          l&apos;acheteur.
+          {t("manifestoSub")}
         </p>
         <div className="mt-9 text-center">
           <Link
             href="/a-propos"
             className="rounded-sm text-sm text-ink-2 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            La maison Drop No. →
+            {t("aboutLink")}
           </Link>
         </div>
       </section>

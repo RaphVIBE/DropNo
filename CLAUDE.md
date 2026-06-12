@@ -61,7 +61,7 @@ Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas
 - **Frais** : vendeur 12% + 5€ fixes, acheteur 0%
 - **Prix plancher MVP** : 3 000€
 - **Logistique tier** : DHL Express assuré (3-10k€) / Malca-Amit concierge main propre (>10k€)
-- **Cadence** : 1 drop/semaine, jour fixe (reco jeudi 18h CET, à confirmer)
+- **Cadence** (décidé 2026-06-12) : 1 drop/semaine, révélation le **jeudi 18h CET/CEST** (Europe/Brussels). Le rituel est ancré dans la copy du site.
 - **Catégorie MVP** : montres uniquement (bijoux/vêtements/art = v2)
 - **Brand naming** : Drop No. (Drop № 001, 002…)
 - **Privilège № 001** (décidé 2026-06-12) : offre privée post-reveal au seul bid le plus haut pour réserver le numéro de série 001. Supplément = 50% du spread (bid − clearing), plancher 5% du clearing. Paiement on-session séparé (une PaymentIntent = une seule capture). Pas de cascade au rang 2, pas d'annonce pré-bid, validité 24h. Rangs 2-5 = v2. Voir `Privilege_001.md` — ✅ **implémenté et déployé** (0026 + close-drop v3 + refund-transaction v2 + écran client + admin + tests)
@@ -105,7 +105,6 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 
 ## Open decisions encore à trancher avec l'owner
 
-- Jour exact du drop hebdo (reco jeudi 18h CET)
 - Politique bids retirés entre T-24h et T-1h (interdire ou pénaliser ?)
 - Variante Vickrey : reconsidérer post-launch si évidence de bidding non-sincère
 - Régime TVA fees marque : à valider expert-comptable

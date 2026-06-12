@@ -1,9 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { cookies } from "next/headers";
+
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { getStripe, mapPaymentIntentStatus } from "@/lib/stripe/client";
-import { sendBidConfirmation } from "@/lib/email/send";
+import { sendBidConfirmation, emailLocale } from "@/lib/email/send";
 import type { Tables } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
@@ -210,15 +212,19 @@ export async function POST(request: NextRequest) {
       .rpc("my_bid_for_drop", { p_drop_id: dropId })
       .maybeSingle();
     const savedBid = saved as unknown as Tables<"bids"> | null;
-    await sendBidConfirmation(user.email, {
-      dropNumber: drop.drop_number ?? 0,
-      title: drop.title ?? "votre pièce",
-      amountCents,
-      submittedAt: savedBid?.submitted_at ?? new Date().toISOString(),
-      hash: savedBid?.amount_hash ?? null,
-      dropId,
-      imageUrl: drop.hero_image_url,
-    });
+    await sendBidConfirmation(
+      user.email,
+      {
+        dropNumber: drop.drop_number ?? 0,
+        title: drop.title ?? "votre pièce",
+        amountCents,
+        submittedAt: savedBid?.submitted_at ?? new Date().toISOString(),
+        hash: savedBid?.amount_hash ?? null,
+        dropId,
+        imageUrl: drop.hero_image_url,
+      },
+      emailLocale(cookies().get("NEXT_LOCALE")?.value)
+    );
   }
 
   return NextResponse.json({ ok: true, amountCents });

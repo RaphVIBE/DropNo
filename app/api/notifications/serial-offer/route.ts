@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createServiceClient } from "@/lib/supabase/service";
-import { sendSerialOffer } from "@/lib/email/send";
+import { sendSerialOffer, emailLocale } from "@/lib/email/send";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("email")
+    .select("email, locale")
     .eq("id", offer.user_id)
     .maybeSingle();
 
@@ -73,14 +73,18 @@ export async function POST(request: NextRequest) {
     exemplaires: number | null;
   } | null;
 
-  const res = await sendSerialOffer(profile.email, {
-    dropNumber: drop?.drop_number ?? 0,
-    title: drop?.title ?? "votre pièce",
-    exemplaires: drop?.exemplaires ?? 100,
-    supplementCents: offer.supplement_cents,
-    expiresAt: offer.expires_at,
-    offerId: offer.id,
-  });
+  const res = await sendSerialOffer(
+    profile.email,
+    {
+      dropNumber: drop?.drop_number ?? 0,
+      title: drop?.title ?? "votre pièce",
+      exemplaires: drop?.exemplaires ?? 100,
+      supplementCents: offer.supplement_cents,
+      expiresAt: offer.expires_at,
+      offerId: offer.id,
+    },
+    emailLocale(profile.locale)
+  );
 
   return NextResponse.json({ ok: res.ok });
 }

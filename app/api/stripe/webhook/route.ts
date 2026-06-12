@@ -3,7 +3,7 @@ import type Stripe from "stripe";
 
 import { getStripe } from "@/lib/stripe/client";
 import { createServiceClient } from "@/lib/supabase/service";
-import { sendBidConfirmation } from "@/lib/email/send";
+import { sendBidConfirmation, emailLocale } from "@/lib/email/send";
 
 export const dynamic = "force-dynamic";
 
@@ -132,21 +132,25 @@ async function markBidAuthorized(event: Stripe.Event) {
       .maybeSingle(),
     supabase
       .from("profiles")
-      .select("email")
+      .select("email, locale")
       .eq("id", bid.user_id)
       .maybeSingle(),
   ]);
 
   if (profile?.email) {
-    await sendBidConfirmation(profile.email, {
-      dropNumber: drop?.drop_number ?? 0,
-      title: drop?.title ?? "votre pièce",
-      amountCents: bid.amount_cents,
-      submittedAt: bid.submitted_at,
-      hash: bid.amount_hash,
-      dropId: bid.drop_id,
-      imageUrl: drop?.hero_image_url,
-    });
+    await sendBidConfirmation(
+      profile.email,
+      {
+        dropNumber: drop?.drop_number ?? 0,
+        title: drop?.title ?? "votre pièce",
+        amountCents: bid.amount_cents,
+        submittedAt: bid.submitted_at,
+        hash: bid.amount_hash,
+        dropId: bid.drop_id,
+        imageUrl: drop?.hero_image_url,
+      },
+      emailLocale(profile.locale)
+    );
   }
 }
 

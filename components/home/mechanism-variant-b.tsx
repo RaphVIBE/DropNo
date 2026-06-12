@@ -1,4 +1,5 @@
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 import {
   CHAMP,
@@ -19,11 +20,6 @@ type StepDef = {
   delay: number;
 };
 
-const STEPS: StepDef[] = [
-  { Figure: FigureSealed, label: "Offre scellée", delay: 700 },
-  { Figure: FigureReveal, label: "Révélation", delay: 840 },
-  { Figure: FigureClearing, label: "Prix unique", delay: 980 },
-];
 
 function Arrow({ delay }: { delay: number }) {
   return (
@@ -77,7 +73,15 @@ function ClockworkBackdrop() {
   );
 }
 
-export function MechanismVariantB() {
+export async function MechanismVariantB() {
+  const t = await getTranslations("mecanisme");
+
+  const STEPS: StepDef[] = [
+    { Figure: FigureSealed, label: t("steps.sealed"), delay: 700 },
+    { Figure: FigureReveal, label: t("steps.reveal"), delay: 840 },
+    { Figure: FigureClearing, label: t("steps.clearing"), delay: 980 },
+  ];
+
   return (
     <div className="relative">
       <ClockworkBackdrop />

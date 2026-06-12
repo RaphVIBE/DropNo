@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createServiceClient } from "@/lib/supabase/service";
-import { sendDropResult } from "@/lib/email/send";
+import { sendDropResult, emailLocale } from "@/lib/email/send";
 import { isEmailConfigured } from "@/lib/email/client";
 
 export const dynamic = "force-dynamic";
@@ -68,17 +68,30 @@ export async function POST(request: NextRequest) {
     status: string;
   }>;
 
+  // Langue de chaque destinataire (emails hors contexte de requête).
+  const userIds = recipients.map((r) => r.user_id);
+  const { data: profs } = userIds.length
+    ? await supabase.from("profiles").select("id, locale").in("id", userIds)
+    : { data: [] as { id: string; locale: string }[] };
+  const localeById = new Map(
+    (profs ?? []).map((p) => [p.id, p.locale] as const)
+  );
+
   let sent = 0;
   let failed = 0;
   for (const r of recipients) {
     if (!r.email) continue;
-    const res = await sendDropResult(r.email, {
-      won: r.status === "won",
-      dropNumber: drop.drop_number ?? 0,
-      title: drop.title ?? "votre pièce",
-      clearingPriceCents: drop.clearing_price_cents,
-      dropId,
-    });
+    const res = await sendDropResult(
+      r.email,
+      {
+        won: r.status === "won",
+        dropNumber: drop.drop_number ?? 0,
+        title: drop.title ?? "votre pièce",
+        clearingPriceCents: drop.clearing_price_cents,
+        dropId,
+      },
+      emailLocale(localeById.get(r.user_id))
+    );
     if (res.ok) sent++;
     else failed++;
   }

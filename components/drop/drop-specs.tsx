@@ -1,16 +1,21 @@
-import { formatEuros } from "@/lib/format";
+import { getLocale, getTranslations } from "next-intl/server";
 
-export function DropSpecs({
+import { formatEuros } from "@/lib/format";
+import type { Locale } from "@/i18n/routing";
+
+export async function DropSpecs({
   floorPriceCents,
   exemplaires,
 }: {
   floorPriceCents: number;
   exemplaires: number;
 }) {
+  const locale = (await getLocale()) as Locale;
+  const t = await getTranslations("dropDetail");
   return (
     <div className="mb-8 grid grid-cols-2">
-      <Spec label="Prix plancher" value={formatEuros(floorPriceCents)} />
-      <Spec label="Exemplaires" value={String(exemplaires)} bordered />
+      <Spec label={t("floorPrice")} value={formatEuros(floorPriceCents, locale)} />
+      <Spec label={t("exemplaires")} value={String(exemplaires)} bordered />
     </div>
   );
 }

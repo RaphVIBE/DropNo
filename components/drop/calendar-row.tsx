@@ -1,5 +1,6 @@
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import {
   formatEuros,
   formatRevealMoment,
@@ -7,6 +8,7 @@ import {
 } from "@/lib/format";
 import { DropCountdown } from "@/components/drop/drop-countdown";
 import { DropVisual } from "@/components/drop/drop-visual";
+import type { Locale } from "@/i18n/routing";
 
 // Au-dela de ce delai avant l'ouverture, le visuel d'un drop a venir reste
 // floute (on ne devoile pas la piece trop tot).
@@ -60,7 +62,7 @@ function Meta({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function CalendarRow({
+export async function CalendarRow({
   drop,
   variant,
   serverNowIso,
@@ -69,8 +71,11 @@ export function CalendarRow({
   variant: Variant;
   serverNowIso: string;
 }) {
+  const t = await getTranslations("drops");
+  const locale = (await getLocale()) as Locale;
+
   const floor = drop.floor_price_cents
-    ? formatEuros(drop.floor_price_cents)
+    ? formatEuros(drop.floor_price_cents, locale)
     : "—";
 
   // On floute la vignette d'un drop a venir tant que l'ouverture est a plus
@@ -111,29 +116,29 @@ export function CalendarRow({
         </div>
 
         <div className="flex flex-wrap items-start gap-x-12 gap-y-5">
-          <Meta label="Plancher" value={floor} />
+          <Meta label={t("metaFloor")} value={floor} />
 
           {variant === "open" ? (
             <Meta
-              label="Révélation"
-              value={drop.reveal_at ? formatRevealMoment(drop.reveal_at) : "—"}
+              label={t("metaReveal")}
+              value={drop.reveal_at ? formatRevealMoment(drop.reveal_at, locale) : "—"}
             />
           ) : variant === "upcoming" ? (
             <Meta
-              label="Ouverture"
+              label={t("metaOpening")}
               value={
                 drop.bid_window_opens_at
-                  ? formatShortDate(drop.bid_window_opens_at)
+                  ? formatShortDate(drop.bid_window_opens_at, locale)
                   : "—"
               }
             />
           ) : (
             <Meta
-              label="Prix unitaire"
+              label={t("metaUnitPrice")}
               value={
                 drop.clearing_price_cents
-                  ? formatEuros(drop.clearing_price_cents)
-                  : "Annulé"
+                  ? formatEuros(drop.clearing_price_cents, locale)
+                  : t("cancelled")
               }
             />
           )}
@@ -149,7 +154,7 @@ export function CalendarRow({
               <span className="inline-flex items-center gap-3 text-champagne-deep">
                 <span className="inline-flex items-center gap-2">
                   <span className="status-dot" aria-hidden />
-                  Ouvert
+                  {t("statusOpen")}
                 </span>
                 {drop.reveal_at ? (
                   <>
@@ -169,9 +174,9 @@ export function CalendarRow({
             <div className="text-[11px] uppercase tracking-[0.18em]">
               <span className="text-muted-foreground">
                 {drop.revealed_at
-                  ? formatShortDate(drop.revealed_at)
+                  ? formatShortDate(drop.revealed_at, locale)
                   : drop.reveal_at
-                    ? formatShortDate(drop.reveal_at)
+                    ? formatShortDate(drop.reveal_at, locale)
                     : ""}
               </span>
             </div>
@@ -182,12 +187,12 @@ export function CalendarRow({
               avec fleche pour les autres etats. */}
           {variant === "open" ? (
             <span className="mt-1 inline-flex w-fit items-center gap-2 bg-primary px-6 py-3 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-colors group-hover:bg-[oklch(0.12_0.012_60)]">
-              Faire une offre
+              {t("ctaMakeOffer")}
               <Arrow />
             </span>
           ) : (
             <span className="inline-flex w-fit items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-ink-2 transition-colors group-hover:text-foreground">
-              {variant === "upcoming" ? "Découvrir le drop" : "Voir le résultat"}
+              {variant === "upcoming" ? t("ctaDiscover") : t("ctaResult")}
               <Arrow />
             </span>
           )}

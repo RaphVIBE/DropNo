@@ -265,6 +265,7 @@ export type Database = {
           drop_id: string
           email: string
           id: string
+          locale: string
           lock_sent_at: string | null
           notify_lock: boolean
           notify_open: boolean
@@ -278,6 +279,7 @@ export type Database = {
           drop_id: string
           email: string
           id?: string
+          locale?: string
           lock_sent_at?: string | null
           notify_lock?: boolean
           notify_open?: boolean
@@ -291,6 +293,7 @@ export type Database = {
           drop_id?: string
           email?: string
           id?: string
+          locale?: string
           lock_sent_at?: string | null
           notify_lock?: boolean
           notify_open?: boolean
@@ -614,6 +617,7 @@ export type Database = {
           kyc_status: string
           kyc_stripe_session_id: string | null
           kyc_verified_at: string | null
+          locale: string
           newsletter_subscribed: boolean
           stripe_customer_id: string | null
           updated_at: string
@@ -626,6 +630,7 @@ export type Database = {
           kyc_status?: string
           kyc_stripe_session_id?: string | null
           kyc_verified_at?: string | null
+          locale?: string
           newsletter_subscribed?: boolean
           stripe_customer_id?: string | null
           updated_at?: string
@@ -638,6 +643,7 @@ export type Database = {
           kyc_status?: string
           kyc_stripe_session_id?: string | null
           kyc_verified_at?: string | null
+          locale?: string
           newsletter_subscribed?: boolean
           stripe_customer_id?: string | null
           updated_at?: string

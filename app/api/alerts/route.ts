@@ -1,7 +1,8 @@
+import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createServiceClient } from "@/lib/supabase/service";
-import { sendAlertConfirm } from "@/lib/email/send";
+import { sendAlertConfirm, emailLocale } from "@/lib/email/send";
 import { alertsClient, isValidEmail, newAlertToken, siteUrl } from "@/lib/alerts";
 
 export const dynamic = "force-dynamic";
@@ -56,6 +57,7 @@ export async function POST(request: NextRequest) {
   // Drop déjà ouvert -> on neutralise le rappel "ouverture" (il est déjà ouvert).
   const openSentAt = drop.status === "open" ? new Date().toISOString() : null;
 
+  const locale = emailLocale(cookies().get("NEXT_LOCALE")?.value);
   const alerts = alertsClient();
   const { error: upErr } = await alerts.from("drop_alerts").upsert(
     {
@@ -68,6 +70,7 @@ export async function POST(request: NextRequest) {
       confirmed_at: null,
       open_sent_at: openSentAt,
       lock_sent_at: null,
+      locale,
     },
     { onConflict: "drop_id,email" }
   );
@@ -79,11 +82,15 @@ export async function POST(request: NextRequest) {
   }
 
   const confirmUrl = `${siteUrl()}/api/alerts/confirm?token=${token}`;
-  await sendAlertConfirm(email, {
-    dropNumber: drop.drop_number ?? 0,
-    title: drop.title ?? "",
-    confirmUrl,
-  });
+  await sendAlertConfirm(
+    email,
+    {
+      dropNumber: drop.drop_number ?? 0,
+      title: drop.title ?? "",
+      confirmUrl,
+    },
+    locale
+  );
 
   return NextResponse.json({ ok: true });
 }

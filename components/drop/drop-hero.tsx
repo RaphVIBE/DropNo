@@ -1,11 +1,13 @@
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
+import type { Locale } from "@/i18n/routing";
 import { Filigrane } from "@/components/brand/filigrane";
 
 export type DropStatus = "draft" | "scheduled" | "open" | "closed" | "revealed" | "cancelled";
 
-export function DropHero({
+export async function DropHero({
   dropNumber,
   title,
   brandName,
@@ -22,6 +24,8 @@ export function DropHero({
   revealAt: string | null;
   clearingPriceCents: number | null;
 }) {
+  const locale = (await getLocale()) as Locale;
+  const t = await getTranslations("dropDetail");
   return (
     <div className="relative overflow-hidden border-b border-rule-soft px-7 pt-14 md:px-16 md:pt-20">
       <Filigrane className="reveal-art pointer-events-none absolute -right-12 top-6 z-0 h-52 w-52 text-[var(--champagne-deep)] [--art-opacity:0.08] md:right-2 md:top-4 md:h-64 md:w-64" />
@@ -33,6 +37,8 @@ export function DropHero({
           status={status}
           revealAt={revealAt}
           clearingPriceCents={clearingPriceCents}
+          t={t}
+          locale={locale}
         />
       </div>
       <div className="relative z-10 py-12 md:py-14">
@@ -68,10 +74,14 @@ function StatusLine({
   status,
   revealAt,
   clearingPriceCents,
+  t,
+  locale,
 }: {
   status: DropStatus;
   revealAt: string | null;
   clearingPriceCents: number | null;
+  t: Awaited<ReturnType<typeof getTranslations>>;
+  locale: Locale;
 }) {
   const base =
     "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em]";
@@ -80,23 +90,32 @@ function StatusLine({
     return (
       <span className={`${base} text-champagne-deep`}>
         <span className="status-dot" aria-hidden />
-        En cours{revealAt ? ` · clôture ${formatRevealMoment(revealAt)}` : ""}
+        {revealAt
+          ? t("statusOpenClosing", {
+              moment: formatRevealMoment(revealAt, locale),
+            })
+          : t("statusOpen")}
       </span>
     );
   }
   if (status === "scheduled") {
-    return <span className={`${base} text-ink-2`}>À venir</span>;
+    return <span className={`${base} text-ink-2`}>{t("statusScheduled")}</span>;
   }
   if (status === "cancelled") {
-    return <span className={`${base} text-muted-foreground`}>Annulé</span>;
+    return (
+      <span className={`${base} text-muted-foreground`}>
+        {t("statusCancelled")}
+      </span>
+    );
   }
   // closed / revealed
   return (
     <span className={`${base} text-muted-foreground`}>
-      Clôturé
       {clearingPriceCents
-        ? ` · prix unitaire ${formatEuros(clearingPriceCents)}`
-        : ""}
+        ? t("statusClosedPrice", {
+            price: formatEuros(clearingPriceCents, locale),
+          })
+        : t("statusClosed")}
     </span>
   );
 }

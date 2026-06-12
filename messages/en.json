@@ -1,0 +1,465 @@
+{
+  "meta": {
+    "title": "Drop No. · Sealed drops for premium watches",
+    "description": "A house of sealed drops for premium watchmaking. Hidden bid, single price set at the reveal."
+  },
+  "common": {
+    "skipToContent": "Skip to content"
+  },
+  "nav": {
+    "calendar": "Calendar",
+    "houses": "Houses",
+    "mechanism": "Mechanism",
+    "about": "About",
+    "signIn": "Sign in"
+  },
+  "footer": {
+    "tagline": "A house of sealed drops for premium watches. One piece a week, a single price set at the reveal.",
+    "exploreTitle": "Explore",
+    "exploreCalendar": "Drop calendar",
+    "exploreHouses": "Houses",
+    "exploreMechanism": "The mechanism",
+    "exploreAbout": "About",
+    "commitmentsTitle": "Our commitments",
+    "commitment1": "Pieces direct from the houses, never resold",
+    "commitment2": "Secure payment and verified identity (Stripe)",
+    "commitment3": "Insured delivery, hand-carried above €10,000",
+    "commitment4": "14-day right of withdrawal, full refund",
+    "rights": "All rights reserved."
+  },
+  "home": {
+    "eyebrow": "House of sealed drops · premium watchmaking",
+    "title": "One piece. One price. Set at the reveal.",
+    "intro": "Each week, a house opens a drop. You seal your bid. The highest bids win, and all pay the same price: that of the last winning bid. No overbidding, no price war.",
+    "ctaCalendar": "View the calendar",
+    "ctaMechanism": "Understand the mechanism",
+    "mechanismDetail": "The mechanism in detail, with a worked example →",
+    "nowTitle": "Right now",
+    "nextTitle": "Next drop",
+    "allCalendar": "Full calendar →",
+    "housesTitle": "The houses",
+    "housesDirect": "Direct from the brands →",
+    "manifesto": "Not a marketplace. One house, one piece, one appointment: Thursday, 6 PM.",
+    "manifestoSub": "Direct from the houses, no resale, no middleman. Insured delivery, verified identity, 14-day withdrawal. No buyer fees.",
+    "aboutLink": "The Drop No. house →"
+  },
+  "locale": {
+    "switchLabel": "Language",
+    "fr": "FR",
+    "en": "EN"
+  },
+  "mecanisme": {
+    "metaTitle": "The mechanism · Drop No.",
+    "metaDescription": "Sealed bid, reveal, single price: how a Drop No. drop works, with a worked example.",
+    "eyebrow": "The mechanism",
+    "heroTitle": "A fair price is born sealed.",
+    "heroBody": "No live auctions, no race against the clock. Each person seals the bid the piece is worth to them; at the reveal, the highest win and all pay the same price.",
+    "steps": {
+      "sealed": "Sealed bid",
+      "reveal": "Reveal",
+      "clearing": "Single price"
+    },
+    "example": {
+      "eyebrow": "Example",
+      "title": "Five pieces, seven bids.",
+      "body": "A house opens a drop of {n} pieces, floor price {floor}. At the reveal, the bids are sorted. The {n} highest win, and all pay the amount of the {n}th: <strong>{clearing}</strong>. Bidding higher never raises your bill, only your chances.",
+      "listLabel": "Bids sorted at the reveal",
+      "tagClearing": "Single price · {price}",
+      "tagWinner": "Wins · pays {price}",
+      "tagReleased": "Released, nothing to pay"
+    },
+    "timeline": {
+      "eyebrow": "Timeline",
+      "title": "Five days, one reveal.",
+      "open": {
+        "t": "Day 1",
+        "title": "Opening",
+        "body": "The drop opens: piece, pieces available and floor price are public. The bidding window lasts five days."
+      },
+      "sealed": {
+        "t": "Days 1 to 5",
+        "title": "Sealed bids",
+        "body": "You seal your bid, hidden from everyone, editable at will until one hour before the reveal."
+      },
+      "lock": {
+        "t": "T − 1 h",
+        "title": "Lock",
+        "body": "The bids are frozen. No further submission or change: the sorting can begin."
+      },
+      "reveal": {
+        "t": "Thursday 6 PM",
+        "title": "Reveal",
+        "body": "The winners are notified and all pay the same price. The other pre-authorisations are released."
+      }
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "title": "What we are asked.",
+      "lose": {
+        "q": "What happens if I don't win?",
+        "a": "Nothing. The pre-authorisation placed on your card is released as quickly as possible and you are charged nothing. Taking part costs nothing."
+      },
+      "preauth": {
+        "q": "Why a pre-authorisation when bidding?",
+        "a": "It ensures every bid is genuine: the exact amount of your bid is held on your card, without any charge. If you win, only the single price (often lower than your bid) is captured. Otherwise, everything is released."
+      },
+      "identity": {
+        "q": "Why an identity verification?",
+        "a": "European regulation on luxury goods (anti-money-laundering) requires verifying buyers' identity. It is done once, through Stripe Identity: an ID document, a selfie, a few minutes."
+      },
+      "edit": {
+        "q": "Can I change my bid?",
+        "a": "Yes, as many times as you like, until one hour before the reveal. Past that lock, the bids are frozen."
+      },
+      "winners": {
+        "q": "How much do the winners pay, exactly?",
+        "a": "All winners pay the same amount: that of the last winning bid, the lowest among those retained. If you bid more, you still pay this single price, never your own amount."
+      },
+      "withdraw": {
+        "q": "And if I change my mind after delivery?",
+        "a": "You have the European right of withdrawal: 14 days after receipt, full refund, with no restocking fee."
+      },
+      "fees": {
+        "q": "What does Drop No. cost the buyer?",
+        "a": "Nothing. No buyer fees: the single price shown is the price paid. The platform's commission is borne by the house."
+      }
+    },
+    "cta": {
+      "title": "The next drop is already on the calendar.",
+      "button": "View the calendar"
+    }
+  },
+  "drops": {
+    "metaTitle": "Drop calendar · Drop No.",
+    "metaDescription": "The live drop, upcoming drops and past results. Sealed bids until the reveal, a single price for every winner.",
+    "eyebrow": "Calendar",
+    "title": "The drops",
+    "intro": "Sealed bids until the reveal. Every winner pays the same price: that of the last winning bid.",
+    "loadError": "Unable to load the drops right now.",
+    "openHeading": "Live",
+    "openCount": "{count, plural, =0 {No open drop} one {# open drop} other {# open drops}}",
+    "openEmpty": "No open drop at the moment. The next one is just below.",
+    "upcomingHeading": "Upcoming",
+    "upcomingCount": "{count, plural, =0 {No scheduled drop} one {# scheduled drop} other {# scheduled drops}}",
+    "upcomingEmpty": "No scheduled drop for now.",
+    "pastHeading": "Past",
+    "pastCount": "{count, plural, =0 {No closed drop} one {# closed drop} other {# closed drops}}",
+    "show": "Show",
+    "hide": "Hide",
+    "metaFloor": "Floor",
+    "metaReveal": "Reveal",
+    "metaOpening": "Opening",
+    "metaUnitPrice": "Unit price",
+    "cancelled": "Cancelled",
+    "statusOpen": "Open",
+    "ctaMakeOffer": "Place a bid",
+    "ctaDiscover": "Discover the drop",
+    "ctaResult": "View the result",
+    "teaseSoon": "Revealed soon"
+  },
+  "dropDetail": {
+    "metaNotFound": "Drop not found · Drop No.",
+    "dropFallback": "Drop",
+    "metaFloorPrice": "Floor price {price}",
+    "metaReveal": "reveal {moment}",
+    "metaTagline": "sealed bid, a single price for every winner.",
+    "shareFloorPrice": "Floor price {price}",
+    "shareReveal": "Reveal {moment}",
+    "countdownReveal": "Reveal in",
+    "countdownOpen": "Opens in",
+    "storyEyebrow": "The piece",
+    "storyHeading": "In the maison's own words.",
+    "floorPrice": "Floor price",
+    "exemplaires": "Editions",
+    "assurance": {
+      "authenticity": {
+        "label": "Authenticity",
+        "detail": "Direct from the maison, never resold"
+      },
+      "delivery": {
+        "label": "Delivery",
+        "detail": "Insured door to door, hand delivered above 10,000 €"
+      },
+      "withdrawal": {
+        "label": "Withdrawal",
+        "detail": "14 days after receipt, full refund"
+      },
+      "buyerFees": {
+        "label": "Buyer fees",
+        "detail": "None: the single price shown is the price paid"
+      }
+    },
+    "howItWorks": "How a drop works →",
+    "revealImminent": "Reveal imminent",
+    "unitDay": "d",
+    "unitHour": "h",
+    "unitMinute": "min",
+    "unitSecond": "s",
+    "statusOpen": "Open",
+    "statusOpenClosing": "Open · closes {moment}",
+    "statusScheduled": "Upcoming",
+    "statusCancelled": "Cancelled",
+    "statusClosed": "Closed",
+    "statusClosedPrice": "Closed · unit price {price}",
+    "shareNative": "Share",
+    "linkCopied": "Link copied",
+    "copyLink": "Copy link",
+    "emailDetails": "Email me the details",
+    "alertErrorPickOne": "Choose at least one reminder.",
+    "alertErrorGeneric": "Something went wrong.",
+    "alertErrorNetwork": "Unable to reach the server.",
+    "alertFlashConfirmed": "Alert confirmed. You will be notified by email.",
+    "alertFlashOff": "You will no longer receive alerts for this drop.",
+    "alertFlashInvalid": "This alert link is no longer valid.",
+    "bellAriaActive": "Alert active for this drop",
+    "bellAriaInactive": "Be notified about this drop",
+    "statusActive": "Alert active",
+    "statusPending": "Confirmation pending",
+    "statusIdle": "Keep me informed",
+    "alertSentTo": "Check your inbox: a confirmation link has just been sent to <email></email>.",
+    "alertActiveBody": "You will be notified by email at the moments you chose. To unsubscribe, use the link in our emails.",
+    "alertFormIntro": "One email, no account required. Confirmation needed.",
+    "notifyOpenLabel": "When bidding opens",
+    "notifyLockLabel": "1 hour before closing",
+    "emailPlaceholder": "you@example.com",
+    "submitSending": "Sending...",
+    "submitNotify": "Notify me",
+    "galleryThumbAria": "View photo {index} of {total}"
+  },
+  "bidForm": {
+    "notOpen": "Bidding is not open for this drop.",
+    "lockedWithBidPrefix": "Your sealed bid:",
+    "lockedWithBidSuffix": ". Bids are locked until the reveal.",
+    "lockedNoBid": "Bids are locked (final hour before the reveal).",
+    "loginPrompt": "Sign in to seal a bid on this piece.",
+    "loginCta": "Sign in to place a bid",
+    "errorGeneric": "Something went wrong.",
+    "errorServer": "Could not reach the server.",
+    "sealedAmount": "Sealed bid: {amount}",
+    "sealedNote": "Editable until one hour before the reveal. You will receive the outcome by email.",
+    "modifyBid": "Edit my bid",
+    "cardPreauthNote": "A pre-authorization for this amount is placed on your card. Nothing is charged unless you win this drop.",
+    "amountInputLabel": "Your bid in euros",
+    "belowFloor": "The bid must be at least the floor price ({floor}).",
+    "preparing": "Preparing...",
+    "continue": "Continue",
+    "sealBid": "Seal my bid",
+    "preauthFailed": "The pre-authorization failed.",
+    "cardPreauthError": "The card could not be pre-authorized. Please try again.",
+    "sealing": "Sealing...",
+    "modifyAmount": "Edit the amount",
+    "kycVerifyingLabel": "Verification in progress",
+    "kycVerifyingNote": "Your identity is being verified. You will be able to seal a bid as soon as it is confirmed, usually within a few minutes.",
+    "kycRejectedNote": "Your last verification did not go through. Resume it to place a bid.",
+    "kycRequiredNote": "Identity verification is required before your first bid. A few minutes, an ID and a selfie.",
+    "kycResumeCta": "Resume verification",
+    "kycVerifyCta": "Verify my identity",
+    "headLabel": "Your sealed bid",
+    "bidsSubmitted": "{count, plural, one {# bid submitted} other {# bids submitted}}",
+    "finePrint": "Your bid stays hidden until the reveal. A Stripe pre-authorization is issued for the exact amount, released if you do not win. Identity verification is required on your first bid.",
+    "howDropWorks": "How a drop works",
+    "kycStartError": "Could not start verification.",
+    "kycStarting": "Opening..."
+  },
+  "marques": {
+    "metaTitle": "Houses · Drop No.",
+    "metaDescription": "The watchmaking houses opening their drops on Drop No., direct from the brands.",
+    "eyebrow": "Houses",
+    "heroTitle": "Direct from the brands.",
+    "heroLead": "Each drop is opened by a house, with no intermediary and no resale. Authenticity comes from the brand itself.",
+    "loadError": "Unable to load the houses at the moment.",
+    "empty": "The first houses will be announced very soon.",
+    "discover": "Discover →",
+    "notFoundMetaTitle": "House not found · Drop No.",
+    "brandMetaTitle": "{name} · Drop No.",
+    "brandMetaDescription": "The drops of {name} on Drop No., direct from the house.",
+    "statusOpen": "Live",
+    "statusScheduled": "Upcoming",
+    "statusCancelled": "Cancelled",
+    "statusClosed": "Closed",
+    "statusClosedPrice": "Closed · {price}",
+    "backToBrands": "← Houses",
+    "officialSite": "Official site ↗",
+    "factCountry": "Country",
+    "factHouse": "House",
+    "factDrops": "Drops",
+    "factPieces": "Pieces",
+    "verified": "Verified",
+    "independent": "Independent",
+    "leadFallback": "{name} opens its drops on Drop No., direct from the house, with no intermediary and no resale.",
+    "itsDrops": "Its drops",
+    "dropsCount": "{count, plural, one {# drop} other {# drops}}",
+    "dropsEmpty": "This house's first drop will be announced very soon."
+  },
+  "about": {
+    "metaTitle": "About · Drop No.",
+    "metaDescription": "Drop No. is a house of sealed drops for premium watches, direct from the brands.",
+    "eyebrow": "About",
+    "title": "A house of sealed drops.",
+    "para1": "Every Thursday at 6 PM, Drop No. brings together a house and a single piece. A limited number of examples, a floor price, a five-day bidding window. Every drop is numbered, awaited, made into a ritual.",
+    "para2Lead": "You submit a hidden bid, adjustable until the final hour. At the reveal, the highest bids prevail and",
+    "para2Emphasis": "every winner pays the same price",
+    "para2Tail": ": that of the last bid accepted. No real-time overbidding, no price war. A calendar you can keep.",
+    "para3": "We work directly with the brands. No resale, no middleman: authenticity comes from the house itself. Your piece is delivered insured, hand to hand when its value calls for it.",
+    "contactLead": "Drop No. is published from Brussels. For any question, write to us at",
+    "calendarLink": "See the drops calendar →"
+  },
+  "accountDashboard": {
+    "eyebrow": "My account",
+    "greeting": "Hello",
+    "greetingNamed": "Hello, {name}",
+    "emailLabel": "Email",
+    "kycLabel": "KYC status",
+    "signOut": "Sign out",
+    "dropFallback": "Drop",
+    "kycStatus": {
+      "pending": "Not verified",
+      "verifying": "Verification in progress",
+      "verified": "Verified",
+      "rejected": "Declined"
+    },
+    "bidStatus": {
+      "active": "Open",
+      "won": "Won",
+      "lost": "Not selected",
+      "withdrawn": "Withdrawn",
+      "invalid": "Invalid"
+    },
+    "txStatus": {
+      "pending": "Pending",
+      "captured": "Paid",
+      "refunded": "Refunded",
+      "failed": "Failed"
+    },
+    "deliveryStatus": {
+      "pending": "In preparation",
+      "preparing": "In preparation",
+      "shipped": "Shipped",
+      "in_transit": "In transit",
+      "delivered": "Delivered",
+      "returned": "Returned",
+      "lost": "Lost"
+    },
+    "serialOffer": {
+      "eyebrow": "One last thing",
+      "body": "A personal offer awaits you. It expires soon."
+    },
+    "bidsSection": {
+      "title": "My bids",
+      "empty": "You have not submitted a bid yet."
+    },
+    "winsSection": {
+      "title": "My wins",
+      "empty": "No wins yet.",
+      "withdrawalUntil": "Withdrawal until {date}",
+      "paidOn": "Paid on {date}"
+    },
+    "deliveriesSection": {
+      "title": "My deliveries",
+      "empty": "No delivery in progress.",
+      "tracking": "Tracking {number}"
+    },
+    "kycBlock": {
+      "verified": "Your identity is verified. You may seal a bid on any drop.",
+      "verifying": "Verification in progress. You will be notified as soon as it is complete, usually within a few minutes.",
+      "pendingTitle": "Verify your identity",
+      "pendingBody": "Identity verification (ID document and selfie via Stripe) is required before your first bid. Once verified, you can bid for life.",
+      "pendingCta": "Verify my identity",
+      "rejectedTitle": "Verification to redo",
+      "rejectedBody": "The last verification did not succeed. Try again with a legible ID document, or contact support.",
+      "rejectedCta": "Restart verification"
+    }
+  },
+  "accountVerification": {
+    "backToAccount": "My account",
+    "eyebrow": "Account · Verification",
+    "title": "Verify your identity.",
+    "intro": "For pieces of this value, the law requires us to confirm who you are before your first bid. It is quick, secured by Stripe, and valid once and for all.",
+    "steps": {
+      "id": {
+        "label": "Identity document",
+        "desc": "ID card or passport, photographed live."
+      },
+      "selfie": {
+        "label": "Selfie",
+        "desc": "A short selfie to confirm it is really you."
+      },
+      "confirm": {
+        "label": "Confirmation",
+        "desc": "Verified within minutes. Valid for every drop."
+      }
+    },
+    "verified": {
+      "badge": "Identity verified",
+      "body": "Everything is in order. You can seal a bid on any open drop.",
+      "cta": "View open drops"
+    },
+    "verifying": {
+      "badge": "Verification in progress",
+      "body": "Stripe is reviewing your documents. You will receive an email once it is finalised, usually within a few minutes. You can close this page."
+    },
+    "pending": {
+      "title": "Ready to verify",
+      "titleRejected": "Verification to redo",
+      "body": "Have your identity document at hand. Verification takes place on a secure Stripe page, then you return here.",
+      "bodyRejected": "The last verification did not go through. Start again with a legible, well-lit identity document, or contact support.",
+      "cta": "Start verification",
+      "ctaRejected": "Restart verification"
+    }
+  },
+  "accountOffer": {
+    "eyebrow": "Drop № {number}",
+    "offerTitle": "One last thing.",
+    "offerLead": "Yours was the highest offer of this drop. In recognition, the centrepiece, serial number <em>{serial}</em>, is reserved for you.",
+    "offerSupplement": "You may make it yours for a supplement of <em>{amount}</em>. This offer is strictly personal. No one else will receive it.",
+    "rowPiece": "Piece",
+    "rowSerial": "Serial number",
+    "rowSupplement": "Supplement",
+    "rowExpiresIn": "Expires in",
+    "reserveCta": "Reserve № 001",
+    "preparing": "Preparing...",
+    "keepNumber": "Keep my assigned number",
+    "reserveTitle": "Reserve № 001",
+    "supplementNote": "Supplement charged immediately, in addition to the drop price already settled.",
+    "supplementNotePaid": "Supplement charged immediately, in addition to the drop price already settled ({paid}).",
+    "confirmCta": "Confirm and reserve",
+    "paying": "Processing...",
+    "back": "Go back",
+    "acceptedTitle": "№ 001 is yours.",
+    "acceptedBody": "{title}, serial number {serial}. Your certificate and delivery will be issued to this number.",
+    "declinedTitle": "Noted.",
+    "declinedBody": "You keep your assigned number. Your order proceeds as usual.",
+    "expiredTitle": "This offer has expired.",
+    "expiredBody": "Your order proceeds as usual, with an assigned number.",
+    "backLink": "Back to my account",
+    "remainingHoursMinutes": "{hours}h {minutes}min",
+    "remainingMinutes": "{minutes} min",
+    "errorGeneric": "Something went wrong.",
+    "errorNetwork": "Unable to reach the server.",
+    "paymentFailed": "The payment failed.",
+    "paymentIncomplete": "The payment could not be completed. Please try again."
+  },
+  "login": {
+    "emailTitle": "Sign in",
+    "emailIntro": "Enter your email. We'll send you a six-digit code, no password required.",
+    "emailPlaceholder": "you@example.com",
+    "keepLoggedIn": "Stay signed in on this device",
+    "requestCode": "Send the code",
+    "sending": "Sending...",
+    "codeTitle": "Enter your code",
+    "codeIntro": "A six-digit code has been sent to <strong>{email}</strong>. Enter it below to sign in.",
+    "codeAriaLabel": "Six-digit code",
+    "submitCode": "Sign in",
+    "connecting": "Signing in...",
+    "resendCode": "Resend the code",
+    "changeEmail": "Change email",
+    "codeError": "Incorrect or expired code. Check the six digits, or request a new code.",
+    "authError": {
+      "otp_expired": "This sign-in link has expired or has already been used. Request a new one below.",
+      "access_denied": "This sign-in link is no longer valid. Request a new one below.",
+      "auth": "Sign-in failed. Try again with a new code.",
+      "missing_code": "Incomplete sign-in link. Request a new one below.",
+      "fallback": "Sign-in failed. Request a new code below."
+    }
+  }
+}

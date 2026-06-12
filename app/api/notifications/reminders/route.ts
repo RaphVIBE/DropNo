@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createServiceClient } from "@/lib/supabase/service";
-import { sendDropReminder, sendAlertNotice } from "@/lib/email/send";
+import { sendDropReminder, sendAlertNotice, emailLocale } from "@/lib/email/send";
 import { isEmailConfigured } from "@/lib/email/client";
 import { alertsClient, siteUrl } from "@/lib/alerts";
 
@@ -55,14 +55,27 @@ export async function POST(request: NextRequest) {
       email: string | null;
     }>;
 
+    // Langue de chaque destinataire (emails hors contexte de requête).
+    const userIds = recipients.map((r) => r.user_id);
+    const { data: profs } = userIds.length
+      ? await supabase.from("profiles").select("id, locale").in("id", userIds)
+      : { data: [] as { id: string; locale: string }[] };
+    const localeById = new Map(
+      (profs ?? []).map((p) => [p.id, p.locale] as const)
+    );
+
     for (const r of recipients) {
       if (!r.email) continue;
-      const res = await sendDropReminder(r.email, {
-        kind,
-        dropNumber: d.drop_number,
-        title: d.title,
-        dropId: d.drop_id,
-      });
+      const res = await sendDropReminder(
+        r.email,
+        {
+          kind,
+          dropNumber: d.drop_number,
+          title: d.title,
+          dropId: d.drop_id,
+        },
+        emailLocale(localeById.get(r.user_id))
+      );
       if (res.ok) sent++;
       else failed++;
     }
@@ -87,13 +100,14 @@ export async function POST(request: NextRequest) {
   const { data: alertRows } = await alerts
     .from("drop_alerts")
     .select(
-      "id, email, notify_open, notify_lock, open_sent_at, lock_sent_at, confirm_token, drops(id, drop_number, title, bid_window_opens_at, bid_lock_at, status)"
+      "id, email, locale, notify_open, notify_lock, open_sent_at, lock_sent_at, confirm_token, drops(id, drop_number, title, bid_window_opens_at, bid_lock_at, status)"
     )
     .eq("status", "active");
 
   type AlertJoin = {
     id: string;
     email: string;
+    locale: string;
     notify_open: boolean;
     notify_lock: boolean;
     open_sent_at: string | null;
@@ -126,7 +140,11 @@ export async function POST(request: NextRequest) {
       drop.bid_window_opens_at &&
       new Date(drop.bid_window_opens_at).getTime() <= nowMs
     ) {
-      const res = await sendAlertNotice(a.email, { kind: "open", ...base });
+      const res = await sendAlertNotice(
+        a.email,
+        { kind: "open", ...base },
+        emailLocale(a.locale)
+      );
       if (res.ok) sent++;
       else if (!res.skipped) failed++;
       if (isEmailConfigured()) {
@@ -144,7 +162,11 @@ export async function POST(request: NextRequest) {
       drop.bid_lock_at &&
       new Date(drop.bid_lock_at).getTime() <= nowMs
     ) {
-      const res = await sendAlertNotice(a.email, { kind: "lock", ...base });
+      const res = await sendAlertNotice(
+        a.email,
+        { kind: "lock", ...base },
+        emailLocale(a.locale)
+      );
       if (res.ok) sent++;
       else if (!res.skipped) failed++;
       if (isEmailConfigured()) {

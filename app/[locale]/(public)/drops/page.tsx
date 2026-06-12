@@ -1,30 +1,33 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
 import { UpcomingCard } from "@/components/drop/upcoming-card";
 import { isAnnounced } from "@/lib/admin/drops";
 import { formatDropNumber, formatEuros, formatShortDate } from "@/lib/format";
+import type { Locale } from "@/i18n/routing";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Calendrier des drops · Drop No.",
-  description:
-    "Drop en cours, drops à venir et résultats passés. Offres scellées jusqu'à la révélation, prix unique pour tous les gagnants.",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("drops");
+  return {
+    alternates: localizedAlternates("/drops", await getLocale()),
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  };
+}
 
 const SELECT =
   "id, drop_number, title, status, floor_price_cents, clearing_price_cents, reveal_at, bid_window_opens_at, revealed_at, format, hero_image_url, brand:brands(name, slug)";
 
-function plural(n: number, one: string, many: string): string {
-  return `${n} ${n > 1 ? many : one}`;
-}
-
 // Drop Calendar (route /drops) — hiérarchie : En cours (pleine largeur),
 // À venir (grille 2 colonnes), Passés (volet replié, discret).
 export default async function DropsPage() {
+  const t = await getTranslations("drops");
+  const locale = (await getLocale()) as Locale;
   const supabase = createClient();
   const serverNowIso = new Date().toISOString();
 
@@ -62,35 +65,34 @@ export default async function DropsPage() {
       <div className="px-7 pt-24 md:px-16 md:pt-28">
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-2 border-b border-rule-soft pb-5">
           <div>
-            <span className="eyebrow">Calendrier</span>
+            <span className="eyebrow">{t("eyebrow")}</span>
             <h1 className="font-display mt-1.5 text-[clamp(1.9rem,4vw,2.75rem)] leading-none">
-              Les drops
+              {t("title")}
             </h1>
           </div>
           <p className="max-w-[42ch] text-sm leading-relaxed text-muted-foreground">
-            Offres scellées jusqu&apos;à la révélation. Tous les gagnants payent
-            le même prix : celui de la dernière offre gagnante.
+            {t("intro")}
           </p>
         </div>
       </div>
 
       {error ? (
         <p className="px-7 py-16 text-destructive md:px-16">
-          Impossible de charger les drops pour le moment.
+          {t("loadError")}
         </p>
       ) : (
         <>
           {/* ── En cours : pleine largeur, prioritaire ── */}
           <section className="px-7 pt-12 md:px-16 md:pt-14">
             <div className="mb-6 flex items-baseline justify-between border-b border-foreground pb-5">
-              <h2 className="font-serif text-4xl italic">En cours</h2>
+              <h2 className="font-serif text-4xl italic">{t("openHeading")}</h2>
               <span className="text-[13px] tracking-wide text-muted-foreground">
-                {plural(open.length, "drop ouvert", "drops ouverts")}
+                {t("openCount", { count: open.length })}
               </span>
             </div>
             {open.length === 0 ? (
               <p className="py-6 text-ink-2">
-                Aucun drop ouvert en ce moment. Le prochain est juste en dessous.
+                {t("openEmpty")}
               </p>
             ) : (
               open.map((drop) => (
@@ -102,13 +104,13 @@ export default async function DropsPage() {
           {/* ── À venir : grille 2 colonnes ── */}
           <section className="px-7 pt-16 md:px-16 md:pt-20">
             <div className="mb-2 flex items-baseline justify-between border-b border-rule pb-5">
-              <h3 className="font-serif text-2xl italic">À venir</h3>
+              <h3 className="font-serif text-2xl italic">{t("upcomingHeading")}</h3>
               <span className="text-[13px] tracking-wide text-muted-foreground">
-                {plural(upcoming.length, "drop planifié", "drops planifiés")}
+                {t("upcomingCount", { count: upcoming.length })}
               </span>
             </div>
             {upcoming.length === 0 ? (
-              <p className="py-6 text-ink-2">Aucun drop planifié pour l&apos;instant.</p>
+              <p className="py-6 text-ink-2">{t("upcomingEmpty")}</p>
             ) : (
               <div className="grid grid-cols-1 gap-x-12 md:grid-cols-2">
                 {upcoming.map((drop) => (
@@ -124,12 +126,12 @@ export default async function DropsPage() {
               <details className="group border-t border-rule pt-5">
                 <summary className="flex cursor-pointer list-none items-baseline justify-between rounded-sm py-2.5 [&::-webkit-details-marker]:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                   <span className="flex items-baseline gap-3">
-                    <h3 className="font-serif text-2xl italic text-ink-2 transition-colors group-hover:text-foreground">Passés</h3>
-                    <span className="text-[13px] text-muted-foreground">{plural(past.length, "drop clôturé", "drops clôturés")}</span>
+                    <h3 className="font-serif text-2xl italic text-ink-2 transition-colors group-hover:text-foreground">{t("pastHeading")}</h3>
+                    <span className="text-[13px] text-muted-foreground">{t("pastCount", { count: past.length })}</span>
                   </span>
                   <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover:text-foreground">
-                    <span className="group-open:hidden">Afficher</span>
-                    <span className="hidden group-open:inline">Masquer</span>
+                    <span className="group-open:hidden">{t("show")}</span>
+                    <span className="hidden group-open:inline">{t("hide")}</span>
                   </span>
                 </summary>
                 <ul className="mt-4">
@@ -137,15 +139,15 @@ export default async function DropsPage() {
                     <li key={drop.id} className="border-b border-rule-soft last:border-0">
                       <Link href={drop.id ? `/drop/${drop.id}` : "#"} className="group/row flex items-baseline justify-between gap-6 rounded-sm py-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                         <span className="flex min-w-0 items-baseline gap-5">
-                          <span className="shrink-0 font-serif text-sm italic tabular-nums text-muted-foreground">No. {formatDropNumber(drop.drop_number ?? 0)}</span>
+                          <span className="shrink-0 font-serif text-sm italic tabular-nums text-muted-foreground">No. {formatDropNumber(drop.drop_number ?? 0)}</span>{/* "No." = nom de marque Drop No., inchangé */}
                           <span className="truncate">
                             <span className="font-serif text-lg italic transition-colors group-hover/row:text-champagne-deep">{drop.title}</span>
                             {drop.brand ? <span className="ml-3 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">{drop.brand.name}</span> : null}
                           </span>
                         </span>
                         <span className="shrink-0 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                          {drop.clearing_price_cents ? formatEuros(drop.clearing_price_cents) : "Annulé"}
-                          {drop.revealed_at || drop.reveal_at ? ` · ${formatShortDate((drop.revealed_at ?? drop.reveal_at) as string)}` : ""}
+                          {drop.clearing_price_cents ? formatEuros(drop.clearing_price_cents, locale) : t("cancelled")}
+                          {drop.revealed_at || drop.reveal_at ? ` · ${formatShortDate((drop.revealed_at ?? drop.reveal_at) as string, locale)}` : ""}
                         </span>
                       </Link>
                     </li>

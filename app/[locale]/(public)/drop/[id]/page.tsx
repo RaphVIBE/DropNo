@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { DropAssurance } from "@/components/drop/drop-assurance";
@@ -13,6 +14,8 @@ import { ShareDrop } from "@/components/drop/share-drop";
 import { DropAlertBell } from "@/components/drop/drop-alert-bell";
 import { DropViewTracker } from "@/components/analytics/DropViewTracker";
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
+import type { Locale } from "@/i18n/routing";
+import { localizedAlternates } from "@/lib/i18n/metadata";
 import type { Tables } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +30,8 @@ export async function generateMetadata({
   params: { id: string };
 }): Promise<Metadata> {
   const supabase = createClient();
+  const locale = (await getLocale()) as Locale;
+  const t = await getTranslations("dropDetail");
   const { data: drop } = await supabase
     .from("drops_public")
     .select(
@@ -35,16 +40,18 @@ export async function generateMetadata({
     .eq("id", params.id)
     .maybeSingle();
 
-  if (!drop) return { title: "Drop introuvable · Drop No." };
+  if (!drop) return { title: t("metaNotFound") };
 
   const brandName = (drop.brand as { name: string } | null)?.name;
-  const title = `${drop.title ?? "Drop"}${brandName ? ` · ${brandName}` : ""} · Drop No. ${formatDropNumber(drop.drop_number ?? 0)}`;
+  const title = `${drop.title ?? t("dropFallback")}${brandName ? ` · ${brandName}` : ""} · Drop No. ${formatDropNumber(drop.drop_number ?? 0)}`;
   const description = [
     drop.floor_price_cents
-      ? `Prix plancher ${formatEuros(drop.floor_price_cents)}`
+      ? t("metaFloorPrice", { price: formatEuros(drop.floor_price_cents, locale) })
       : null,
-    drop.reveal_at ? `révélation ${formatRevealMoment(drop.reveal_at)}` : null,
-    "offre scellée, prix unique pour tous les gagnants.",
+    drop.reveal_at
+      ? t("metaReveal", { moment: formatRevealMoment(drop.reveal_at, locale) })
+      : null,
+    t("metaTagline"),
   ]
     .filter(Boolean)
     .join(", ");
@@ -52,6 +59,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: localizedAlternates(`/drop/${params.id}`, locale),
     openGraph: {
       title,
       description,
@@ -68,6 +76,8 @@ export default async function DropPage({
   searchParams: { alert?: string };
 }) {
   const supabase = createClient();
+  const locale = (await getLocale()) as Locale;
+  const t = await getTranslations("dropDetail");
   const serverNowIso = new Date().toISOString();
 
   const { data: drop } = await supabase
@@ -108,13 +118,15 @@ export default async function DropPage({
   const loginHref = `/login?redirect=/drop/${params.id}`;
 
   const dropLabel = `Drop No. ${formatDropNumber(drop.drop_number ?? 0)}`;
-  const shareTitle = `${drop.title ?? "Drop"} · ${dropLabel}`;
+  const shareTitle = `${drop.title ?? t("dropFallback")} · ${dropLabel}`;
   const shareSummary = [
     `${dropLabel}${drop.title ? ` · ${drop.title}` : ""}`,
     drop.floor_price_cents
-      ? `Prix plancher ${formatEuros(drop.floor_price_cents)}`
+      ? t("shareFloorPrice", { price: formatEuros(drop.floor_price_cents, locale) })
       : null,
-    drop.reveal_at ? `Révélation ${formatRevealMoment(drop.reveal_at)}` : null,
+    drop.reveal_at
+      ? t("shareReveal", { moment: formatRevealMoment(drop.reveal_at, locale) })
+      : null,
   ]
     .filter(Boolean)
     .join(". ");
@@ -122,9 +134,9 @@ export default async function DropPage({
   // Compteur + cloche d'alerte : révélation (en cours) ou ouverture (à venir).
   const counter =
     isOpen && drop.reveal_at
-      ? { label: "Révélation dans", target: drop.reveal_at }
+      ? { label: t("countdownReveal"), target: drop.reveal_at }
       : status === "scheduled" && drop.bid_window_opens_at
-        ? { label: "Ouverture dans", target: drop.bid_window_opens_at }
+        ? { label: t("countdownOpen"), target: drop.bid_window_opens_at }
         : null;
   const canAlert = status === "scheduled" || status === "open";
 

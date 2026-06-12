@@ -59,3 +59,47 @@ Aucune crypto custom côté app : Supabase consomme l'issuer OIDC propre du brok
   l'UE depuis 2025 mais adoption faible hors BeNeLux → fallback obligatoire.
 - Alternative broker : **Auth0** (connecteur itsme aussi, DX excellente, mais
   auth généraliste, moins orienté KYC que Signicat).
+
+---
+
+## Checklists owner
+
+### A. Re-poster les templates d'auth (débloque l'UX code OTP)
+
+Tant que ce n'est pas fait, l'email de connexion affiche le lien magique mais
+PAS le code à six chiffres → l'écran « entrez le code » n'a rien à saisir
+(le lien reste un repli fonctionnel).
+
+```bash
+cd ~/Documents/Claude/Projects/FlashSales
+git checkout main && git pull                     # checkout à jour (templates mergés)
+
+# PAT Supabase : https://supabase.com/dashboard/account/tokens (commence par sbp_)
+export SUPABASE_ACCESS_TOKEN=sbp_xxxxxxxxxxxx
+python3 supabase/auth-emails/install.py --dry-run  # vérifie, n'envoie rien
+python3 supabase/auth-emails/install.py            # pose les 5 templates
+# Révoquer le PAT ensuite (scope large).
+```
+
+Test : dropno.eu/login → entrer son email → l'email doit afficher le code à six
+chiffres. Alternative sans PAT : Dashboard → Auth → Emails → Templates, coller
+`magic-link.html` + `confirm-signup.html` (les 2 qui portent `{{ .Token }}`).
+
+### B. Lancer l'onboarding Signicat (chemin critique itsme)
+
+itsme via Signicat = **assisté par un commercial** (méthode régulée), pas self-serve.
+
+1. signicat.com → **Contact sales / Book a demo**.
+2. Demander : méthode **itsme** en **OIDC**, pour **login + identification (KYC)**,
+   marketplace luxe B2C belge avec obligations AML. Demander que **Signicat porte
+   le contrat itsme**.
+3. Avoir sous la main : **n° BCE/KBO** (ils KYC l'entreprise), use case, volume
+   attendu, et l'URL de callback OIDC :
+   `https://ygzyzvjxregoqbzmcmyq.supabase.co/auth/v1/callback`
+4. Récupérer pour le câblage : **issuer OIDC, client_id, client_secret, noms des
+   claims** mappés depuis itsme.
+5. Réf dev : developer.signicat.com → identity methods → itsme → OIDC.
+6. Demander un **devis** (frais plateforme Signicat + itsme par utilisateur actif/an)
+   pour comparer à Stripe Identity.
+
+→ Dès réception des 4 valeurs OIDC du point 4 : câblage itsme bout-en-bout (≈ 1 j).

@@ -7,16 +7,21 @@ avec fallback Georgia/système, bouton ink.
 
 ## Fichiers
 
-| Fichier | Template Supabase correspondant | Variable de lien |
+| Fichier | Template Supabase correspondant | Variables |
 |---|---|---|
-| `magic-link.html` | **Magic Link** (connexion sans mot de passe) | `{{ .ConfirmationURL }}` |
-| `confirm-signup.html` | **Confirm signup** (1re inscription) | `{{ .ConfirmationURL }}` |
+| `magic-link.html` | **Magic Link** (connexion sans mot de passe) | `{{ .Token }}`, `{{ .ConfirmationURL }}` |
+| `confirm-signup.html` | **Confirm signup** (1re inscription) | `{{ .Token }}`, `{{ .ConfirmationURL }}` |
 | `recovery.html` | **Reset Password** | `{{ .ConfirmationURL }}` |
 | `email-change.html` | **Change Email Address** | `{{ .ConfirmationURL }}`, `{{ .NewEmail }}` |
 | `invite.html` | **Invite user** | `{{ .ConfirmationURL }}` |
 
-> Le flux actuel de l'app utilise le **Magic Link** (cf. `app/login/page.tsx`,
-> `signInWithOtp` + `emailRedirectTo`). C'est le template prioritaire à poser.
+> Le flux actuel de l'app est un **code OTP à six chiffres** saisi dans l'onglet
+> de connexion (cf. `app/login/page.tsx` : `signInWithOtp` puis `verifyOtp`,
+> finalisé par `app/auth/post-login`). `{{ .Token }}` rend le code ; le lien
+> magique `{{ .ConfirmationURL }}` reste un repli (même email, traité par
+> `app/auth/callback`). `signInWithOtp` envoie **Magic Link** aux comptes
+> existants et **Confirm signup** aux nouveaux : les deux templates DOIVENT
+> afficher `{{ .Token }}`. Ce sont les templates prioritaires à poser.
 
 ## Installation (script — recommandé)
 

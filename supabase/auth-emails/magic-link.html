@@ -22,13 +22,12 @@
 </td></tr>
 <tr><td style="padding:40px 40px 36px;">
 <p style="margin:0 0 14px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#8a8175;">Connexion sécurisée</p>
-<h1 style="margin:0 0 18px;font-family:'Fraunces',Georgia,'Times New Roman',serif;font-style:italic;font-weight:300;font-size:32px;line-height:1.08;letter-spacing:-0.02em;color:#221d17;">Votre lien d'accès.</h1>
-<p style="margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.62;color:#4a4339;">Cliquez ci-dessous pour accéder à votre compte Drop No. Ce lien est personnel, à usage unique, et expire dans une heure.</p>
-<table role="presentation" cellpadding="0" cellspacing="0" style="margin:30px 0 4px;">
-<tr><td bgcolor="#221d17" style="background:#221d17;">
-<a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:14px 30px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#f6f3ec;text-decoration:none;">Accéder à mon compte</a>
-</td></tr></table>
-<p style="margin:24px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br/><a href="{{ .ConfirmationURL }}" style="color:#8c7a52;text-decoration:none;word-break:break-all;">{{ .ConfirmationURL }}</a></p>
+<h1 style="margin:0 0 18px;font-family:'Fraunces',Georgia,'Times New Roman',serif;font-style:italic;font-weight:300;font-size:32px;line-height:1.08;letter-spacing:-0.02em;color:#221d17;">Votre code d'accès.</h1>
+<p style="margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.62;color:#4a4339;">Saisissez ce code dans la fenêtre de connexion Drop No. Il est personnel, à usage unique, et expire dans une heure.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:30px 0 6px;">
+<tr><td align="center" style="border:1px solid #e6e0d3;background:#faf8f3;padding:18px 34px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:33px;font-weight:500;letter-spacing:0.34em;color:#221d17;">{{ .Token }}</td></tr>
+</table>
+<p style="margin:22px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Vous préférez un lien ? <a href="{{ .ConfirmationURL }}" style="color:#8c7a52;text-decoration:none;">Connectez-vous en un clic.</a></p>
 <p style="margin:18px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Vous n'êtes pas à l'origine de cette demande ? Ignorez cet email, aucun accès ne sera ouvert.</p>
 </td></tr>
 <tr><td style="padding:24px 40px 30px;border-top:1px solid #efeae0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:1.7;color:#8a8175;">

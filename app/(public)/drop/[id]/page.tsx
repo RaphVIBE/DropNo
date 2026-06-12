@@ -11,6 +11,7 @@ import { DropBidForm } from "@/components/drop/drop-bid-form";
 import { DropCountdown } from "@/components/drop/drop-countdown";
 import { ShareDrop } from "@/components/drop/share-drop";
 import { DropAlertBell } from "@/components/drop/drop-alert-bell";
+import { DropViewTracker } from "@/components/analytics/DropViewTracker";
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
 import type { Tables } from "@/lib/supabase/types";
 
@@ -129,6 +130,13 @@ export default async function DropPage({
 
   return (
     <>
+      <DropViewTracker
+        dropId={drop.id ?? params.id}
+        dropNumber={drop.drop_number ?? 0}
+        dropTitle={drop.title ?? ""}
+        brand={brand?.name ?? null}
+        dropStatus={status}
+      />
       <DropHero
         dropNumber={drop.drop_number ?? 0}
         title={drop.title ?? ""}

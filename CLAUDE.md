@@ -26,21 +26,28 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 - Publishable key : `sb_publishable_CCtEsFQO-3MxGwmIP-jjlg_dsJvjOKn`
 - ⚠️ Service role key : récupérer Dashboard → Settings → API. Jamais committée.
 
-## État backend (snapshot 2026-06-09)
+## État backend (snapshot 2026-06-12)
 
 | Composant | État |
 |---|---|
 | Schéma DB (RLS strict, FORCE RLS sur bids) | ✅ déployé (migrations 0001+) |
 | Hardening sécurité (search_path, REVOKE RPC, deny-all audit_log) | ✅ déployé (0002) |
 | Fonction SQL `close_drop()` atomique | ✅ déployée |
-| Edge function `close-drop` (TS, Stripe capture/release) | ✅ déployée v1 ACTIVE |
+| Edge function `close-drop` (TS, Stripe capture/release) | ✅ déployée v2 ACTIVE (persiste les runs dans `drop_close_runs`) |
 | Vault secrets (`edge_function_url`, `service_role_key`) | ✅ configurés |
 | Cron `dispatch_ripe_drops` / `open_ripe_drops` / `dispatch_reminders` | ✅ actifs |
-| Edge function secret `STRIPE_SECRET_KEY` | ✅ configuré (mode test) |
+| Edge function secret `STRIPE_SECRET_KEY` | ⚠️ **ABSENTE** (constaté 2026-06-12 — toute capture/release échouerait). À reposer avant tout drop réel |
 | **Back-office** (`/admin` opérateur + `/maison` responsables, thème dark) | ✅ intégré — voir `BACKOFFICE.md` |
 | Rôle admin-plateforme (`platform_admins` + `is_platform_admin()`) | ✅ déployé (0010) |
 | Policies admin + fonctions agrégées + support + contraintes maison | ✅ déployé (0011–0015) |
 | ⚠️ Correctif bug `log_bid_change` (digest hors search_path → bids bloqués) | ✅ déployé (0016) ; cause racine à patcher aussi dans 0002 |
+| **Console de clôture** (`/admin/cloture` : runs, santé crons, relance manuelle) | ✅ déployée (0021 + close-drop v2) — voir `BACKOFFICE.md` |
+| **Finance / payouts maisons** (`/admin/finance` : dû par drop, rétractation, marquer payé) | ✅ déployée (0022) — voir `BACKOFFICE.md` |
+| **Plateforme** (`/admin/plateforme` : équipe d'admins owners/staff + journal d'audit des enchères) | ✅ déployée (0023) — voir `BACKOFFICE.md` |
+| **Rétractation & remboursements** (workflow 14j sur `/admin/commandes/[id]` + edge function `refund-transaction`) | ✅ déployée (0024) — ⚠️ dépend de `STRIPE_SECRET_KEY` (absente) |
+| **Retours logistique** (trajet retour sur `deliveries` : direction, valeur assurée, tracking) | ✅ déployée (0025) — voir `BACKOFFICE.md` |
+| **Privilège № 001** (`serial_offers` + close-drop v3 + refund-transaction v2 + `/account/offre/[id]` + cron `expire_serial_offers`) | ✅ déployé (0026) — voir `Privilege_001.md` ; ⚠️ paiement supplément dépend aussi de `STRIPE_SECRET_KEY` |
+| **Analytics PostHog** (tracking vitrine snippet + event `drop_view` ; cadrans `/admin`, fiche drop, `/admin/audience`) | ✅ code en place — ⚠️ clés env à poser (`NEXT_PUBLIC_POSTHOG_KEY`, `POSTHOG_PROJECT_ID`, `POSTHOG_PERSONAL_API_KEY`), voir `BACKOFFICE.md` |
 
 Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas superuser sur Supabase). Lookup via `vault.decrypted_secrets`, update via `vault.update_secret(<uuid>, ...)`.
 
@@ -57,6 +64,7 @@ Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas
 - **Cadence** : 1 drop/semaine, jour fixe (reco jeudi 18h CET, à confirmer)
 - **Catégorie MVP** : montres uniquement (bijoux/vêtements/art = v2)
 - **Brand naming** : Drop No. (Drop № 001, 002…)
+- **Privilège № 001** (décidé 2026-06-12) : offre privée post-reveal au seul bid le plus haut pour réserver le numéro de série 001. Supplément = 50% du spread (bid − clearing), plancher 5% du clearing. Paiement on-session séparé (une PaymentIntent = une seule capture). Pas de cascade au rang 2, pas d'annonce pré-bid, validité 24h. Rangs 2-5 = v2. Voir `Privilege_001.md` — ✅ **implémenté et déployé** (0026 + close-drop v3 + refund-transaction v2 + écran client + admin + tests)
 
 ## Out-of-scope MVP (différé v2+)
 
@@ -83,6 +91,7 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 5. `supabase/README.md` — architecture backend + déploiement
 6. `mockups/dropno-mockups.html` — rendu visuel des 3 écrans clés
 7. `BACKOFFICE.md` — **back-office `/admin` + `/maison`** : architecture, surfaces, conventions, migrations 0010–0016, accès dev, données démo
+8. `Privilege_001.md` — spec du Privilège № 001 (offre série 001 au top bidder)
 
 ## Design tokens (depuis le mockup)
 
@@ -101,6 +110,7 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 - Variante Vickrey : reconsidérer post-launch si évidence de bidding non-sincère
 - Régime TVA fees marque : à valider expert-comptable
 - Teinte champagne exacte (à valider en maquettes finales)
+- Privilège № 001 : extension aux rangs 2-5 (choix du numéro parmi 002-005) = v2, à réévaluer post-launch
 
 ## Workflow recommandé
 

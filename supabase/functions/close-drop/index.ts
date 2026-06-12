@@ -15,7 +15,16 @@
 // Les bids déjà processed (stripe_auth_status='captured' ou 'released')
 // sont skip.
 //
-// Auth : appelée par service_role uniquement (cron Supabase ou Vercel cron).
+// v2 : chaque exécution persiste son rapport dans drop_close_runs
+// (service role, lu par /admin/cloture). Body accepte triggered_by
+// ('cron' par défaut, 'admin' pour une relance manuelle).
+//
+// v3 : après les captures, tente create_serial_offer (Privilège № 001,
+// voir Privilege_001.md). Si une offre est créée, déclenche l'email privé
+// via l'app Next. Best-effort, idempotent (une offre max par drop).
+//
+// Auth : appelée par service_role uniquement (cron Supabase, ou server
+// action admin pour la relance).
 // =====================================================================
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
@@ -62,11 +71,21 @@ interface CloseResult {
   already_processed?: boolean;
 }
 
+interface SerialOfferResult {
+  created: boolean;
+  reason?: string;
+  offer_id?: string;
+  user_id?: string;
+  supplement_cents?: number;
+  expires_at?: string;
+}
+
 interface ProcessReport {
   drop_id: string;
   close_result: CloseResult;
   captures: { success: number; failed: number; skipped: number };
   releases: { success: number; failed: number; skipped: number };
+  serial_offer?: SerialOfferResult;
   errors: Array<{ bid_id: string; action: string; message: string }>;
 }
 
@@ -75,7 +94,7 @@ Deno.serve(async (req: Request) => {
     return json({ error: "POST only" }, 405);
   }
 
-  let body: { drop_id?: string };
+  let body: { drop_id?: string; triggered_by?: string };
   try {
     body = await req.json();
   } catch {
@@ -85,6 +104,7 @@ Deno.serve(async (req: Request) => {
   if (!body.drop_id) {
     return json({ error: "Missing drop_id" }, 400);
   }
+  const triggeredBy: "cron" | "admin" = body.triggered_by === "admin" ? "admin" : "cron";
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -92,20 +112,49 @@ Deno.serve(async (req: Request) => {
 
   try {
     const report = await processDrop(supabase, body.drop_id);
+    await persistRun(supabase, body.drop_id, triggeredBy, report);
     // Emails de résultat (US-22) : seulement si le drop est révélé. Best-effort,
     // n'altère jamais le résultat de la clôture financière.
     if (report.close_result.status === "revealed") {
       await notifyResults(body.drop_id);
     }
+    // Privilège № 001 : email privé au top bidder si une offre vient d'être créée.
+    if (report.serial_offer?.created && report.serial_offer.offer_id) {
+      await notifySerialOffer(report.serial_offer.offer_id);
+    }
     return json(report, 200);
   } catch (err) {
     console.error("[close-drop] fatal", err);
-    return json(
-      { error: err instanceof Error ? err.message : String(err) },
-      500,
-    );
+    const message = err instanceof Error ? err.message : String(err);
+    await persistRun(supabase, body.drop_id, triggeredBy, null, message);
+    return json({ error: message }, 500);
   }
 });
+
+// Persiste le rapport d'exécution dans drop_close_runs (console admin).
+// Best-effort : un échec d'écriture ne doit jamais faire échouer la clôture.
+async function persistRun(
+  // deno-lint-ignore no-explicit-any
+  supabase: any,
+  dropId: string,
+  triggeredBy: "cron" | "admin",
+  report: ProcessReport | null,
+  fatalError?: string,
+): Promise<void> {
+  try {
+    const ok = !fatalError && !!report && report.errors.length === 0;
+    const { error } = await supabase.from("drop_close_runs").insert({
+      drop_id: dropId,
+      triggered_by: triggeredBy,
+      ok,
+      close_status: report?.close_result?.status ?? null,
+      report: report ?? { fatal: fatalError ?? "unknown" },
+    });
+    if (error) console.error("[close-drop] persistRun failed", error.message);
+  } catch (e) {
+    console.error("[close-drop] persistRun exception", e);
+  }
+}
 
 async function processDrop(
   // deno-lint-ignore no-explicit-any
@@ -147,8 +196,8 @@ async function processDrop(
     .eq("drop_id", dropId)
     .eq("status", "won");
 
-  const stripeClient = getStripe();
-
+  // Stripe init paresseuse au niveau du bid : un re-run où tout est déjà
+  // capturé/relâché (idempotence) n'exige pas STRIPE_SECRET_KEY.
   for (const bid of (winners ?? []) as BidRow[]) {
     if (!bid.stripe_payment_intent_id) {
       report.captures.skipped++;
@@ -160,7 +209,7 @@ async function processDrop(
     }
 
     try {
-      await stripeClient.paymentIntents.capture(bid.stripe_payment_intent_id, {
+      await getStripe().paymentIntents.capture(bid.stripe_payment_intent_id, {
         amount_to_capture: clearingPrice,
       });
       await supabase
@@ -205,7 +254,7 @@ async function processDrop(
     }
 
     try {
-      await stripeClient.paymentIntents.cancel(bid.stripe_payment_intent_id);
+      await getStripe().paymentIntents.cancel(bid.stripe_payment_intent_id);
       await supabase
         .from("bids")
         .update({ stripe_auth_status: "released" })
@@ -216,6 +265,24 @@ async function processDrop(
       report.releases.failed++;
       report.errors.push({ bid_id: bid.id, action: "release", message });
     }
+  }
+
+  // ---- Step 4 : Privilège № 001 (best-effort) ----
+  // La fonction SQL vérifie elle-même les conditions (top bid capturé,
+  // spread > 0, pas d'ex aequo) et est idempotente (une offre max par drop).
+  try {
+    const { data: offerData, error: offerError } = await supabase.rpc(
+      "create_serial_offer",
+      { p_drop_id: dropId },
+    );
+    if (offerError) {
+      report.serial_offer = { created: false, reason: `rpc_error: ${offerError.message}` };
+    } else {
+      report.serial_offer = offerData as SerialOfferResult;
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    report.serial_offer = { created: false, reason: `exception: ${message}` };
   }
 
   return report;
@@ -233,8 +300,6 @@ async function releaseAllForDrop(
     .eq("drop_id", dropId)
     .in("status", ["invalid", "withdrawn", "lost"]);
 
-  const stripeClient = getStripe();
-
   for (const bid of (bids ?? []) as BidRow[]) {
     if (!bid.stripe_payment_intent_id) {
       report.releases.skipped++;
@@ -246,7 +311,7 @@ async function releaseAllForDrop(
     }
 
     try {
-      await stripeClient.paymentIntents.cancel(bid.stripe_payment_intent_id);
+      await getStripe().paymentIntents.cancel(bid.stripe_payment_intent_id);
       await supabase
         .from("bids")
         .update({ stripe_auth_status: "released" })
@@ -281,6 +346,29 @@ async function notifyResults(dropId: string): Promise<void> {
     }
   } catch (err) {
     console.error("[close-drop] notify résultat exception", err);
+  }
+}
+
+// Déclenche l'email privé du Privilège № 001 via l'app Next. Best-effort.
+async function notifySerialOffer(offerId: string): Promise<void> {
+  if (!APP_URL || !NOTIFY_SECRET) {
+    console.warn("[close-drop] APP_URL/NOTIFY_SECRET absents, email privilège non déclenché");
+    return;
+  }
+  try {
+    const res = await fetch(`${APP_URL}/api/notifications/serial-offer`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-notify-secret": NOTIFY_SECRET,
+      },
+      body: JSON.stringify({ offerId }),
+    });
+    if (!res.ok) {
+      console.error("[close-drop] notify privilège échec", res.status, await res.text());
+    }
+  } catch (err) {
+    console.error("[close-drop] notify privilège exception", err);
   }
 }
 

@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge, Kpi, Card } from "@/lib/admin/ui";
 import { eur, dateTime, dateShort } from "@/lib/admin/format";
 import { STATUS_FR, STATUS_TONE, isPlannable, type DropStatus } from "@/lib/admin/drops";
+import {
+  analyticsConfigured, getDropViewTotals, getTrafficSeries, getTrafficTotals,
+} from "@/lib/analytics/posthog";
+import { AnalyticsNotConfigured, Sparkline } from "@/components/admin/analytics";
 import { shiftDrop } from "./produits/actions";
 import { AdminTabs } from "@/components/admin/tabs";
 
@@ -59,6 +63,18 @@ export default async function AdminHome() {
     provisional = top && top.length ? top[top.length - 1].amount_cents : null;
   }
 
+  // Audience (PostHog) : pouls 7 jours + vues du drop en cours.
+  const configured = analyticsConfigured();
+  const [traffic7, series14, openViews] = configured
+    ? await Promise.all([
+        getTrafficTotals(7),
+        getTrafficSeries(14),
+        open ? getDropViewTotals(open.id, 30) : Promise.resolve(null),
+      ])
+    : [null, null, null];
+  const openConversion =
+    openViews && openViews.uniques > 0 ? Math.round((bidCount / openViews.uniques) * 100) : null;
+
   // Calendrier : drops à venir / en cours.
   const { data: up } = await supabase
     .from("drops")
@@ -99,10 +115,42 @@ export default async function AdminHome() {
             <Stat label={`Prix provisoire (${open.exemplaires}ᵉ)`} value={eur(provisional)} accent />
             <Stat label="Demande" value={`${open.exemplaires ? Math.round((bidCount / open.exemplaires) * 100) : 0}%`} />
             <Stat label="Reveal" value={`${dateShort(open.reveal_at)} · J−${Math.max(0, daysUntil(open.reveal_at))}`} />
+            {openViews && (
+              <>
+                <Stat label="Vues de la pièce · 30j" value={openViews.views} />
+                <Stat label="Visiteurs · 30j" value={openViews.uniques} />
+                <Stat label="Conversion vue → bid" value={openConversion != null ? `${openConversion}%` : "—"} accent />
+              </>
+            )}
           </div>
           {provisional == null && bidCount > 0 && (
             <p className="mt-3 text-xs text-muted-foreground">Aucune offre n&apos;atteint encore le plancher.</p>
           )}
+        </Card>
+      )}
+
+      {/* Audience */}
+      <div className="mb-2 mt-7 flex items-center justify-between">
+        <h2 className="font-display text-xl">Audience</h2>
+        <Link href="/admin/audience" className="text-xs text-muted-foreground hover:text-foreground">
+          Tout voir →
+        </Link>
+      </div>
+      {!configured ? (
+        <AnalyticsNotConfigured compact />
+      ) : (
+        <Card>
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+            <Stat label="Visiteurs uniques · 7j" value={traffic7?.uniques ?? "—"} />
+            <Stat label="Pages vues · 7j" value={traffic7?.views ?? "—"} />
+            <div className="min-w-[200px] flex-1">
+              {series14 && series14.length > 1 ? (
+                <Sparkline series={series14} height={48} />
+              ) : (
+                <span className="text-xs text-muted-foreground">Pas encore de trafic.</span>
+              )}
+            </div>
+          </div>
         </Card>
       )}
 

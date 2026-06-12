@@ -5,6 +5,7 @@ import {
   dropReminderEmail,
   alertConfirmEmail,
   alertNoticeEmail,
+  serialOfferEmail,
   type EmailContent,
 } from "./templates";
 
@@ -49,6 +50,13 @@ export function sendDropResult(
   data: Parameters<typeof dropResultEmail>[0]
 ): Promise<SendResult> {
   return deliver(to, dropResultEmail(data));
+}
+
+export function sendSerialOffer(
+  to: string,
+  data: Parameters<typeof serialOfferEmail>[0]
+): Promise<SendResult> {
+  return deliver(to, serialOfferEmail(data));
 }
 
 export function sendDropReminder(

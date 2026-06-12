@@ -8,7 +8,7 @@ import { alertsClient, siteUrl } from "@/lib/alerts";
 export const dynamic = "force-dynamic";
 
 /**
- * Envoie les rappels événementiels dus (ouverture / T-24h / T-1h, US-22).
+ * Envoie les rappels événementiels dus (ouverture / T-72h exceptionnel / T-24h / T-1h, US-22).
  *
  * Endpoint interne pingé par le cron pg_cron `dispatch_reminders` (toutes les
  * 5 min). Protégé par secret partagé (x-notify-secret == NOTIFY_SECRET),
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   let failed = 0;
 
   for (const d of due) {
-    const kind = d.kind as "open" | "h24" | "h1";
+    const kind = d.kind as "open" | "h72" | "h24" | "h1";
     const { data: recs } = await supabase.rpc("drop_notification_recipients", {
       p_drop_id: d.drop_id,
     });

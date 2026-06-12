@@ -28,7 +28,7 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
 
   // RLS : chaque requete ne renvoie que les lignes de l'utilisateur.
-  const [{ data: profile }, bidsRes, txRes, delRes] = await Promise.all([
+  const [{ data: profile }, bidsRes, txRes, delRes, offerRes] = await Promise.all([
     supabase.from("profiles").select("display_name, kyc_status").eq("id", user.id).maybeSingle(),
     supabase
       .from("bids")
@@ -48,6 +48,14 @@ export default async function DashboardPage() {
         "id, carrier, tracking_number, status, transaction:transactions(drop:drops(id, drop_number, title))"
       )
       .order("created_at", { ascending: false }),
+    // Privilège № 001 en attente (RLS : la sienne uniquement).
+    supabase
+      .from("serial_offers")
+      .select("id, expires_at")
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   return (
@@ -59,6 +67,7 @@ export default async function DashboardPage() {
         bids: (bidsRes.data ?? []) as unknown as BidRow[],
         txs: (txRes.data ?? []) as unknown as TxRow[],
         deliveries: (delRes.data ?? []) as unknown as DeliveryRow[],
+        serialOffer: offerRes.data ?? null,
       }}
       footer={
         <form action={signOut}>

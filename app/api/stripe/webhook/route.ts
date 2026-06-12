@@ -59,6 +59,12 @@ export async function POST(request: NextRequest) {
         // Carte autorisee : la pre-autorisation est posee (requires_capture).
         await markBidAuthorized(event);
         break;
+      case "payment_intent.succeeded":
+        // Supplement du Privilege No 001 paye (voir Privilege_001.md).
+        // Filtre strict sur metadata.kind : les captures des bids gagnants
+        // emettent aussi payment_intent.succeeded et ne doivent rien faire ici.
+        await maybeAcceptSerialOffer(event);
+        break;
       case "payment_intent.canceled":
         await setBidAuthStatusByPi(event, "released");
         break;
@@ -141,6 +147,28 @@ async function markBidAuthorized(event: Stripe.Event) {
       dropId: bid.drop_id,
       imageUrl: drop?.hero_image_url,
     });
+  }
+}
+
+/**
+ * Paiement du supplement Privilege No 001 reussi : accepte l'offre et pose
+ * le serial 001 sur la transaction. accept_serial_offer est idempotente
+ * (re-livraison webhook safe) et tolere une offre expiree par le cron si le
+ * paiement a ete engage avant l'echeance.
+ */
+async function maybeAcceptSerialOffer(event: Stripe.Event) {
+  const pi = event.data.object as Stripe.PaymentIntent;
+  if (pi.metadata?.kind !== "serial_offer") return;
+  const offerId = pi.metadata?.serial_offer_id;
+  if (!offerId) return;
+
+  const supabase = createServiceClient();
+  const { error } = await supabase.rpc("accept_serial_offer", {
+    p_offer_id: offerId,
+    p_payment_intent_id: pi.id,
+  });
+  if (error) {
+    console.error("[webhook] accept_serial_offer a echoue:", error.message);
   }
 }
 

@@ -212,7 +212,10 @@ export type Database = {
           carrier: string
           created_at: string
           delivered_at: string | null
+          direction: string
           id: string
+          insured_value_cents: number | null
+          notes: string | null
           shipped_at: string | null
           status: string
           tracking_number: string | null
@@ -222,7 +225,10 @@ export type Database = {
           carrier: string
           created_at?: string
           delivered_at?: string | null
+          direction?: string
           id?: string
+          insured_value_cents?: number | null
+          notes?: string | null
           shipped_at?: string | null
           status?: string
           tracking_number?: string | null
@@ -232,7 +238,10 @@ export type Database = {
           carrier?: string
           created_at?: string
           delivered_at?: string | null
+          direction?: string
           id?: string
+          insured_value_cents?: number | null
+          notes?: string | null
           shipped_at?: string | null
           status?: string
           tracking_number?: string | null
@@ -242,7 +251,7 @@ export type Database = {
           {
             foreignKeyName: "deliveries_transaction_id_fkey"
             columns: ["transaction_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "transactions"
             referencedColumns: ["id"]
           },
@@ -298,6 +307,51 @@ export type Database = {
           },
           {
             foreignKeyName: "drop_alerts_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: false
+            referencedRelation: "drops_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drop_close_runs: {
+        Row: {
+          close_status: string | null
+          created_at: string
+          drop_id: string
+          id: number
+          ok: boolean
+          report: Json
+          triggered_by: string
+        }
+        Insert: {
+          close_status?: string | null
+          created_at?: string
+          drop_id: string
+          id?: number
+          ok?: boolean
+          report?: Json
+          triggered_by?: string
+        }
+        Update: {
+          close_status?: string | null
+          created_at?: string
+          drop_id?: string
+          id?: number
+          ok?: boolean
+          report?: Json
+          triggered_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drop_close_runs_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: false
+            referencedRelation: "drops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drop_close_runs_drop_id_fkey"
             columns: ["drop_id"]
             isOneToOne: false
             referencedRelation: "drops_public"
@@ -378,6 +432,70 @@ export type Database = {
           },
         ]
       }
+      drop_payouts: {
+        Row: {
+          created_at: string
+          drop_id: string
+          fee_cents: number
+          gross_cents: number
+          id: string
+          net_cents: number
+          note: string | null
+          paid_at: string
+          paid_by: string | null
+          payment_reference: string | null
+          units: number
+        }
+        Insert: {
+          created_at?: string
+          drop_id: string
+          fee_cents: number
+          gross_cents: number
+          id?: string
+          net_cents: number
+          note?: string | null
+          paid_at?: string
+          paid_by?: string | null
+          payment_reference?: string | null
+          units: number
+        }
+        Update: {
+          created_at?: string
+          drop_id?: string
+          fee_cents?: number
+          gross_cents?: number
+          id?: string
+          net_cents?: number
+          note?: string | null
+          paid_at?: string
+          paid_by?: string | null
+          payment_reference?: string | null
+          units?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drop_payouts_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: true
+            referencedRelation: "drops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drop_payouts_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: true
+            referencedRelation: "drops_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drop_payouts_paid_by_fkey"
+            columns: ["paid_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       drops: {
         Row: {
           bid_count: number
@@ -390,6 +508,7 @@ export type Database = {
           drop_number: number
           exemplaires: number
           floor_price_cents: number
+          format: string
           hero_image_url: string | null
           id: string
           images_urls: Json | null
@@ -413,6 +532,7 @@ export type Database = {
           drop_number: number
           exemplaires: number
           floor_price_cents: number
+          format?: string
           hero_image_url?: string | null
           id?: string
           images_urls?: Json | null
@@ -436,6 +556,7 @@ export type Database = {
           drop_number?: number
           exemplaires?: number
           floor_price_cents?: number
+          format?: string
           hero_image_url?: string | null
           id?: string
           images_urls?: Json | null
@@ -522,6 +643,131 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      refund_runs: {
+        Row: {
+          amount_cents: number | null
+          created_at: string
+          id: number
+          ok: boolean
+          report: Json
+          stripe_refund_id: string | null
+          transaction_id: string
+          triggered_by: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          created_at?: string
+          id?: number
+          ok?: boolean
+          report?: Json
+          stripe_refund_id?: string | null
+          transaction_id: string
+          triggered_by?: string
+        }
+        Update: {
+          amount_cents?: number | null
+          created_at?: string
+          id?: number
+          ok?: boolean
+          report?: Json
+          stripe_refund_id?: string | null
+          transaction_id?: string
+          triggered_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refund_runs_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      serial_offers: {
+        Row: {
+          bid_id: string
+          created_at: string
+          drop_id: string
+          expires_at: string
+          id: string
+          resolved_at: string | null
+          serial_no: number
+          status: string
+          stripe_payment_intent_id: string | null
+          supplement_cents: number
+          transaction_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bid_id: string
+          created_at?: string
+          drop_id: string
+          expires_at: string
+          id?: string
+          resolved_at?: string | null
+          serial_no?: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          supplement_cents: number
+          transaction_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bid_id?: string
+          created_at?: string
+          drop_id?: string
+          expires_at?: string
+          id?: string
+          resolved_at?: string | null
+          serial_no?: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          supplement_cents?: number
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "serial_offers_bid_id_fkey"
+            columns: ["bid_id"]
+            isOneToOne: true
+            referencedRelation: "bids"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serial_offers_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: true
+            referencedRelation: "drops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serial_offers_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: true
+            referencedRelation: "drops_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serial_offers_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: true
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serial_offers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       support_messages: {
         Row: {
@@ -642,6 +888,7 @@ export type Database = {
           drop_id: string
           id: string
           platform_fee_cents: number
+          serial_no: number | null
           status: string
           stripe_charge_id: string | null
           user_id: string
@@ -656,6 +903,7 @@ export type Database = {
           drop_id: string
           id?: string
           platform_fee_cents: number
+          serial_no?: number | null
           status?: string
           stripe_charge_id?: string | null
           user_id: string
@@ -670,6 +918,7 @@ export type Database = {
           drop_id?: string
           id?: string
           platform_fee_cents?: number
+          serial_no?: number | null
           status?: string
           stripe_charge_id?: string | null
           user_id?: string
@@ -706,6 +955,60 @@ export type Database = {
           },
         ]
       }
+      withdrawal_requests: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          reason: string | null
+          refunded_at: string | null
+          rejection_reason: string | null
+          requested_at: string
+          status: string
+          transaction_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          reason?: string | null
+          refunded_at?: string | null
+          rejection_reason?: string | null
+          requested_at?: string
+          status?: string
+          transaction_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          reason?: string | null
+          refunded_at?: string | null
+          rejection_reason?: string | null
+          requested_at?: string
+          status?: string
+          transaction_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "withdrawal_requests_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "withdrawal_requests_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: true
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       drops_public: {
@@ -719,6 +1022,7 @@ export type Database = {
           drop_number: number | null
           exemplaires: number | null
           floor_price_cents: number | null
+          format: string | null
           hero_image_url: string | null
           id: string | null
           images_urls: Json | null
@@ -739,6 +1043,7 @@ export type Database = {
           drop_number?: number | null
           exemplaires?: number | null
           floor_price_cents?: number | null
+          format?: string | null
           hero_image_url?: string | null
           id?: string | null
           images_urls?: Json | null
@@ -759,6 +1064,7 @@ export type Database = {
           drop_number?: number | null
           exemplaires?: number | null
           floor_price_cents?: number | null
+          format?: string | null
           hero_image_url?: string | null
           id?: string | null
           images_urls?: Json | null
@@ -781,9 +1087,16 @@ export type Database = {
       }
     }
     Functions: {
+      accept_serial_offer: {
+        Args: { p_offer_id: string; p_payment_intent_id: string }
+        Returns: Json
+      }
+      admin_expire_serial_offer: { Args: { p_offer_id: string }; Returns: Json }
       close_drop: { Args: { p_drop_id: string }; Returns: Json }
-      dispatch_reminders: { Args: Record<PropertyKey, never>; Returns: Json }
-      dispatch_ripe_drops: { Args: Record<PropertyKey, never>; Returns: Json }
+      create_serial_offer: { Args: { p_drop_id: string }; Returns: Json }
+      decline_serial_offer: { Args: { p_offer_id: string }; Returns: Json }
+      dispatch_reminders: { Args: never; Returns: Json }
+      dispatch_ripe_drops: { Args: never; Returns: Json }
       drop_notification_recipients: {
         Args: { p_drop_id: string }
         Returns: {
@@ -800,7 +1113,7 @@ export type Database = {
         }[]
       }
       get_client_overview: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           bids_count: number
           created_at: string
@@ -813,6 +1126,28 @@ export type Database = {
           total_spent_cents: number
         }[]
       }
+      expire_serial_offers: { Args: never; Returns: Json }
+      get_bid_audit: {
+        Args: {
+          p_drop?: string
+          p_action?: string
+          p_limit?: number
+          p_offset?: number
+        }
+        Returns: {
+          id: number
+          occurred_at: string
+          action: string
+          drop_id: string
+          drop_number: number
+          drop_title: string
+          drop_status: string
+          user_email: string
+          amount_cents: number
+          bid_id: string
+        }[]
+      }
+      get_cron_health: { Args: never; Returns: Json }
       get_maison_drop_metrics: {
         Args: { p_brand?: string }
         Returns: {
@@ -837,6 +1172,7 @@ export type Database = {
         }[]
       }
       is_platform_admin: { Args: { uid?: string }; Returns: boolean }
+      is_platform_owner: { Args: { uid?: string }; Returns: boolean }
       my_bid_for_drop: {
         Args: { p_drop_id: string }
         Returns: {
@@ -853,10 +1189,16 @@ export type Database = {
           user_id: string
           withdrawn_at: string | null
         }
+        SetofOptions: {
+          from: "*"
+          to: "bids"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
-      open_ripe_drops: { Args: Record<PropertyKey, never>; Returns: Json }
+      open_ripe_drops: { Args: never; Returns: Json }
       reminders_due: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           drop_id: string
           drop_number: number

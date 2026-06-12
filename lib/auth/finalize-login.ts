@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -37,6 +39,17 @@ export async function resolveLoginDest(
       { id: user.id, email: user.email ?? "" },
       { onConflict: "id", ignoreDuplicates: true }
     );
+
+  // Mémorise la langue choisie (cookie NEXT_LOCALE) pour les emails
+  // transactionnels, envoyés hors contexte de requête. Colonne ouverte à
+  // l'utilisateur (grant 0029) ; on n'écrase qu'avec une valeur connue.
+  const cookieLocale = cookies().get("NEXT_LOCALE")?.value;
+  if (cookieLocale === "fr" || cookieLocale === "en") {
+    await supabase
+      .from("profiles")
+      .update({ locale: cookieLocale })
+      .eq("id", user.id);
+  }
 
   const dest = safeInternalPath(redirectParam);
   if (dest) return dest;

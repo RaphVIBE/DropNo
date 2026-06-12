@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 
 export default function PublicLayout({
@@ -17,6 +18,7 @@ export default function PublicLayout({
       >
         {children}
       </main>
+      <SiteFooter />
     </>
   );
 }

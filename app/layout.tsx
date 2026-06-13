@@ -7,6 +7,7 @@ import "./globals.css";
 import { fontVariables } from "@/lib/fonts";
 import { PostHogScript } from "@/components/analytics/PostHogScript";
 import { PageviewTracker } from "@/components/analytics/PageviewTracker";
+import { CookieConsent } from "@/components/consent/cookie-consent";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("meta");
@@ -43,7 +44,10 @@ export default async function RootLayout({
         <a href="#main-content" className="skip-link">
           {t("skipToContent")}
         </a>
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          {children}
+          <CookieConsent />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

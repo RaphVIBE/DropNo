@@ -224,7 +224,8 @@
     "emailPlaceholder": "vous@exemple.com",
     "submitSending": "Envoi...",
     "submitNotify": "Me prévenir",
-    "galleryThumbAria": "Voir la photo {index} sur {total}"
+    "galleryThumbAria": "Voir la photo {index} sur {total}",
+    "demoBanner": "Simulation privée · données fictives · ceci ne constitue pas une offre"
   },
   "bidForm": {
     "notOpen": "Les offres ne sont pas ouvertes pour ce drop.",
@@ -461,5 +462,27 @@
       "missing_code": "Lien de connexion incomplet. Demandez-en un nouveau ci-dessous.",
       "fallback": "La connexion a échoué. Demandez un nouveau code ci-dessous."
     }
+  },
+  "consent": {
+    "title": "Cookies",
+    "body": "Nous utilisons des cookies de mesure d’audience (PostHog, anonymisé) pour améliorer le site. Les cookies strictement nécessaires restent actifs.",
+    "learnMore": "En savoir plus",
+    "accept": "Tout accepter",
+    "refuse": "Refuser"
+  },
+  "waitlist": {
+    "emptyEyebrow": "Le premier drop approche",
+    "emptyTitle": "Bientôt, la première pièce.",
+    "emptyBody": "Une maison, une pièce, un prix unique décidé à la révélation, chaque jeudi à 18 heures. Laissez votre email : vous serez prévenu dès l’ouverture du premier drop.",
+    "footerTitle": "Restez prévenu",
+    "footerBody": "Un email à l’ouverture du premier drop. Rien d’autre.",
+    "placeholder": "vous@exemple.com",
+    "consent": "J’accepte de recevoir la lettre de Drop No. Désinscription à tout moment.",
+    "submit": "Me prévenir",
+    "submitting": "Envoi…",
+    "success": "Merci. Vous êtes sur la liste — on vous écrit dès le premier drop.",
+    "errorEmail": "Email invalide.",
+    "errorConsent": "Merci de cocher la case pour confirmer.",
+    "errorGeneric": "Une erreur est survenue. Réessayez."
   }
 }

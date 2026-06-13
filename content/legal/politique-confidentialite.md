@@ -13,7 +13,7 @@ Route de Huy 134, 4287 Lincent, Belgique
 Numéro BCE : BE 0799.209.229
 
 Contact pour toute question relative à vos données : hello@dropno.eu
-Délégué à la protection des données (DPO) : Raphaël Hombroeck, raph@dropno.eu
+Délégué à la protection des données (DPO) : Raphaël Hombroeck, hello@dropno.eu
 
 ## 2. Données collectées
 
@@ -24,7 +24,7 @@ Délégué à la protection des données (DPO) : Raphaël Hombroeck, raph@dropno
 | Identité officielle | Numéro et copie de pièce d'identité, selfie | Stripe Identity (KYC) |
 | Paiement | Empreinte de carte bancaire (jamais le numéro complet) | Stripe |
 | Activité plateforme | Drops suivis, offres soumises, modifications, transactions | Utilisation du Site |
-| Communication | Emails échangés avec Drop No., tickets support | Crisp + Resend |
+| Communication | Emails échangés avec Drop No., demandes support | Resend |
 | Technique | Adresse IP, type de navigateur, pages visitées, cookies | Connexion automatique |
 | Analytics anonymisé | Comportement agrégé, conversions | PostHog (sans identifiants individuels) |
 
@@ -52,7 +52,6 @@ Vos données sont accessibles aux personnes habilitées de Drop No., ainsi qu'au
 | Stripe Inc. + Stripe Payments Europe Ltd. | États-Unis + Irlande | Traitement des paiements, KYC, AML |
 | Netlify, Inc. | États-Unis | Hébergement du site |
 | Resend Inc. | États-Unis | Envoi des emails transactionnels |
-| Crisp IM SARL | France | Outil de support client |
 | PostHog Inc. | EU (Cloud EU) | Analyse d'audience anonymisée |
 | Combell SA | Belgique | Service de messagerie email |
 

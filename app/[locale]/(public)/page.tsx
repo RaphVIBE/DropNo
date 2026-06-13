@@ -7,6 +7,7 @@ import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
 import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
 import { isAnnounced } from "@/lib/admin/drops";
 import { localizedAlternates } from "@/lib/i18n/metadata";
+import { WaitlistBlock } from "@/components/waitlist/waitlist-block";
 
 export const dynamic = "force-dynamic";
 
@@ -130,7 +131,9 @@ export default async function HomePage() {
             serverNowIso={serverNowIso}
           />
         </section>
-      ) : null}
+      ) : (
+        <WaitlistBlock source="home" />
+      )}
 
       {/* Les maisons */}
       {brands.length > 0 ? (

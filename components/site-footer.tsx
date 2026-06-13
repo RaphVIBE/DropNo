@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { Wordmark } from "@/components/brand/wordmark";
+import { WaitlistForm } from "@/components/waitlist/waitlist-form";
 import { LEGAL_DOCS } from "@/lib/legal";
 
 /**
@@ -15,6 +16,7 @@ const LINK_CLASS =
 
 export async function SiteFooter() {
   const t = await getTranslations("footer");
+  const tw = await getTranslations("waitlist");
   const year = new Date().getFullYear();
 
   const explore = [
@@ -33,6 +35,19 @@ export async function SiteFooter() {
 
   return (
     <footer className="border-t border-rule bg-background">
+      {/* Liste d'attente — un email à l'ouverture du premier drop */}
+      <div className="border-b border-rule-soft px-7 py-12 md:px-16 md:py-14">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_1.1fr] md:items-center md:gap-12">
+          <div>
+            <span className="eyebrow">{tw("footerTitle")}</span>
+            <p className="mt-3 max-w-[34ch] text-sm leading-relaxed text-ink-2">
+              {tw("footerBody")}
+            </p>
+          </div>
+          <WaitlistForm source="footer" />
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-x-12 gap-y-12 px-7 py-16 md:grid-cols-[1.3fr_1fr_1.4fr] md:px-16 md:py-20">
         {/* La maison */}
         <div>

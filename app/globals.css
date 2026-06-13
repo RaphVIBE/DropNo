@@ -43,6 +43,7 @@
     --champagne-deep: oklch(0.52 0.06 70);
     --ink-2: oklch(0.32 0.012 60);
     --rule-soft: oklch(0.92 0.008 70);
+    --sand: oklch(0.952 0.009 78); /* bande alternée, entre background et muted */
   }
 
   /*
@@ -83,6 +84,7 @@
     --champagne-deep: oklch(0.6 0.07 80);
     --ink-2: oklch(0.8 0.01 70);
     --rule-soft: oklch(0.3 0.012 65);
+    --sand: oklch(0.235 0.012 65); /* bande alternée, entre background et card */
 
     color-scheme: dark;
   }

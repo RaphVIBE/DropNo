@@ -77,7 +77,7 @@ export default async function MechanismPage() {
       </section>
 
       {/* Exemple chiffré */}
-      <section className="border-t border-rule-soft px-7 py-16 md:px-16 md:py-24">
+      <section className="border-t border-rule-soft bg-sand px-7 py-16 md:px-16 md:py-24">
         <div className="grid max-w-6xl grid-cols-1 gap-12 md:grid-cols-[1fr_1.4fr] md:gap-24">
           <div>
             <span className="eyebrow">{t("example.eyebrow")}</span>
@@ -173,7 +173,7 @@ export default async function MechanismPage() {
       </section>
 
       {/* FAQ */}
-      <section className="border-t border-rule-soft px-7 py-16 md:px-16 md:py-24">
+      <section className="border-t border-rule-soft bg-sand px-7 py-16 md:px-16 md:py-24">
         <div className="grid max-w-6xl grid-cols-1 gap-12 md:grid-cols-[1fr_1.4fr] md:gap-24">
           <div>
             <span className="eyebrow">{t("faq.eyebrow")}</span>

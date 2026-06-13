@@ -23,14 +23,22 @@ export function constructionGate(request: NextRequest): NextResponse | null {
 
   const { pathname, searchParams } = request.nextUrl;
 
-  // Toujours laisser passer : page bientôt, assets, robots, API (auth propre).
+  // Depuis l'i18n, la page « bientôt » vit sous [locale] (/fr/bientot, /en/…).
+  // La cible de réécriture/redirection DOIT être préfixée, sinon Next ne trouve
+  // pas de route à `/bientot` nu et renvoie 404.
+  const bientotPath = pathname.startsWith("/en") ? "/en/bientot" : "/fr/bientot";
+
+  // Toujours laisser passer : page bientôt (toutes locales), assets, robots, API.
   if (
     pathname === "/bientot" ||
+    pathname === "/fr/bientot" ||
+    pathname === "/en/bientot" ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/admin") || // back-office : protégé par auth + rôle, hors vitrine
     pathname.startsWith("/maison") || // espace responsables maison : protégé par auth + rôle
     pathname === "/dev-login" || // connexion dev par mot de passe (désactivée en prod)
+    pathname === "/en/dev-login" ||
     pathname === "/robots.txt" ||
     pathname === "/favicon.ico"
   ) {
@@ -41,7 +49,7 @@ export function constructionGate(request: NextRequest): NextResponse | null {
   const preview = searchParams.get("preview");
   if (preview === "off") {
     const url = request.nextUrl.clone();
-    url.pathname = "/bientot";
+    url.pathname = bientotPath;
     url.searchParams.delete("preview");
     const res = NextResponse.redirect(url);
     res.cookies.set(PREVIEW_COOKIE, "", { path: "/", maxAge: 0 });
@@ -67,9 +75,9 @@ export function constructionGate(request: NextRequest): NextResponse | null {
   // Cookie de preview présent -> accès complet au vrai site.
   if (request.cookies.get(PREVIEW_COOKIE)?.value === "1") return null;
 
-  // Sinon -> on sert la page /bientot (URL conservée) + noindex.
+  // Sinon -> on sert la page « bientôt » localisée (URL conservée) + noindex.
   const url = request.nextUrl.clone();
-  url.pathname = "/bientot";
+  url.pathname = bientotPath;
   const res = NextResponse.rewrite(url);
   res.headers.set("X-Robots-Tag", "noindex, nofollow");
   return res;

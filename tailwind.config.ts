@@ -61,6 +61,7 @@ const config: Config = {
           DEFAULT: "var(--border)",
           soft: "var(--rule-soft)",
         },
+        sand: "var(--sand)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],

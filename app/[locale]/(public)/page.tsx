@@ -92,7 +92,7 @@ export default async function HomePage() {
       {/* ── ACTE 2 : le mécanisme (l'explication vient après le désir) ──
           Deux colonnes : la copie à gauche, le schéma blueprint (vertical) à
           droite — même rythme gauche/droite que le héros, plus de vide. */}
-      <section className="border-t border-rule-soft px-7 py-16 md:px-16 md:py-24">
+      <section className="border-t border-rule-soft bg-sand px-7 py-16 md:px-16 md:py-24">
         <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 md:grid-cols-[1.05fr_0.95fr] md:gap-16">
           <div className="flex max-w-xl flex-col gap-7">
             <p className="eyebrow">{t("eyebrow")}</p>
@@ -150,7 +150,7 @@ export default async function HomePage() {
       ) : null}
 
       {/* ── Manifeste court ── */}
-      <section className="border-t border-rule-soft px-7 py-20 md:px-16 md:py-28">
+      <section className="border-t border-rule-soft bg-sand px-7 py-20 md:px-16 md:py-28">
         <p className="font-display mx-auto max-w-[26ch] text-center text-[clamp(1.6rem,3.5vw,2.5rem)]">
           {t("manifesto")}
         </p>

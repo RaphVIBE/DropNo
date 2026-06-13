@@ -15,40 +15,60 @@ import {
  * Nom de l'étape sous chaque figure. prefers-reduced-motion respecté. */
 
 type StepDef = {
-  Figure: (props: { spin?: boolean }) => React.ReactNode;
+  Figure: (props: { spin?: boolean; className?: string }) => React.ReactNode;
   label: string;
   delay: number;
 };
 
+/** Figures plus petites quand le schéma est empilé en colonne étroite. */
+const COMPACT_FIG = "mx-auto h-28 w-full max-w-[150px]";
 
-function Arrow({ delay }: { delay: number }) {
+
+function Arrow({ delay, vertical }: { delay: number; vertical?: boolean }) {
   return (
     <div
-      className="reveal flex items-center justify-center sm:w-14 sm:self-start sm:mt-[88px]"
+      className={`reveal flex items-center justify-center ${
+        vertical ? "" : "sm:w-14 sm:self-start sm:mt-[88px]"
+      }`}
       style={{ "--reveal-delay": `${delay}ms` } as React.CSSProperties}
       aria-hidden="true"
     >
-      {/* desktop : flèche horizontale */}
-      <div className="hidden w-full items-center gap-1.5 sm:flex">
-        <span className="h-px flex-1 border-t border-dashed border-champagne" />
-        <ChevronRight className="size-4 shrink-0 text-[var(--champagne-deep)]" strokeWidth={1.5} />
-      </div>
-      {/* mobile : flèche verticale */}
-      <div className="flex flex-col items-center gap-1 py-2 sm:hidden">
-        <span className="h-6 w-px border-l border-dashed border-champagne" />
+      {/* flèche horizontale (mode auto, desktop uniquement) */}
+      {vertical ? null : (
+        <div className="hidden w-full items-center gap-1.5 sm:flex">
+          <span className="h-px flex-1 border-t border-dashed border-champagne" />
+          <ChevronRight className="size-4 shrink-0 text-[var(--champagne-deep)]" strokeWidth={1.5} />
+        </div>
+      )}
+      {/* flèche verticale (toujours en mode vertical ; mobile en mode auto) */}
+      <div
+        className={`flex flex-col items-center ${
+          vertical ? "gap-0.5 py-1" : "gap-1 py-2 sm:hidden"
+        }`}
+      >
+        <span
+          className={`${vertical ? "h-4" : "h-6"} w-px border-l border-dashed border-champagne`}
+        />
         <ChevronDown className="size-4 text-[var(--champagne-deep)]" strokeWidth={1.5} />
       </div>
     </div>
   );
 }
 
-function StepColumn({ Figure, label, delay }: StepDef) {
+function StepColumn({
+  Figure,
+  label,
+  delay,
+  vertical,
+}: StepDef & { vertical?: boolean }) {
   return (
     <div
-      className="reveal flex w-full flex-col items-center gap-4 sm:flex-1"
+      className={`reveal flex w-full flex-col items-center ${
+        vertical ? "gap-2" : "gap-4 sm:flex-1"
+      }`}
       style={{ "--reveal-delay": `${delay}ms` } as React.CSSProperties}
     >
-      <Figure spin />
+      <Figure spin className={vertical ? COMPACT_FIG : undefined} />
       <span className="text-center text-[13px] font-medium uppercase tracking-[0.16em] text-foreground">
         {label}
       </span>
@@ -73,8 +93,15 @@ function ClockworkBackdrop() {
   );
 }
 
-export async function MechanismVariantB() {
+export async function MechanismVariantB({
+  orientation = "auto",
+}: {
+  /** "auto" : empilé en mobile, en ligne dès sm. "vertical" : toujours empilé
+   *  (pour une colonne étroite, ex. le bloc deux-colonnes de la home). */
+  orientation?: "auto" | "vertical";
+}) {
   const t = await getTranslations("mecanisme");
+  const vertical = orientation === "vertical";
 
   const STEPS: StepDef[] = [
     { Figure: FigureSealed, label: t("steps.sealed"), delay: 700 },
@@ -84,22 +111,27 @@ export async function MechanismVariantB() {
 
   return (
     <div className="relative">
-      <ClockworkBackdrop />
-      <ol className="relative flex flex-col items-center gap-3 sm:flex-row sm:items-start sm:gap-2">
+      {/* L'horlogerie d'arrière-plan (600×220) ne tient que sur une bande large. */}
+      {vertical ? null : <ClockworkBackdrop />}
+      <ol
+        className={`relative flex flex-col items-center gap-3 ${
+          vertical ? "" : "sm:flex-row sm:items-start sm:gap-2"
+        }`}
+      >
         <li className="contents">
-          <StepColumn {...STEPS[0]} />
+          <StepColumn {...STEPS[0]} vertical={vertical} />
         </li>
         <li className="contents" aria-hidden="true">
-          <Arrow delay={770} />
+          <Arrow delay={770} vertical={vertical} />
         </li>
         <li className="contents">
-          <StepColumn {...STEPS[1]} />
+          <StepColumn {...STEPS[1]} vertical={vertical} />
         </li>
         <li className="contents" aria-hidden="true">
-          <Arrow delay={910} />
+          <Arrow delay={910} vertical={vertical} />
         </li>
         <li className="contents">
-          <StepColumn {...STEPS[2]} />
+          <StepColumn {...STEPS[2]} vertical={vertical} />
         </li>
       </ol>
     </div>

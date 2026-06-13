@@ -1,12 +1,12 @@
 # Conditions générales d'utilisation
 
-*Dernière mise à jour : [DATE]*
+*Dernière mise à jour : 13 juin 2026*
 
 ## 1. Objet
 
 Les présentes conditions générales d'utilisation (ci-après « CGU ») régissent l'accès et l'utilisation du site dropno.eu et de ses services (ci-après le « Site ») par tout visiteur ou utilisateur inscrit (ci-après « Utilisateur »).
 
-Drop No. est une maison de drops scellés pour l'horlogerie premium, opérée par Drop No. [SA / SRL] (ci-après « Drop No. »), dont les coordonnées figurent dans les mentions légales.
+Drop No. est une maison de drops scellés pour l'horlogerie premium, opérée par Veracruz SRL (« Drop No. ») (ci-après « Drop No. »), dont les coordonnées figurent dans les mentions légales.
 
 ## 2. Acceptation des CGU
 

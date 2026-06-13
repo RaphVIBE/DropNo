@@ -1,6 +1,6 @@
 # Politique de confidentialité
 
-*Dernière mise à jour : [DATE]*
+*Dernière mise à jour : 13 juin 2026*
 
 Drop No. accorde la plus grande importance à la protection de vos données personnelles. La présente politique explique quelles données nous collectons, pourquoi, combien de temps nous les conservons, et quels sont vos droits.
 
@@ -8,12 +8,12 @@ Document rédigé conformément au Règlement (UE) 2016/679 (RGPD) et à la loi 
 
 ## 1. Responsable du traitement
 
-**Drop No. [SA / SRL]**
-[ADRESSE], Bruxelles, Belgique
-Numéro BCE : [BE 0XXX.XXX.XXX]
+**Veracruz SRL** (exploitant la marque « Drop No. »)
+Route de Huy 134, 4287 Lincent, Belgique
+Numéro BCE : BE 0799.209.229
 
 Contact pour toute question relative à vos données : hello@dropno.eu
-Délégué à la protection des données (DPO) : Raphaël Hombroeck, raph@dropno.eu
+Délégué à la protection des données (DPO) : Raphaël Hombroeck, hello@dropno.eu
 
 ## 2. Données collectées
 
@@ -24,7 +24,7 @@ Délégué à la protection des données (DPO) : Raphaël Hombroeck, raph@dropno
 | Identité officielle | Numéro et copie de pièce d'identité, selfie | Stripe Identity (KYC) |
 | Paiement | Empreinte de carte bancaire (jamais le numéro complet) | Stripe |
 | Activité plateforme | Drops suivis, offres soumises, modifications, transactions | Utilisation du Site |
-| Communication | Emails échangés avec Drop No., tickets support | Crisp + Resend |
+| Communication | Emails échangés avec Drop No., demandes support | Resend |
 | Technique | Adresse IP, type de navigateur, pages visitées, cookies | Connexion automatique |
 | Analytics anonymisé | Comportement agrégé, conversions | PostHog (sans identifiants individuels) |
 
@@ -50,9 +50,8 @@ Vos données sont accessibles aux personnes habilitées de Drop No., ainsi qu'au
 |---|---|---|
 | Supabase Inc. | Singapore (HQ) / EU eu-west-3 Paris (data) | Hébergement base de données, authentification |
 | Stripe Inc. + Stripe Payments Europe Ltd. | États-Unis + Irlande | Traitement des paiements, KYC, AML |
-| Vercel Inc. | États-Unis | Hébergement front-end |
+| Netlify, Inc. | États-Unis | Hébergement du site |
 | Resend Inc. | États-Unis | Envoi des emails transactionnels |
-| Crisp IM SARL | France | Outil de support client |
 | PostHog Inc. | EU (Cloud EU) | Analyse d'audience anonymisée |
 | Combell SA | Belgique | Service de messagerie email |
 
@@ -60,7 +59,7 @@ Vos données ne sont jamais vendues à des tiers commerciaux, jamais transmises 
 
 ## 5. Transferts hors Union européenne
 
-Certains sous-traitants (Stripe, Vercel, Resend) sont établis aux États-Unis. Les transferts de données vers ces destinataires sont encadrés par :
+Certains sous-traitants (Stripe, Netlify, Resend) sont établis aux États-Unis. Les transferts de données vers ces destinataires sont encadrés par :
 - les clauses contractuelles types adoptées par la Commission européenne (décision 2021/914), ou
 - les certifications EU-US Data Privacy Framework lorsqu'elles sont applicables.
 

@@ -1,6 +1,6 @@
 # Politique de cookies
 
-*Dernière mise à jour : [DATE]*
+*Dernière mise à jour : 13 juin 2026*
 
 ## 1. Qu'est-ce qu'un cookie
 
@@ -37,7 +37,6 @@ Améliorent l'expérience utilisateur. Désactivables sans empêcher l'usage du 
 
 | Cookie | Finalité | Durée |
 |---|---|---|
-| `crisp-client/*` | Widget de support client Crisp | 6 mois |
 | `NEXT_LOCALE` | Mémorisation de votre langue (FR / EN) | 12 mois |
 | `dropno-preferences` | Autres préférences d'affichage (fuseau horaire) | 12 mois |
 
@@ -60,7 +59,6 @@ PostHog est configuré en mode privacy-friendly : pas de session replay sur les 
 Les cookies tiers proviennent de services intégrés au Site :
 
 - **Stripe** : dépose des cookies pour la sécurité des paiements lors du processus de bid. Voir [politique cookies Stripe](https://stripe.com/cookies-policy/legal).
-- **Crisp** : dépose des cookies pour le widget de chat. Voir [politique cookies Crisp](https://crisp.chat/en/privacy).
 - **PostHog** : dépose des cookies anonymisés pour les analytics. Voir [politique cookies PostHog](https://posthog.com/privacy).
 
 ## 5. Gestion des cookies

@@ -1,12 +1,12 @@
 # Conditions générales de vente
 
-*Dernière mise à jour : [DATE]*
+*Dernière mise à jour : 13 juin 2026*
 
 ⚠️ Document critique. Compte tenu de la nature novatrice du mécanisme sealed-bid à prix uniforme et du droit de rétractation EU pour les ventes en ligne, ce document **doit impérativement être validé par un juriste e-commerce EU avant publication**.
 
 ## 1. Objet
 
-Les présentes conditions générales de vente (ci-après « CGV ») régissent les transactions conclues sur la plateforme dropno.eu (ci-après le « Site »), opérée par Drop No. [SA / SRL] (ci-après « Drop No. »), entre les marques vendeuses partenaires et les utilisateurs acheteurs.
+Les présentes conditions générales de vente (ci-après « CGV ») régissent les transactions conclues sur la plateforme dropno.eu (ci-après le « Site »), opérée par Veracruz SRL (« Drop No. ») (ci-après « Drop No. »), entre les marques vendeuses partenaires et les utilisateurs acheteurs.
 
 Les CGV s'appliquent à toute offre scellée soumise par un utilisateur acheteur sur un drop publié sur le Site.
 

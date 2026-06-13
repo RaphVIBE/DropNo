@@ -224,7 +224,8 @@
     "emailPlaceholder": "you@example.com",
     "submitSending": "Sending...",
     "submitNotify": "Notify me",
-    "galleryThumbAria": "View photo {index} of {total}"
+    "galleryThumbAria": "View photo {index} of {total}",
+    "demoBanner": "Private simulation · fictional data · this is not an offer"
   },
   "bidForm": {
     "notOpen": "Bidding is not open for this drop.",
@@ -461,5 +462,27 @@
       "missing_code": "Incomplete sign-in link. Request a new one below.",
       "fallback": "Sign-in failed. Request a new code below."
     }
+  },
+  "consent": {
+    "title": "Cookies",
+    "body": "We use privacy-friendly analytics cookies (PostHog, anonymised) to improve the site. Strictly necessary cookies stay active.",
+    "learnMore": "Learn more",
+    "accept": "Accept all",
+    "refuse": "Decline"
+  },
+  "waitlist": {
+    "emptyEyebrow": "The first drop is coming",
+    "emptyTitle": "Soon, the first piece.",
+    "emptyBody": "One house, one piece, a single price set at the reveal, every Thursday at 6 PM. Leave your email and we’ll let you know the moment the first drop opens.",
+    "footerTitle": "Stay notified",
+    "footerBody": "One email when the first drop opens. Nothing else.",
+    "placeholder": "you@example.com",
+    "consent": "I agree to receive Drop No.’s letter. Unsubscribe anytime.",
+    "submit": "Notify me",
+    "submitting": "Sending…",
+    "success": "Thank you. You’re on the list — we’ll write the moment the first drop opens.",
+    "errorEmail": "Invalid email.",
+    "errorConsent": "Please tick the box to confirm.",
+    "errorGeneric": "Something went wrong. Please try again."
   }
 }

@@ -112,11 +112,17 @@ const monoLabel = {
 };
 
 /** 01 — Offre déposée dans une boîte scellée (montant caché). */
-export function FigureSealed({ spin }: { spin?: boolean }) {
+export function FigureSealed({
+  spin,
+  className = FIG_CLASS,
+}: {
+  spin?: boolean;
+  className?: string;
+}) {
   return (
     <svg
       viewBox="0 0 160 140"
-      className={FIG_CLASS}
+      className={className}
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -151,7 +157,13 @@ export function FigureSealed({ spin }: { spin?: boolean }) {
 }
 
 /** 02 — La boîte s'ouvre à T : les offres se révèlent. */
-export function FigureReveal({ spin }: { spin?: boolean }) {
+export function FigureReveal({
+  spin,
+  className = FIG_CLASS,
+}: {
+  spin?: boolean;
+  className?: string;
+}) {
   const bars = [
     { x: 58, y: 58, h: 18 },
     { x: 76, y: 48, h: 28 },
@@ -160,7 +172,7 @@ export function FigureReveal({ spin }: { spin?: boolean }) {
   return (
     <svg
       viewBox="0 0 160 140"
-      className={FIG_CLASS}
+      className={className}
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -192,7 +204,13 @@ export function FigureReveal({ spin }: { spin?: boolean }) {
 }
 
 /** 03 — Offres triées : prix unique = la N-ième offre retenue. */
-export function FigureClearing({ spin }: { spin?: boolean }) {
+export function FigureClearing({
+  spin,
+  className = FIG_CLASS,
+}: {
+  spin?: boolean;
+  className?: string;
+}) {
   const baseline = 110;
   const clearing = 62;
   const w = 14;
@@ -206,7 +224,7 @@ export function FigureClearing({ spin }: { spin?: boolean }) {
   return (
     <svg
       viewBox="0 0 160 140"
-      className={FIG_CLASS}
+      className={className}
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"

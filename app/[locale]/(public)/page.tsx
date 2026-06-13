@@ -89,15 +89,17 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* ── ACTE 2 : le mécanisme (l'explication vient après le désir) ── */}
+      {/* ── ACTE 2 : le mécanisme (l'explication vient après le désir) ──
+          Deux colonnes : la copie à gauche, le schéma blueprint (vertical) à
+          droite — même rythme gauche/droite que le héros, plus de vide. */}
       <section className="border-t border-rule-soft px-7 py-16 md:px-16 md:py-24">
-        <div className="mx-auto flex max-w-5xl flex-col gap-12 md:gap-16">
-          <div className="flex max-w-3xl flex-col gap-7">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 md:grid-cols-[1.05fr_0.95fr] md:gap-16">
+          <div className="flex max-w-xl flex-col gap-7">
             <p className="eyebrow">{t("eyebrow")}</p>
-            <h2 className="font-display text-balance text-4xl md:text-6xl">
+            <h2 className="font-display text-balance text-4xl md:text-5xl">
               {t("title")}
             </h2>
-            <p className="max-w-xl text-lg text-ink-2">{t("intro")}</p>
+            <p className="text-lg text-ink-2">{t("intro")}</p>
             <div className="flex flex-wrap gap-4">
               <Button asChild size="lg">
                 <Link href="/drops">{t("ctaCalendar")}</Link>
@@ -106,18 +108,16 @@ export default async function HomePage() {
                 <Link href="/mecanisme">{t("ctaMechanism")}</Link>
               </Button>
             </div>
+            <Link
+              href="/mecanisme"
+              className="w-fit rounded-sm text-[13px] text-ink-2 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              {t("mechanismDetail")}
+            </Link>
           </div>
 
-          <div>
-            <MechanismVariantB />
-            <div className="mt-8 text-center">
-              <Link
-                href="/mecanisme"
-                className="rounded-sm text-[13px] text-ink-2 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                {t("mechanismDetail")}
-              </Link>
-            </div>
+          <div className="mx-auto w-full max-w-xs md:mx-0">
+            <MechanismVariantB orientation="vertical" />
           </div>
         </div>
       </section>

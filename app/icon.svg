@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Drop No.">
+  <!-- Tuile ink chaude, arrondie -->
+  <rect width="64" height="64" rx="14" fill="#1b1712"/>
+  <!-- « D » serif clair (mark Drop No.), tracé en paths pour un rendu identique partout -->
+  <g fill="#f5f1e9">
+    <!-- empattements du fût -->
+    <rect x="15" y="15.5" width="16" height="3" rx="0.6"/>
+    <rect x="15" y="45.5" width="16" height="3" rx="0.6"/>
+    <!-- corps du D (fût + panse), contre-poinçon évidé -->
+    <path fill-rule="evenodd" d="M18 15.5 H33 C42.4 15.5 48.5 22.6 48.5 32 C48.5 41.4 42.4 48.5 33 48.5 H18 Z M27 23.5 H32.5 C37.7 23.5 40.2 27.4 40.2 32 C40.2 36.6 37.7 40.5 32.5 40.5 H27 Z"/>
+  </g>
+  <!-- Point champagne : signature du « No. » -->
+  <circle cx="49.5" cy="48.5" r="4.2" fill="#c2a06a"/>
+</svg>

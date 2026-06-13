@@ -26,7 +26,7 @@ export async function DropDetail({
   if (paragraphs.length === 0 && specEntries.length === 0) return null;
 
   return (
-    <div className="border-t border-rule-soft px-7 py-24 md:px-16 md:py-32">
+    <div className="border-t border-rule-soft bg-sand px-7 py-24 md:px-16 md:py-32">
       <div className="grid max-w-6xl grid-cols-1 gap-16 md:grid-cols-[1fr_1.4fr] md:gap-24">
         <div>
           <span className="eyebrow">{t("storyEyebrow")}</span>

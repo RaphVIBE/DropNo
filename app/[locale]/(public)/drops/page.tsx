@@ -62,7 +62,7 @@ export default async function DropsPage() {
 
   return (
     <>
-      <div className="px-7 pt-24 md:px-16 md:pt-28">
+      <div className="bg-sand px-7 pt-24 md:px-16 md:pt-28">
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-2 border-b border-rule-soft pb-5">
           <div>
             <span className="eyebrow">{t("eyebrow")}</span>

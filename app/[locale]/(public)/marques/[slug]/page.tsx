@@ -161,7 +161,7 @@ export default async function BrandPage({
       </section>
 
       {/* Lead editoriale + lien officiel */}
-      <div className="border-b border-rule-soft px-7 pb-14 pt-12 md:px-16 md:pb-16 md:pt-14">
+      <div className="border-b border-rule-soft bg-sand px-7 pb-14 pt-12 md:px-16 md:pb-16 md:pt-14">
         <p className="reveal max-w-[58ch] text-lg leading-relaxed text-ink-2">
           {lead}
         </p>

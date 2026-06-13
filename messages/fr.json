@@ -7,7 +7,7 @@
     "skipToContent": "Aller au contenu"
   },
   "nav": {
-    "calendar": "Calendrier",
+    "calendar": "Drops",
     "houses": "Maisons",
     "mechanism": "Mécanisme",
     "about": "À propos",
@@ -41,7 +41,8 @@
     "housesDirect": "En direct des marques →",
     "manifesto": "Pas une marketplace. Une maison, une pièce, un rendez-vous : le jeudi, 18 heures.",
     "manifestoSub": "En direct des maisons, sans revente ni intermédiaire. Livraison assurée, identité vérifiée, rétractation 14 jours. Aucun frais pour l'acheteur.",
-    "aboutLink": "La maison Drop No. →"
+    "aboutLink": "La maison Drop No. →",
+    "heroKicker": "Drop № {num} · offre scellée · révélation {moment}"
   },
   "locale": {
     "switchLabel": "Langue",

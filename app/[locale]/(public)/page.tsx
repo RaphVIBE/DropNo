@@ -4,7 +4,9 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
-import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
+import { HomeDropHero } from "@/components/home/home-drop-hero";
+import { UpcomingCard } from "@/components/drop/upcoming-card";
+import type { CalendarDrop } from "@/components/drop/calendar-row";
 import { isAnnounced } from "@/lib/admin/drops";
 import { localizedAlternates } from "@/lib/i18n/metadata";
 import { WaitlistBlock } from "@/components/waitlist/waitlist-block";
@@ -21,12 +23,14 @@ const SELECT =
   "id, drop_number, title, status, floor_price_cents, clearing_price_cents, reveal_at, bid_window_opens_at, revealed_at, format, hero_image_url, brand:brands(name, slug)";
 
 /**
- * Homepage : le manifeste en une phrase, le mécanisme en trois temps, puis le
- * produit lui-même — le drop de la semaine (ouvert, sinon le prochain
- * annoncé) — et les maisons. Le footer global porte légal et engagements.
+ * Homepage, product-forward : le drop EST le héros (sa pièce, son prix plancher,
+ * le compte à rebours, « faire une offre »). À défaut de drop, le héros devient
+ * « le premier drop approche » + liste d'attente. Puis le rythme (« à venir »),
+ * le mécanisme (acte 2), les maisons, le manifeste.
  */
 export default async function HomePage() {
   const t = await getTranslations("home");
+  const td = await getTranslations("drops");
   const supabase = createClient();
   const serverNowIso = new Date().toISOString();
 
@@ -44,80 +48,32 @@ export default async function HomePage() {
   const brands = (brandsData ?? []) as { name: string; slug: string }[];
 
   const open = drops.find((d) => d.status === "open") ?? null;
-  const upcoming = open
-    ? null
-    : (drops.find(
-        (d) =>
-          d.status === "scheduled" &&
-          isAnnounced(d.bid_window_opens_at, d.format, serverNowIso)
-      ) ?? null);
-  const featured = open ?? upcoming;
+  const announcedUpcoming = drops.filter(
+    (d) =>
+      d.status === "scheduled" &&
+      isAnnounced(d.bid_window_opens_at, d.format, serverNowIso)
+  );
+  // Le héros : le drop ouvert, sinon le prochain drop annoncé.
+  const featured = open ?? announcedUpcoming[0] ?? null;
+  // Rail « à venir » : les autres drops annoncés (hors héros), 2 max.
+  const rail = announcedUpcoming
+    .filter((d) => d.id !== featured?.id)
+    .slice(0, 2);
 
   return (
     <>
-      {/* Manifeste + mécanisme */}
-      <section className="mx-auto flex max-w-5xl flex-col gap-14 px-7 pb-16 pt-16 md:gap-20 md:px-16 md:pb-20 md:pt-24">
-        <div className="flex max-w-3xl flex-col gap-8">
-          <p
-            className="eyebrow reveal"
-            style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
-          >
-            {t("eyebrow")}
-          </p>
-          <h1
-            className="font-display reveal text-balance text-5xl md:text-7xl"
-            style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
-          >
-            {t("title")}
-          </h1>
-          <p
-            className="reveal max-w-xl text-lg text-ink-2"
-            style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
-          >
-            {t("intro")}
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <Button
-              asChild
-              size="lg"
-              className="reveal"
-              style={{ "--reveal-delay": "520ms" } as React.CSSProperties}
-            >
-              <Link href="/drops">{t("ctaCalendar")}</Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="reveal"
-              style={{ "--reveal-delay": "600ms" } as React.CSSProperties}
-            >
-              <Link href="/mecanisme">{t("ctaMechanism")}</Link>
-            </Button>
-          </div>
-        </div>
-
-        {/* Mécanisme — flux blueprint vivant du drop scellé en trois temps */}
-        <div>
-          <MechanismVariantB />
-          <div className="mt-8 text-center">
-            <Link
-              href="/mecanisme"
-              className="rounded-sm text-[13px] text-ink-2 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              {t("mechanismDetail")}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Le drop de la semaine — le produit, pas une promesse */}
+      {/* ── HÉROS : le drop (ou, à défaut, le premier drop à venir + waitlist) ── */}
       {featured ? (
-        <section className="border-t border-rule-soft px-7 pb-8 pt-14 md:px-16 md:pt-16">
-          <div className="flex items-baseline justify-between border-b border-foreground pb-5">
-            <h2 className="font-serif text-3xl italic md:text-4xl">
-              {open ? t("nowTitle") : t("nextTitle")}
-            </h2>
+        <HomeDropHero drop={featured} open={!!open} serverNowIso={serverNowIso} />
+      ) : (
+        <WaitlistBlock source="home" hero />
+      )}
+
+      {/* ── À VENIR : le rythme hebdo (masqué si rien de programmé) ── */}
+      {rail.length > 0 ? (
+        <section className="border-t border-rule-soft px-7 py-12 md:px-16 md:py-16">
+          <div className="mb-2 flex items-baseline justify-between border-b border-rule pb-5">
+            <h2 className="font-serif text-2xl italic">{td("upcomingHeading")}</h2>
             <Link
               href="/drops"
               className="rounded-sm text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -125,17 +81,48 @@ export default async function HomePage() {
               {t("allCalendar")}
             </Link>
           </div>
-          <CalendarRow
-            drop={featured}
-            variant={open ? "open" : "upcoming"}
-            serverNowIso={serverNowIso}
-          />
+          <div className="grid grid-cols-1 gap-x-12 md:grid-cols-2">
+            {rail.map((drop) => (
+              <UpcomingCard key={drop.id} drop={drop} serverNowIso={serverNowIso} />
+            ))}
+          </div>
         </section>
-      ) : (
-        <WaitlistBlock source="home" />
-      )}
+      ) : null}
 
-      {/* Les maisons */}
+      {/* ── ACTE 2 : le mécanisme (l'explication vient après le désir) ── */}
+      <section className="border-t border-rule-soft px-7 py-16 md:px-16 md:py-24">
+        <div className="mx-auto flex max-w-5xl flex-col gap-12 md:gap-16">
+          <div className="flex max-w-3xl flex-col gap-7">
+            <p className="eyebrow">{t("eyebrow")}</p>
+            <h2 className="font-display text-balance text-4xl md:text-6xl">
+              {t("title")}
+            </h2>
+            <p className="max-w-xl text-lg text-ink-2">{t("intro")}</p>
+            <div className="flex flex-wrap gap-4">
+              <Button asChild size="lg">
+                <Link href="/drops">{t("ctaCalendar")}</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/mecanisme">{t("ctaMechanism")}</Link>
+              </Button>
+            </div>
+          </div>
+
+          <div>
+            <MechanismVariantB />
+            <div className="mt-8 text-center">
+              <Link
+                href="/mecanisme"
+                className="rounded-sm text-[13px] text-ink-2 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                {t("mechanismDetail")}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Les maisons ── */}
       {brands.length > 0 ? (
         <section className="border-t border-rule-soft px-7 py-14 md:px-16 md:py-16">
           <div className="flex flex-wrap items-baseline justify-between gap-x-10 gap-y-2">
@@ -162,7 +149,7 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* Manifeste court */}
+      {/* ── Manifeste court ── */}
       <section className="border-t border-rule-soft px-7 py-20 md:px-16 md:py-28">
         <p className="font-display mx-auto max-w-[26ch] text-center text-[clamp(1.6rem,3.5vw,2.5rem)]">
           {t("manifesto")}

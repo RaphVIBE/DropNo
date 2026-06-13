@@ -7,7 +7,7 @@
     "skipToContent": "Skip to content"
   },
   "nav": {
-    "calendar": "Calendar",
+    "calendar": "Drops",
     "houses": "Houses",
     "mechanism": "Mechanism",
     "about": "About",
@@ -41,7 +41,8 @@
     "housesDirect": "Direct from the brands →",
     "manifesto": "Not a marketplace. One house, one piece, one appointment: Thursday, 6 PM.",
     "manifestoSub": "Direct from the houses, no resale, no middleman. Insured delivery, verified identity, 14-day withdrawal. No buyer fees.",
-    "aboutLink": "The Drop No. house →"
+    "aboutLink": "The Drop No. house →",
+    "heroKicker": "Drop № {num} · sealed bid · reveal {moment}"
   },
   "locale": {
     "switchLabel": "Language",

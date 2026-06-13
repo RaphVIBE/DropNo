@@ -1,30 +1,30 @@
 # Mentions légales
 
-*Dernière mise à jour : [DATE]*
+*Dernière mise à jour : 13 juin 2026*
 
 ## Éditeur du site
 
-**Drop No. [SA / SRL]**
-Société de droit belge
-Siège social : [ADRESSE], Bruxelles, Belgique
-Numéro d'entreprise (BCE) : [BE 0XXX.XXX.XXX]
-Numéro de TVA : [BE 0XXX.XXX.XXX]
-Capital social : [MONTANT] €
+Le site dropno.eu et la marque « Drop No. » sont édités par :
+
+**Veracruz SRL**
+Société à responsabilité limitée de droit belge, exploitant la marque commerciale « Drop No. »
+Siège social : Route de Huy 134, 4287 Lincent, Belgique
+Numéro d'entreprise (BCE) : BE 0799.209.229
+Numéro de TVA : BE 0799.209.229
 
 Email : hello@dropno.eu
-Téléphone : [+32 …]
 
 ## Directeur de la publication
 
-Raphaël Hombroeck, fondateur
+Raphaël Hombroeck
 
 ## Hébergement
 
 Le site dropno.eu est hébergé par :
 
-**Vercel Inc.**
-340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis
-[vercel.com](https://vercel.com)
+**Netlify, Inc.**
+512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis
+[netlify.com](https://netlify.com)
 
 La base de données et les services backend sont opérés par :
 
@@ -34,15 +34,15 @@ La base de données et les services backend sont opérés par :
 
 ## Propriété intellectuelle
 
-L'ensemble du contenu du site dropno.eu (textes, photographies, code source, charte graphique, logo, dénominations « Drop No. » et « Drop № ») est la propriété exclusive de Drop No. [SA / SRL], sauf mention contraire.
+L'ensemble du contenu du site dropno.eu (textes, photographies, code source, charte graphique, logo, dénominations « Drop No. » et « Drop № ») est la propriété exclusive de Veracruz SRL (« Drop No. »), sauf mention contraire.
 
-Toute reproduction, représentation, modification, publication, adaptation ou exploitation, totale ou partielle, par quelque procédé que ce soit, est interdite sans l'autorisation écrite préalable de Drop No. [SA / SRL].
+Toute reproduction, représentation, modification, publication, adaptation ou exploitation, totale ou partielle, par quelque procédé que ce soit, est interdite sans l'autorisation écrite préalable de Veracruz SRL (« Drop No. »).
 
 Les marques, logos et œuvres des partenaires (marques horlogères, photographes, auteurs) restent la propriété exclusive de leurs ayants droit. Leur utilisation sur dropno.eu se fait dans le cadre des contrats de partenariat conclus avec ces ayants droit.
 
 ## Crédits
 
-Conception et développement : Drop No. [SA / SRL]
+Conception et développement : Veracruz SRL (« Drop No. »)
 Typographies : Fraunces (SIL Open Font License), Inter (SIL Open Font License)
 
 ## Médiation de la consommation

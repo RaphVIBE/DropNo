@@ -1,6 +1,6 @@
 # Droit de rétractation
 
-*Dernière mise à jour : [DATE]*
+*Dernière mise à jour : 13 juin 2026*
 
 ## Votre droit
 
@@ -52,8 +52,8 @@ Les pièces vendues sur Drop No. ne relèvent pas de ces exceptions. Votre droit
 
 *Veuillez compléter et renvoyer le présent formulaire uniquement si vous souhaitez vous rétracter du contrat.*
 
-À l'attention de **Drop No. [SA / SRL]**
-[ADRESSE], Bruxelles, Belgique
+À l'attention de **Veracruz SRL**
+Route de Huy 134, 4287 Lincent, Belgique
 hello@dropno.eu
 
 Je vous notifie par la présente ma rétractation du contrat portant sur la vente du bien ci-dessous :

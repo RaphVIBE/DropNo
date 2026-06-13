@@ -116,8 +116,8 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="mx-auto w-full max-w-xs md:mx-0">
-            <MechanismVariantB orientation="vertical" />
+          <div className="mx-auto w-full max-w-sm md:mx-0 md:max-w-xs">
+            <MechanismVariantB orientation="compact" />
           </div>
         </div>
       </section>

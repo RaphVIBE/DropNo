@@ -67,10 +67,10 @@ export async function HomeDropHero({
     <section className="px-7 pb-16 pt-10 md:px-16 md:pb-20 md:pt-14">
       <Link
         href={drop.id ? `/drop/${drop.id}` : "#"}
-        className="group grid grid-cols-1 gap-8 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background md:grid-cols-[1.1fr_1fr] md:items-center md:gap-14"
+        className="group grid grid-cols-1 gap-8 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background md:grid-cols-[0.9fr_1fr] md:items-center md:gap-16"
       >
-        {/* Visuel dominant — la pièce, pas une promesse */}
-        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] shadow-[0_28px_80px_-30px_oklch(0.2_0.02_60/0.6)] ring-1 ring-rule-soft transition-shadow duration-500 group-hover:shadow-[0_38px_100px_-32px_oklch(0.2_0.02_60/0.72)]">
+        {/* La pièce — présente sans écraser le reste */}
+        <div className="relative mx-auto aspect-[5/6] w-full max-w-[28rem] overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] shadow-[0_28px_80px_-30px_oklch(0.2_0.02_60/0.6)] ring-1 ring-rule-soft transition-shadow duration-500 group-hover:shadow-[0_38px_100px_-32px_oklch(0.2_0.02_60/0.72)]">
           <DropVisual
             dropNumber={drop.drop_number ?? 0}
             title={drop.title ?? ""}

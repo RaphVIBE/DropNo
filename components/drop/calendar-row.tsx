@@ -186,7 +186,7 @@ export async function CalendarRow({
               lien) : bouton primaire affirme pour un drop ouvert, lien discret
               avec fleche pour les autres etats. */}
           {variant === "open" ? (
-            <span className="mt-1 inline-flex w-fit items-center gap-2 bg-primary px-6 py-3 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-colors group-hover:bg-[oklch(0.12_0.012_60)]">
+            <span className="mt-1 inline-flex w-fit items-center gap-2 bg-primary px-6 py-3 text-xs font-medium uppercase tracking-wider text-primary-foreground rounded-sm transition-colors group-hover:bg-[var(--btn-hover)]">
               {t("ctaMakeOffer")}
               <Arrow />
             </span>

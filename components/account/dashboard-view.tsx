@@ -12,7 +12,7 @@ import type { Locale } from "@/i18n/routing";
  * par la vraie page (Supabase) ou par la page dev (mock). */
 
 const KYC_CTA_CLASS =
-  "mt-2 inline-block bg-primary px-6 py-[16px] text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "mt-2 inline-block bg-primary px-6 py-[16px] text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors rounded-sm hover:bg-[var(--btn-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 type Tone = "live" | "win" | "muted" | "neutral";
 

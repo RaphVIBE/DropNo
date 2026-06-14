@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { WatchArt } from "@/components/drop/watch-art";
 
 /**
- * Galerie de la pièce : photo principale + miniatures. Source = hero_image_url
- * suivi de images_urls (jsonb). Sans photo, on retombe sur l'illustration
- * WatchArt (les drops MVP n'ont pas tous d'image).
+ * Galerie de la pièce : visionneuse principale (cadre sombre encadré, cohérent
+ * avec la carte de la home) + navigation adaptée au support :
+ *   - mobile : carrousel swipe (scroll-snap) + points de pagination
+ *   - desktop : rangée de miniatures cliquables
+ * Source = hero_image_url puis images_urls (jsonb). Sans photo, on retombe sur
+ * l'illustration WatchArt.
  */
+
+// Cadre commun à la pièce — repris de la carte héros de la home.
+const FRAME =
+  "rounded-xl bg-[oklch(0.16_0.012_60)] ring-1 ring-rule-soft shadow-[0_28px_80px_-30px_oklch(0.2_0.02_60/0.55)]";
+
 export function DropGallery({
   heroImageUrl,
   imagesUrls,
@@ -27,10 +35,24 @@ export function DropGallery({
   );
   const images = Array.from(new Set(all));
   const [active, setActive] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const goTo = useCallback((i: number) => {
+    const track = trackRef.current;
+    if (track) track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
+    setActive(i);
+  }, []);
+
+  const onScroll = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const i = Math.round(track.scrollLeft / track.clientWidth);
+    setActive((prev) => (prev === i ? prev : i));
+  }, []);
 
   if (images.length === 0) {
     return (
-      <div className="relative aspect-[4/5] overflow-hidden">
+      <div className={`relative aspect-square overflow-hidden ${FRAME}`}>
         <WatchArt seed={seed} className="absolute inset-0 h-full w-full" />
         <span className="absolute left-6 top-6 font-serif text-[13px] italic tracking-wide text-[oklch(0.95_0.005_80)]">
           {title}
@@ -39,32 +61,71 @@ export function DropGallery({
     );
   }
 
-  const current = images[Math.min(active, images.length - 1)];
+  const single = images.length === 1;
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="relative aspect-[4/5] overflow-hidden bg-card">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={current}
-          alt={title}
-          className="h-full w-full object-cover"
-        />
+    <div className="flex flex-col gap-4">
+      {/* Visionneuse — une seule pièce, ou carrousel swipe (mobile) / piloté
+          par les miniatures (desktop). */}
+      <div
+        ref={trackRef}
+        onScroll={single ? undefined : onScroll}
+        className={`flex overflow-x-auto overscroll-x-contain ${FRAME} ${
+          single
+            ? ""
+            : "snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        }`}
+      >
+        {images.map((url) => (
+          <div
+            key={url}
+            className="relative aspect-square w-full shrink-0 snap-center overflow-hidden"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={url}
+              alt={title}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+        ))}
       </div>
 
-      {images.length > 1 ? (
-        <ul className="grid grid-cols-5 gap-3">
+      {/* Points de pagination — mobile, multi-photos. */}
+      {!single ? (
+        <div className="flex justify-center gap-2 md:hidden">
+          {images.map((url, i) => (
+            <button
+              key={url}
+              type="button"
+              onClick={() => goTo(i)}
+              aria-label={t("galleryThumbAria", {
+                index: i + 1,
+                total: images.length,
+              })}
+              aria-current={i === active}
+              className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                i === active ? "w-6 bg-foreground" : "w-1.5 bg-rule hover:bg-ink-2"
+              }`}
+            />
+          ))}
+        </div>
+      ) : null}
+
+      {/* Miniatures — desktop, multi-photos. */}
+      {!single ? (
+        <ul className="hidden grid-cols-5 gap-3 md:grid">
           {images.map((url, i) => (
             <li key={url}>
               <button
                 type="button"
-                onClick={() => setActive(i)}
+                onClick={() => goTo(i)}
                 aria-label={t("galleryThumbAria", {
                   index: i + 1,
                   total: images.length,
                 })}
                 aria-current={i === active}
-                className={`relative block aspect-square w-full overflow-hidden bg-card ring-1 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                className={`relative block aspect-square w-full overflow-hidden rounded-sm bg-card ring-1 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   i === active
                     ? "ring-foreground"
                     : "ring-rule-soft hover:ring-ink-2"

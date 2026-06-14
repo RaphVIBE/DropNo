@@ -46,7 +46,7 @@ export function DropVisual({
       )}
 
       <span
-        className={`absolute rounded-full bg-[oklch(0.16_0.012_60)]/72 font-serif italic text-[oklch(0.95_0.005_80)] ring-1 ring-[oklch(0.72_0.07_80)]/30 backdrop-blur-sm ${
+        className={`absolute rounded-full bg-[oklch(0.16_0.012_60/0.72)] font-serif italic text-[oklch(0.95_0.005_80)] ring-1 ring-[oklch(0.72_0.07_80/0.34)] backdrop-blur-sm ${
           compact
             ? "left-2.5 top-2.5 px-2.5 py-0.5 text-xs"
             : "left-3 top-3 px-3 py-1 text-sm shadow-sm"

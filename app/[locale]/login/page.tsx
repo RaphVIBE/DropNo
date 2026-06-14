@@ -155,7 +155,7 @@ function LoginForm() {
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
             placeholder="••••••"
             aria-label={t("codeAriaLabel")}
-            className="w-full border border-input bg-card px-4 py-3 text-center text-2xl tracking-[0.5em] outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-sm border border-input bg-card px-4 py-3 text-center text-2xl tracking-[0.5em] outline-none transition-colors focus:border-champagne-deep focus:ring-2 focus:ring-ring"
           />
           <Button
             type="submit"
@@ -206,7 +206,7 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("emailPlaceholder")}
-            className="w-full border border-input bg-card px-4 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-sm border border-input bg-card px-4 py-3 text-base outline-none transition-colors focus:border-champagne-deep focus:ring-2 focus:ring-ring"
           />
           <label className="flex cursor-pointer select-none items-center gap-2.5 text-sm text-ink-2">
             <input

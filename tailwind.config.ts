@@ -62,6 +62,7 @@ const config: Config = {
           soft: "var(--rule-soft)",
         },
         sand: "var(--sand)",
+        masthead: "var(--masthead)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],

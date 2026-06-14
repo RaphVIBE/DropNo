@@ -218,7 +218,7 @@ export function DropAlertBell({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("emailPlaceholder")}
-                className="w-full border border-input bg-background px-3 py-2.5 text-[15px] outline-none transition-colors focus-visible:border-champagne-deep focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="w-full rounded-sm border border-input bg-background px-3 py-2.5 text-[15px] outline-none transition-colors focus-visible:border-champagne-deep focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               />
               {state === "error" ? (
                 <p className="text-sm text-destructive">{message}</p>
@@ -226,7 +226,7 @@ export function DropAlertBell({
               <button
                 type="submit"
                 disabled={state === "sending"}
-                className="block w-full bg-primary px-5 py-3 text-center text-[12px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+                className="block w-full bg-primary px-5 py-3 text-center text-[12px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors rounded-sm hover:bg-[var(--btn-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {state === "sending" ? t("submitSending") : t("submitNotify")}
               </button>

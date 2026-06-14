@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Gear, RegistrationTicks } from "@/components/home/blueprint";
+import { Gear } from "@/components/home/blueprint";
 
 /*
  * Filigranes de masthead Drop No. — un diagramme technique « blueprint » par

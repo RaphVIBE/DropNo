@@ -49,6 +49,12 @@
     /* Hover des boutons PRIMAIRES (pleins) : remplissage bronze/champagne
        profond, mat — texte clair conservé. Subtil, distinct du secondaire. */
     --btn-hover: oklch(0.46 0.05 72);
+
+    /* Hover des boutons SECONDAIRES (outline) : voile + bordure + texte
+       champagne. Scopé par thème pour ne pas ternir le back-office (cf .admin). */
+    --btn-outline-hover-bg: oklch(0.72 0.07 80 / 0.12);
+    --btn-outline-hover-fg: var(--champagne-deep);
+    --btn-outline-hover-bd: var(--champagne-deep);
   }
 
   /*
@@ -94,6 +100,13 @@
     /* En back-office, le primaire EST déjà champagne (texte sombre) : on
        éclaircit légèrement le hover pour garder un retour lisible. */
     --btn-hover: oklch(0.82 0.07 82);
+
+    /* Outline : on conserve le hover neutre d'origine (gris secondaire, texte
+       clair) — le champagne ternirait les labels et écraserait le rouge des
+       actions destructives sur fond sombre. */
+    --btn-outline-hover-bg: var(--secondary);
+    --btn-outline-hover-fg: var(--secondary-foreground);
+    --btn-outline-hover-bd: var(--border);
 
     color-scheme: dark;
   }

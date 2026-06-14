@@ -14,7 +14,7 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-[oklch(0.48_0.18_25)]",
         outline:
-          "border border-input bg-background hover:border-champagne-deep hover:bg-champagne/[0.12] hover:text-champagne-deep",
+          "border border-input bg-background hover:border-[var(--btn-outline-hover-bd)] hover:bg-[var(--btn-outline-hover-bg)] hover:text-[var(--btn-outline-hover-fg)]",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[oklch(0.87_0.008_70)]",
         ghost: "hover:bg-secondary hover:text-secondary-foreground",

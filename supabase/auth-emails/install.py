@@ -29,7 +29,7 @@ TEMPLATES = {
     "magic-link.html": (
         "mailer_templates_magic_link_content",
         "mailer_subjects_magic_link",
-        "Votre lien de connexion · Drop No.",
+        "Votre code de connexion · Drop No.",
     ),
     "confirm-signup.html": (
         "mailer_templates_confirmation_content",

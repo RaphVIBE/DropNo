@@ -4,12 +4,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="color-scheme" content="light"/>
 <meta name="supported-color-schemes" content="light"/>
-<title>Drop No. — Connexion</title>
+<title>Drop No. — Code de connexion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300;0,9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300;0,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body style="margin:0;padding:0;background:#f6f3ec;-webkit-font-smoothing:antialiased;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Votre lien de connexion sécurisé à Drop No.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">Votre code de connexion Drop No. : {{ .Token }}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f3ec;padding:40px 16px;">
 <tr><td align="center">
 <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border:1px solid #e6e0d3;">
@@ -22,12 +22,14 @@
 </td></tr>
 <tr><td style="padding:40px 40px 36px;">
 <p style="margin:0 0 14px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;font-weight:500;letter-spacing:0.22em;text-transform:uppercase;color:#8a8175;">Connexion sécurisée</p>
-<h1 style="margin:0 0 18px;font-family:'Fraunces',Georgia,'Times New Roman',serif;font-style:italic;font-weight:300;font-size:32px;line-height:1.08;letter-spacing:-0.02em;color:#221d17;">Votre code d'accès.</h1>
-<p style="margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.62;color:#4a4339;">Saisissez ce code dans la fenêtre de connexion Drop No. Il est personnel, à usage unique, et expire dans une heure.</p>
-<table role="presentation" cellpadding="0" cellspacing="0" style="margin:30px 0 6px;">
-<tr><td align="center" style="border:1px solid #e6e0d3;background:#faf8f3;padding:18px 34px;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:33px;font-weight:500;letter-spacing:0.34em;color:#221d17;">{{ .Token }}</td></tr>
-</table>
-<p style="margin:22px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Vous préférez un lien ? <a href="{{ .ConfirmationURL }}" style="color:#8c7a52;text-decoration:none;">Connectez-vous en un clic.</a></p>
+<h1 style="margin:0 0 18px;font-family:'Fraunces',Georgia,'Times New Roman',serif;font-style:italic;font-weight:300;font-size:32px;line-height:1.08;letter-spacing:-0.02em;color:#221d17;">Votre code de connexion.</h1>
+<p style="margin:0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.62;color:#4a4339;">Saisissez ce code à six chiffres dans l'écran de connexion Drop No. Il est personnel, à usage unique, et expire dans une heure.</p>
+<!-- Code à six chiffres ({{ .Token }}) : element principal, l'app demande la saisie du code. -->
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 4px;width:100%;">
+<tr><td align="center" style="border:1px solid #e6e0d3;background:#faf7f0;padding:24px 16px;">
+<div style="font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:38px;font-weight:600;letter-spacing:0.3em;color:#221d17;line-height:1;padding-left:0.3em;">{{ .Token }}</div>
+</td></tr></table>
+<p style="margin:24px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Vous préférez un clic ? <a href="{{ .ConfirmationURL }}" style="color:#8c7a52;text-decoration:none;">Connectez-vous directement</a> depuis cet appareil.</p>
 <p style="margin:18px 0 0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.62;color:#8a8175;">Vous n'êtes pas à l'origine de cette demande ? Ignorez cet email, aucun accès ne sera ouvert.</p>
 </td></tr>
 <tr><td style="padding:24px 40px 30px;border-top:1px solid #efeae0;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:11px;line-height:1.7;color:#8a8175;">

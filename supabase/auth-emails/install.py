@@ -23,6 +23,9 @@ import urllib.request
 
 PROJECT_REF = os.environ.get("PROJECT_REF", "ygzyzvjxregoqbzmcmyq")
 HERE = os.path.dirname(os.path.abspath(__file__))
+# Longueur du code OTP email. L'UI de connexion attend 6 chiffres ("six-digit
+# code", input maxLength=6) : on l'aligne ici (le projet était à 8 -> rejet).
+OTP_LENGTH = int(os.environ.get("OTP_LENGTH", "6"))
 
 # fichier -> (champ contenu, champ sujet, sujet FR)
 TEMPLATES = {
@@ -63,7 +66,7 @@ def main() -> int:
         print("  export SUPABASE_ACCESS_TOKEN=sbp_...  (https://supabase.com/dashboard/account/tokens)", file=sys.stderr)
         return 1
 
-    payload: dict[str, str] = {}
+    payload: dict[str, object] = {}
     for filename, (content_field, subject_field, subject) in TEMPLATES.items():
         path = os.path.join(HERE, filename)
         try:
@@ -76,8 +79,11 @@ def main() -> int:
         payload[subject_field] = subject
         print(f"  • {filename:22s} -> {content_field} ({len(html)} octets), sujet « {subject} »")
 
+    payload["mailer_otp_length"] = OTP_LENGTH
+    print(f"  • {'code OTP':22s} -> mailer_otp_length = {OTP_LENGTH} chiffres")
+
     if dry_run:
-        print(f"\n[dry-run] {len(TEMPLATES)} templates prêts pour le projet {PROJECT_REF}. Rien n'a été envoyé.")
+        print(f"\n[dry-run] {len(TEMPLATES)} templates + OTP {OTP_LENGTH} chiffres prêts pour {PROJECT_REF}. Rien n'a été envoyé.")
         return 0
 
     url = f"https://api.supabase.com/v1/projects/{PROJECT_REF}/config/auth"
@@ -92,7 +98,23 @@ def main() -> int:
     try:
         with urllib.request.urlopen(req) as resp:
             print(f"OK ({resp.status}). {len(TEMPLATES)} templates d'auth posés sur {PROJECT_REF}.")
-            return 0
+        # Confirmation : relire la longueur d'OTP effective (le champ peut être
+        # ignoré silencieusement si l'API ne le reconnaît pas).
+        check = urllib.request.Request(url, method="GET")
+        check.add_header("Authorization", f"Bearer {token}")
+        check.add_header("User-Agent", "DropNo-EmailSetup/1.0")
+        with urllib.request.urlopen(check) as r2:
+            cfg = json.loads(r2.read().decode("utf-8"))
+        eff = cfg.get("mailer_otp_length", "<absent>")
+        if str(eff) == str(OTP_LENGTH):
+            print(f"Vérif OK : code OTP = {eff} chiffres.")
+        else:
+            print(
+                f"⚠️ Vérif : mailer_otp_length = {eff} (attendu {OTP_LENGTH}). "
+                "Le champ n'a pas pris — à régler dans le dashboard ou nom d'API à corriger.",
+                file=sys.stderr,
+            )
+        return 0
     except urllib.error.HTTPError as e:
         detail = e.read().decode("utf-8", "replace")
         print(f"ÉCHEC HTTP {e.code} : {detail}", file=sys.stderr)

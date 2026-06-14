@@ -34,6 +34,9 @@ SMTP_HOST = "smtp.resend.com"
 SMTP_PORT = "465"  # l'API valide une chaîne, pas un nombre
 SMTP_USER = "resend"
 SENDER_NAME = "Drop No."
+# Plafond d'emails d'auth/heure : le SMTP intégré bridait à ~quelques/h
+# (« email rate limit exceeded »). Avec Resend on remonte ça d'un cran.
+RATE_LIMIT_EMAIL_SENT = int(os.environ.get("RATE_LIMIT_EMAIL_SENT", "100"))
 
 
 def from_env_or_dotenv(key: str, default: str = "") -> str:
@@ -73,6 +76,7 @@ def main() -> int:
     print(f"  smtp_pass     : {mask(resend_key)}   (= RESEND_API_KEY)")
     print(f"  smtp_admin    : {sender}")
     print(f"  sender_name   : {SENDER_NAME}")
+    print(f"  rate_limit    : {RATE_LIMIT_EMAIL_SENT}/h")
     print(f"  PAT Supabase  : {mask(token)}")
 
     missing = []
@@ -100,6 +104,7 @@ def main() -> int:
         "smtp_user": SMTP_USER,
         "smtp_pass": resend_key,
         "smtp_sender_name": SENDER_NAME,
+        "rate_limit_email_sent": RATE_LIMIT_EMAIL_SENT,
     }
     url = f"https://api.supabase.com/v1/projects/{PROJECT_REF}/config/auth"
     req = urllib.request.Request(
@@ -114,7 +119,7 @@ def main() -> int:
     try:
         with urllib.request.urlopen(req) as resp:
             print(f"OK ({resp.status}). Resend branché comme SMTP des emails d'auth.")
-            print("Pense à relever le rate-limit (défaut 30/h) : Dashboard -> Auth -> Rate Limits.")
+            print(f"Rate-limit d'envoi posé à {RATE_LIMIT_EMAIL_SENT}/h (surcharge : RATE_LIMIT_EMAIL_SENT).")
             return 0
     except urllib.error.HTTPError as e:
         print(f"ÉCHEC HTTP {e.code} : {e.read().decode('utf-8', 'replace')}", file=sys.stderr)

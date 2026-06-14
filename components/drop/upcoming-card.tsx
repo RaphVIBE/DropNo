@@ -3,6 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { formatEuros, formatShortDate } from "@/lib/format";
 import { DropVisual } from "@/components/drop/drop-visual";
+import { PIECE_FRAME } from "@/components/brand/styles";
 import type { CalendarDrop } from "@/components/drop/calendar-row";
 import type { Locale } from "@/i18n/routing";
 
@@ -39,7 +40,7 @@ export async function UpcomingCard({
       href={drop.id ? `/drop/${drop.id}` : "#"}
       className="group flex flex-col gap-5 rounded-sm border-t border-rule-soft py-7 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:flex-row sm:items-center sm:gap-7"
     >
-      <div className="relative aspect-[5/4] w-full overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] ring-1 ring-rule-soft sm:w-44 sm:shrink-0">
+      <div className={`relative aspect-[5/4] w-full overflow-hidden ${PIECE_FRAME} sm:w-44 sm:shrink-0`}>
         <DropVisual
           dropNumber={drop.drop_number ?? 0}
           title={drop.title ?? ""}

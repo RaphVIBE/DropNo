@@ -8,6 +8,7 @@ import {
 } from "@/lib/format";
 import { DropCountdown } from "@/components/drop/drop-countdown";
 import { DropVisual } from "@/components/drop/drop-visual";
+import { CARD_CTA, PIECE_FRAME } from "@/components/brand/styles";
 import type { Locale } from "@/i18n/routing";
 
 // Au-dela de ce delai avant l'ouverture, le visuel d'un drop a venir reste
@@ -93,7 +94,7 @@ export async function CalendarRow({
       className="group grid grid-cols-1 gap-6 rounded-sm border-b border-rule-soft py-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background md:grid-cols-[clamp(260px,30vw,340px)_1fr] md:items-center md:gap-12 md:py-12"
     >
       {/* Grand visuel — pleine largeur (mobile), carre imposant (desktop) */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] shadow-[0_18px_50px_-24px_oklch(0.2_0.02_60/0.55)] ring-1 ring-rule-soft transition-shadow duration-500 group-hover:shadow-[0_26px_70px_-26px_oklch(0.2_0.02_60/0.7)] md:aspect-square">
+      <div className={`relative aspect-[4/3] w-full overflow-hidden ${PIECE_FRAME} shadow-[0_18px_50px_-24px_oklch(0.2_0.02_60/0.55)] transition-shadow duration-500 group-hover:shadow-[0_26px_70px_-26px_oklch(0.2_0.02_60/0.7)] md:aspect-square`}>
         <DropVisual
           dropNumber={drop.drop_number ?? 0}
           title={drop.title ?? ""}
@@ -186,7 +187,7 @@ export async function CalendarRow({
               lien) : bouton primaire affirme pour un drop ouvert, lien discret
               avec fleche pour les autres etats. */}
           {variant === "open" ? (
-            <span className="mt-1 inline-flex w-fit items-center gap-2 bg-primary px-6 py-3 text-xs font-medium uppercase tracking-wider text-primary-foreground rounded-sm transition-colors group-hover:bg-[var(--btn-hover)]">
+            <span className={`mt-1 px-6 py-3 ${CARD_CTA}`}>
               {t("ctaMakeOffer")}
               <Arrow />
             </span>

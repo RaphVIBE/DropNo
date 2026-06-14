@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { WatchArt } from "@/components/drop/watch-art";
+import { PIECE_FRAME } from "@/components/brand/styles";
 
 /**
  * Galerie de la pièce : visionneuse principale (cadre sombre encadré, cohérent
@@ -14,9 +15,8 @@ import { WatchArt } from "@/components/drop/watch-art";
  * l'illustration WatchArt.
  */
 
-// Cadre commun à la pièce — repris de la carte héros de la home.
-const FRAME =
-  "rounded-xl bg-[oklch(0.16_0.012_60)] ring-1 ring-rule-soft shadow-[0_28px_80px_-30px_oklch(0.2_0.02_60/0.55)]";
+// Cadre commun à la pièce (PIECE_FRAME) + ombre portée propre à la galerie.
+const FRAME = `${PIECE_FRAME} shadow-[0_28px_80px_-30px_oklch(0.2_0.02_60/0.55)]`;
 
 export function DropGallery({
   heroImageUrl,
@@ -36,19 +36,31 @@ export function DropGallery({
   const images = Array.from(new Set(all));
   const [active, setActive] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef(0);
 
   const goTo = useCallback((i: number) => {
     const track = trackRef.current;
-    if (track) track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
+    if (track?.clientWidth) {
+      track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
+    }
     setActive(i);
   }, []);
 
+  // Throttle au rAF : une seule lecture de layout (clientWidth) par frame, et
+  // garde contre une largeur nulle (transition responsive) qui donnerait NaN.
   const onScroll = useCallback(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const i = Math.round(track.scrollLeft / track.clientWidth);
-    setActive((prev) => (prev === i ? prev : i));
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = 0;
+      const track = trackRef.current;
+      const w = track?.clientWidth ?? 0;
+      if (!w) return;
+      const i = Math.round(track!.scrollLeft / w);
+      setActive((prev) => (prev === i ? prev : i));
+    });
   }, []);
+
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
   if (images.length === 0) {
     return (

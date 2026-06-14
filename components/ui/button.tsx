@@ -15,6 +15,10 @@ const buttonVariants = cva(
           "bg-destructive text-destructive-foreground hover:bg-[oklch(0.48_0.18_25)]",
         outline:
           "border border-input bg-background hover:border-[var(--btn-outline-hover-bd)] hover:bg-[var(--btn-outline-hover-bg)] hover:text-[var(--btn-outline-hover-fg)]",
+        // Outline destructif : l'affordance rouge est conservée au survol (ne
+        // pas la sous-traiter à chaque appel — cf. variante outline neutre).
+        destructiveOutline:
+          "border border-red-500/40 bg-background text-red-300 hover:border-red-500/60 hover:bg-red-500/10 hover:text-red-200",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-[oklch(0.87_0.008_70)]",
         ghost: "hover:bg-secondary hover:text-secondary-foreground",

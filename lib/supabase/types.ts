@@ -166,6 +166,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_demo: boolean
           kbis_verified: boolean
           logo_url: string | null
           name: string
@@ -181,6 +182,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_demo?: boolean
           kbis_verified?: boolean
           logo_url?: string | null
           name: string
@@ -196,6 +198,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_demo?: boolean
           kbis_verified?: boolean
           logo_url?: string | null
           name?: string
@@ -515,6 +518,7 @@ export type Database = {
           hero_image_url: string | null
           id: string
           images_urls: Json | null
+          is_demo: boolean
           piece_reference: string | null
           result_notified_at: string | null
           reveal_at: string
@@ -539,6 +543,7 @@ export type Database = {
           hero_image_url?: string | null
           id?: string
           images_urls?: Json | null
+          is_demo?: boolean
           piece_reference?: string | null
           result_notified_at?: string | null
           reveal_at: string
@@ -563,6 +568,7 @@ export type Database = {
           hero_image_url?: string | null
           id?: string
           images_urls?: Json | null
+          is_demo?: boolean
           piece_reference?: string | null
           result_notified_at?: string | null
           reveal_at?: string
@@ -1032,6 +1038,7 @@ export type Database = {
           hero_image_url: string | null
           id: string | null
           images_urls: Json | null
+          is_demo: boolean | null
           piece_reference: string | null
           reveal_at: string | null
           revealed_at: string | null
@@ -1053,6 +1060,7 @@ export type Database = {
           hero_image_url?: string | null
           id?: string | null
           images_urls?: Json | null
+          is_demo?: boolean | null
           piece_reference?: string | null
           reveal_at?: string | null
           revealed_at?: string | null
@@ -1074,6 +1082,7 @@ export type Database = {
           hero_image_url?: string | null
           id?: string | null
           images_urls?: Json | null
+          is_demo?: boolean | null
           piece_reference?: string | null
           reveal_at?: string | null
           revealed_at?: string | null

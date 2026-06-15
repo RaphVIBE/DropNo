@@ -35,11 +35,16 @@ export default async function HomePage() {
   const serverNowIso = new Date().toISOString();
 
   const [{ data: dropsData }, { data: brandsData }] = await Promise.all([
-    supabase.from("drops_public").select(SELECT).order("reveal_at", { ascending: true }),
+    supabase
+      .from("drops_public")
+      .select(SELECT)
+      .eq("is_demo", false)
+      .order("reveal_at", { ascending: true }),
     supabase
       .from("brands")
       .select("name, slug")
       .eq("status", "active")
+      .eq("is_demo", false)
       .order("name", { ascending: true })
       .limit(8),
   ]);

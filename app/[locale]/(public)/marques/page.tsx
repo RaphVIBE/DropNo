@@ -33,6 +33,7 @@ export default async function BrandsPage() {
     .from("brands")
     .select("slug, name, description, country_code")
     .eq("status", "active")
+    .eq("is_demo", false) // les maisons démo prospects ne sont pas listées
     .order("name", { ascending: true });
 
   const brands = (data ?? []) as BrandRow[];

@@ -40,6 +40,7 @@ async function getBrand(slug: string): Promise<Brand | null> {
     )
     .eq("slug", slug)
     .eq("status", "active")
+    .eq("is_demo", false) // une maison démo n'est pas joignable en vitrine publique
     .maybeSingle();
   return (data as Brand | null) ?? null;
 }

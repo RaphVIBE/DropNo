@@ -35,6 +35,7 @@ export default async function DropsPage() {
   const { data, error } = await supabase
     .from("drops_public")
     .select(SELECT)
+    .eq("is_demo", false) // les drops démo prospects ne sont jamais listés
     .order("reveal_at", { ascending: true });
 
   const drops = (data ?? []) as unknown as CalendarDrop[];

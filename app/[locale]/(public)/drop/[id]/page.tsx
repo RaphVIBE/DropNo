@@ -83,7 +83,7 @@ export default async function DropPage({
   const { data: drop } = await supabase
     .from("drops_public")
     .select(
-      "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, brand:brands(name, slug)"
+      "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, is_demo, brand:brands(name, slug)"
     )
     .eq("id", params.id)
     .maybeSingle();
@@ -91,6 +91,9 @@ export default async function DropPage({
   if (!drop) notFound();
 
   const brand = (drop.brand as { name: string; slug: string } | null) ?? null;
+  // Simulation prospect : bandeau, pas de tracking analytics, pas de lien vers
+  // une fiche marque (la maison démo n'est pas joignable en vitrine publique).
+  const isDemo = drop.is_demo === true;
   const status = (drop.status ?? "scheduled") as DropStatus;
   const isOpen = status === "open";
   const isLocked = drop.bid_lock_at
@@ -142,18 +145,26 @@ export default async function DropPage({
 
   return (
     <>
-      <DropViewTracker
-        dropId={drop.id ?? params.id}
-        dropNumber={drop.drop_number ?? 0}
-        dropTitle={drop.title ?? ""}
-        brand={brand?.name ?? null}
-        dropStatus={status}
-      />
+      {isDemo ? (
+        <div className="border-y border-champagne bg-sand px-7 py-3 text-center md:px-16">
+          <p className="text-[11px] uppercase tracking-[0.2em] text-champagne-deep">
+            {t("demoBanner")}
+          </p>
+        </div>
+      ) : (
+        <DropViewTracker
+          dropId={drop.id ?? params.id}
+          dropNumber={drop.drop_number ?? 0}
+          dropTitle={drop.title ?? ""}
+          brand={brand?.name ?? null}
+          dropStatus={status}
+        />
+      )}
       <DropHero
         dropNumber={drop.drop_number ?? 0}
         title={drop.title ?? ""}
         brandName={brand?.name ?? null}
-        brandSlug={brand?.slug ?? null}
+        brandSlug={isDemo ? null : brand?.slug ?? null}
         status={status}
         revealAt={drop.reveal_at}
         clearingPriceCents={drop.clearing_price_cents}

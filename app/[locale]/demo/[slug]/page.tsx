@@ -1,0 +1,171 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+
+import { createClient } from "@/lib/supabase/server";
+import { DropAssurance } from "@/components/drop/drop-assurance";
+import { DropHero, type DropStatus } from "@/components/drop/drop-hero";
+import { DropGallery } from "@/components/drop/drop-gallery";
+import { DropSpecs } from "@/components/drop/drop-specs";
+import { DropDetail } from "@/components/drop/drop-detail";
+import { DropBidForm } from "@/components/drop/drop-bid-form";
+import { DropCountdown } from "@/components/drop/drop-countdown";
+import type { Locale } from "@/i18n/routing";
+
+/**
+ * Démo prospect : la fiche d'un drop fictif (is_demo) d'une maison prospect,
+ * rendue en page AUTONOME sous /demo/<slug>?key=<DEMO_KEY>.
+ *
+ * Pourquoi une page autonome (et pas une redirection vers /drop/[id]) :
+ *  - /demo est laissé passer par la barrière SITE_LOCKED (lib/construction-gate),
+ *    donc la démo n'est JAMAIS derrière la page « bientôt » ;
+ *  - pas de barre de navigation ici : aucun lien ne ramène vers le site
+ *    verrouillé, le prospect reste sur sa simulation.
+ *
+ * Clé absente ou fausse, maison/drop introuvable -> 404 neutre.
+ */
+
+export const dynamic = "force-dynamic";
+
+const SELECT =
+  "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, brand:brands(name, slug)";
+
+export async function generateMetadata(): Promise<Metadata> {
+  // Jamais indexée.
+  return { robots: { index: false, follow: false } };
+}
+
+export default async function DemoDropPage({
+  params,
+  searchParams,
+}: {
+  params: { locale: Locale; slug: string };
+  searchParams: { key?: string };
+}) {
+  // Garde d'accès : sans la bonne clé, 404 neutre (on ne révèle rien).
+  if (!process.env.DEMO_KEY || searchParams.key !== process.env.DEMO_KEY) {
+    notFound();
+  }
+
+  const t = await getTranslations("dropDetail");
+  const supabase = createClient();
+  const serverNowIso = new Date().toISOString();
+
+  // Maison démo correspondant au slug.
+  const { data: brand } = await supabase
+    .from("brands")
+    .select("id, name")
+    .eq("slug", params.slug)
+    .eq("is_demo", true)
+    .maybeSingle();
+  if (!brand) notFound();
+
+  // Son drop démo le plus récent.
+  const { data: drop } = await supabase
+    .from("drops_public")
+    .select(SELECT)
+    .eq("brand_id", brand.id)
+    .eq("is_demo", true)
+    .order("drop_number", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!drop) notFound();
+
+  const brandJoin = (drop.brand as { name: string; slug: string } | null) ?? null;
+  const brandName = brandJoin?.name ?? brand.name ?? null;
+  const status = (drop.status ?? "open") as DropStatus;
+  const isOpen = status === "open";
+  const isLocked = drop.bid_lock_at
+    ? new Date(drop.bid_lock_at) <= new Date(serverNowIso)
+    : false;
+
+  // Compteur : révélation (drop ouvert) ou ouverture (à venir).
+  const counter =
+    isOpen && drop.reveal_at
+      ? { label: t("countdownReveal"), target: drop.reveal_at }
+      : status === "scheduled" && drop.bid_window_opens_at
+        ? { label: t("countdownOpen"), target: drop.bid_window_opens_at }
+        : null;
+
+  // Le bouton « se connecter » du panneau d'offre reste sur la démo (jamais
+  // vers /login, qui est verrouillé).
+  const selfHref = `/demo/${params.slug}?key=${searchParams.key ?? ""}`;
+
+  return (
+    <>
+      {/* En-tête minimal NON cliquable : présence de marque, zéro lien sortant. */}
+      <div className="flex items-center justify-center border-b border-rule-soft px-7 py-5">
+        <span className="font-serif text-lg italic">Drop No.</span>
+      </div>
+
+      {/* Bandeau simulation. */}
+      <div className="border-b border-champagne bg-sand px-7 py-3 text-center md:px-16">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-champagne-deep">
+          {t("demoBanner")}
+        </p>
+      </div>
+
+      <DropHero
+        dropNumber={drop.drop_number ?? 0}
+        title={drop.title ?? ""}
+        brandName={brandName}
+        brandSlug={null}
+        status={status}
+        revealAt={drop.reveal_at}
+        clearingPriceCents={drop.clearing_price_cents}
+      />
+
+      <div className="grid grid-cols-1 px-7 pb-24 pt-10 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32 md:pt-14">
+        <div>
+          <DropGallery
+            heroImageUrl={drop.hero_image_url}
+            imagesUrls={(drop.images_urls as string[] | null) ?? null}
+            title={drop.title ?? ""}
+            seed={drop.drop_number ?? 0}
+          />
+        </div>
+
+        <div className="pt-8 md:sticky md:top-10 md:self-start md:pt-0">
+          {counter ? (
+            <div className="mb-8 border-y border-rule border-t-foreground py-6">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <span className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                  {counter.label}
+                </span>
+              </div>
+              <DropCountdown
+                targetIso={counter.target}
+                serverNowIso={serverNowIso}
+                variant="full"
+              />
+            </div>
+          ) : null}
+
+          <DropSpecs
+            floorPriceCents={drop.floor_price_cents ?? 0}
+            exemplaires={drop.exemplaires ?? 0}
+          />
+
+          <DropBidForm
+            dropId={drop.id ?? ""}
+            floorPriceCents={drop.floor_price_cents ?? 0}
+            bidCount={drop.bid_count ?? 0}
+            isAuthenticated={false}
+            kycStatus="pending"
+            isOpen={isOpen}
+            isLocked={isLocked}
+            existingBidCents={null}
+            loginHref={selfHref}
+          />
+
+          <DropAssurance />
+        </div>
+      </div>
+
+      <DropDetail
+        description={drop.description}
+        specs={(drop.specs as Record<string, unknown> | null) ?? null}
+      />
+    </>
+  );
+}

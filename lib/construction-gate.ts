@@ -13,20 +13,15 @@ import { NextResponse, type NextRequest } from "next/server";
  * Accès équipe : visiter `/?preview=<PREVIEW_TOKEN>` pose un cookie longue
  * durée et débloque le vrai site. PREVIEW_TOKEN est un secret serveur.
  *
- * Accès démo prospect : `/demo/<slug>?key=<DEMO_KEY>` (route handler) pose un
- * cookie court `dropno_demo` (4h) qui ouvre UNIQUEMENT les fiches /drop/* — le
- * reste de la vitrine reste verrouillé. Voir app/demo/[slug]/route.ts.
+ * Accès démo prospect : `/demo/<slug>?key=<DEMO_KEY>` est une page autonome
+ * (app/[locale]/demo/[slug]) laissée passer ci-dessous. Elle vérifie la clé
+ * elle-même et n'a aucune navigation sortante, donc le prospect ne retombe
+ * jamais sur « bientôt ».
  *
  * Retourne une NextResponse si la requête doit être interceptée, sinon null
  * (la requête continue son chemin normal).
  */
 const PREVIEW_COOKIE = "dropno_preview";
-const DEMO_COOKIE = "dropno_demo";
-
-/** Une fiche drop : `/drop/<id>` (FR, racine) ou `/en/drop/<id>` (EN). */
-function isDropPath(pathname: string): boolean {
-  return pathname.startsWith("/drop/") || pathname.startsWith("/en/drop/");
-}
 
 export function constructionGate(request: NextRequest): NextResponse | null {
   if (process.env.SITE_LOCKED !== "true") return null;
@@ -45,7 +40,8 @@ export function constructionGate(request: NextRequest): NextResponse | null {
     pathname === "/en/bientot" ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
-    pathname.startsWith("/demo") || // accès démo prospect : pose le cookie dropno_demo
+    pathname.startsWith("/demo") || // démo prospect (FR) : page autonome gated par clé
+    pathname.startsWith("/en/demo") || // démo prospect (EN)
     pathname.startsWith("/admin") || // back-office : protégé par auth + rôle, hors vitrine
     pathname.startsWith("/maison") || // espace responsables maison : protégé par auth + rôle
     pathname === "/dev-login" || // connexion dev par mot de passe (désactivée en prod)
@@ -85,12 +81,6 @@ export function constructionGate(request: NextRequest): NextResponse | null {
 
   // Cookie de preview présent -> accès complet au vrai site.
   if (request.cookies.get(PREVIEW_COOKIE)?.value === "1") return null;
-
-  // Cookie démo présent -> ouvre UNIQUEMENT les fiches drop (la simulation
-  // prospect), pas le reste de la vitrine.
-  if (request.cookies.get(DEMO_COOKIE)?.value === "1" && isDropPath(pathname)) {
-    return null;
-  }
 
   // Sinon -> on sert la page « bientôt » localisée (URL conservée) + noindex.
   const url = request.nextUrl.clone();

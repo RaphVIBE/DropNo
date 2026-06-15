@@ -9,7 +9,7 @@ const handleI18n = createMiddleware(routing);
 
 // Préfixes NON localisés : back-office (FR only) + route handlers. La locale
 // n'y est pas routée ; on n'y fait tourner que la session Supabase.
-const NON_LOCALIZED = ["/admin", "/maison", "/api", "/auth", "/demo"];
+const NON_LOCALIZED = ["/admin", "/maison", "/api", "/auth"];
 
 export async function middleware(request: NextRequest) {
   // Barrière "site en construction" (avant tout le reste).

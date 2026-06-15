@@ -72,7 +72,7 @@ export default async function EditDropPage({ params }: { params: { id: string } 
         {canDelete(status) && (
           <form action={deleteDrop}>
             <input type="hidden" name="id" value={drop.id} />
-            <Button type="submit" variant="outline" className="border-red-500/40 text-red-300 hover:bg-red-500/10">Supprimer</Button>
+            <Button type="submit" variant="destructiveOutline">Supprimer</Button>
           </form>
         )}
       </Card>

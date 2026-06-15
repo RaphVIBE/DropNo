@@ -3,7 +3,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { Filigrane } from "@/components/brand/filigrane";
+import { Masthead } from "@/components/brand/masthead";
 import { countryLabel } from "@/lib/countries";
 import { localizedAlternates } from "@/lib/i18n/metadata";
 
@@ -39,29 +39,26 @@ export default async function BrandsPage() {
 
   return (
     <>
-      <div className="relative overflow-hidden border-b border-rule-soft bg-sand px-7 pb-16 pt-20 md:px-16 md:pb-20 md:pt-28">
-        <Filigrane className="reveal-art pointer-events-none absolute -right-10 top-1/2 z-0 h-60 w-60 -translate-y-1/2 text-[var(--champagne-deep)] [--art-opacity:0.07] md:-right-4 md:h-80 md:w-80" />
-        <div className="relative z-10">
-          <span
-            className="eyebrow reveal"
-            style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
-          >
-            {t("eyebrow")}
-          </span>
-          <h1
-            className="font-display reveal mt-6 max-w-[12ch] text-[clamp(3.5rem,9vw,8rem)]"
-            style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
-          >
-            {t("heroTitle")}
-          </h1>
-          <p
-            className="reveal mt-6 max-w-[52ch] text-base text-ink-2"
-            style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
-          >
-            {t("heroLead")}
-          </p>
-        </div>
-      </div>
+      <Masthead variant="atelier">
+        <span
+          className="eyebrow reveal"
+          style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+        >
+          {t("eyebrow")}
+        </span>
+        <h1
+          className="font-display reveal mt-6 max-w-[12ch] text-[clamp(3.5rem,9vw,8rem)]"
+          style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
+        >
+          {t("heroTitle")}
+        </h1>
+        <p
+          className="reveal mt-6 max-w-[52ch] text-base text-ink-2"
+          style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
+        >
+          {t("heroLead")}
+        </p>
+      </Masthead>
 
       {error ? (
         <p className="px-7 py-16 text-destructive md:px-16">

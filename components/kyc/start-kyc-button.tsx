@@ -51,7 +51,7 @@ export function StartKycButton({
         disabled={status === "starting"}
         className={
           className ??
-          "bg-primary px-6 py-3 text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+          "bg-primary px-6 py-3 text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors rounded-sm hover:bg-[var(--btn-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
         }
       >
         {status === "starting"

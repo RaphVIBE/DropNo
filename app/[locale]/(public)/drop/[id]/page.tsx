@@ -159,7 +159,7 @@ export default async function DropPage({
         clearingPriceCents={drop.clearing_price_cents}
       />
 
-      <div className="grid grid-cols-1 px-7 pb-24 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32">
+      <div className="grid grid-cols-1 px-7 pb-24 pt-10 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32 md:pt-14">
         <div>
           <DropGallery
             heroImageUrl={drop.hero_image_url}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
-import { Filigrane } from "@/components/brand/filigrane";
+import { Masthead } from "@/components/brand/masthead";
 import { localizedAlternates } from "@/lib/i18n/metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -21,28 +21,28 @@ export default async function AboutPage() {
   const t = await getTranslations("about");
 
   return (
-    <section className="relative mx-auto max-w-2xl overflow-hidden px-7 py-24 md:py-32">
-      <Filigrane className="reveal-art pointer-events-none absolute -right-12 top-12 z-0 h-44 w-44 text-[var(--champagne-deep)] [--art-opacity:0.08] md:-right-8 md:h-56 md:w-56" />
+    <>
+      {/* En-tête — bande sable + filigrane « vue éclatée » */}
+      <Masthead variant="exploded" padding="px-7 pb-16 pt-20 md:px-16 md:pb-20 md:pt-28">
+        <div className="mx-auto max-w-2xl">
+          <span
+            className="eyebrow reveal"
+            style={{ "--reveal-delay": "100ms" } as React.CSSProperties}
+          >
+            {t("eyebrow")}
+          </span>
+          <h1
+            className="font-display reveal mt-6 text-[clamp(2.75rem,7vw,4.5rem)] leading-[0.95]"
+            style={{ "--reveal-delay": "220ms" } as React.CSSProperties}
+          >
+            {t("title")}
+          </h1>
+        </div>
+      </Masthead>
 
-      <div className="relative z-10">
-        <span
-          className="eyebrow reveal"
-          style={{ "--reveal-delay": "100ms" } as React.CSSProperties}
-        >
-          {t("eyebrow")}
-        </span>
-
-        <h1
-          className="font-display reveal mt-6 text-[clamp(2.75rem,7vw,4.5rem)] leading-[0.95]"
-          style={{ "--reveal-delay": "220ms" } as React.CSSProperties}
-        >
-          {t("title")}
-        </h1>
-
-        <div
-          className="reveal mt-12 space-y-6 text-lg leading-relaxed text-ink-2"
-          style={{ "--reveal-delay": "360ms" } as React.CSSProperties}
-        >
+      {/* Corps éditorial — clair */}
+      <section className="mx-auto max-w-2xl px-7 py-20 md:py-24">
+        <div className="space-y-6 text-lg leading-relaxed text-ink-2">
           <p>{t("para1")}</p>
           <p>
             {t("para2Lead")}{" "}
@@ -53,10 +53,7 @@ export default async function AboutPage() {
           <p>{t("para3")}</p>
         </div>
 
-        <div
-          className="reveal mt-16 border-t border-rule-soft pt-10"
-          style={{ "--reveal-delay": "480ms" } as React.CSSProperties}
-        >
+        <div className="mt-16 border-t border-rule-soft pt-10">
           <p className="text-sm leading-relaxed text-muted-foreground">
             {t("contactLead")}{" "}
             <a
@@ -74,7 +71,7 @@ export default async function AboutPage() {
             {t("calendarLink")}
           </Link>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

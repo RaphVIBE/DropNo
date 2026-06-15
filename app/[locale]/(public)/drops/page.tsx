@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { Masthead } from "@/components/brand/masthead";
 import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
 import { UpcomingCard } from "@/components/drop/upcoming-card";
 import { isAnnounced } from "@/lib/admin/drops";
@@ -62,11 +63,11 @@ export default async function DropsPage() {
 
   return (
     <>
-      <div className="bg-sand px-7 pt-24 md:px-16 md:pt-28">
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-2 border-b border-rule-soft pb-5">
+      <Masthead variant="escapement" padding="px-7 pb-9 pt-20 md:px-16 md:pb-11 md:pt-28">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-3">
           <div>
             <span className="eyebrow">{t("eyebrow")}</span>
-            <h1 className="font-display mt-1.5 text-[clamp(1.9rem,4vw,2.75rem)] leading-none">
+            <h1 className="font-display mt-1.5 text-[clamp(2.1rem,4.5vw,3.25rem)] leading-none">
               {t("title")}
             </h1>
           </div>
@@ -74,7 +75,7 @@ export default async function DropsPage() {
             {t("intro")}
           </p>
         </div>
-      </div>
+      </Masthead>
 
       {error ? (
         <p className="px-7 py-16 text-destructive md:px-16">

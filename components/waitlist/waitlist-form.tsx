@@ -76,12 +76,12 @@ export function WaitlistForm({
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("placeholder")}
           aria-label={t("placeholder")}
-          className="w-full border border-input bg-card px-4 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+          className="w-full rounded-sm border border-input bg-card px-4 py-3 text-base outline-none transition-colors focus:border-champagne-deep focus:ring-2 focus:ring-ring"
         />
         <button
           type="submit"
           disabled={status === "sending"}
-          className="shrink-0 whitespace-nowrap bg-primary px-6 py-3 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
+          className="shrink-0 whitespace-nowrap bg-primary px-6 py-3 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
         >
           {status === "sending" ? t("submitting") : t("submit")}
         </button>

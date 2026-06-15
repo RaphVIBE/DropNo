@@ -62,7 +62,7 @@ export function CookieConsent() {
         <button
           type="button"
           onClick={() => decide("accepted")}
-          className="flex-1 bg-primary px-4 py-2.5 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex-1 bg-primary px-4 py-2.5 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-colors rounded-sm hover:bg-[var(--btn-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {t("accept")}
         </button>

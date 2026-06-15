@@ -2,7 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
-import { Filigrane } from "@/components/brand/filigrane";
+import { Masthead } from "@/components/brand/masthead";
 import { formatEuros } from "@/lib/format";
 import { localizedAlternates } from "@/lib/i18n/metadata";
 
@@ -46,30 +46,27 @@ export default async function MechanismPage() {
 
   return (
     <>
-      {/* En-tête éditorial */}
-      <div className="relative overflow-hidden border-b border-rule-soft px-7 pb-16 pt-20 md:px-16 md:pb-20 md:pt-28">
-        <Filigrane className="reveal-art pointer-events-none absolute -right-10 top-1/2 z-0 h-60 w-60 -translate-y-1/2 text-[var(--champagne-deep)] [--art-opacity:0.07] md:-right-4 md:h-80 md:w-80" />
-        <div className="relative z-10">
-          <span
-            className="eyebrow reveal"
-            style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
-          >
-            {t("eyebrow")}
-          </span>
-          <h1
-            className="font-display reveal mt-6 max-w-[14ch] text-[clamp(2.75rem,7vw,5.5rem)]"
-            style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
-          >
-            {t("heroTitle")}
-          </h1>
-          <p
-            className="reveal mt-6 max-w-[54ch] text-lg leading-relaxed text-ink-2"
-            style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
-          >
-            {t("heroBody")}
-          </p>
-        </div>
-      </div>
+      {/* En-tête éditorial — bande sable + filigrane « mécanisme d'enchère » */}
+      <Masthead variant="clearing">
+        <span
+          className="eyebrow reveal"
+          style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+        >
+          {t("eyebrow")}
+        </span>
+        <h1
+          className="font-display reveal mt-6 max-w-[14ch] text-[clamp(2.75rem,7vw,5.5rem)]"
+          style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
+        >
+          {t("heroTitle")}
+        </h1>
+        <p
+          className="reveal mt-6 max-w-[54ch] text-lg leading-relaxed text-ink-2"
+          style={{ "--reveal-delay": "380ms" } as React.CSSProperties}
+        >
+          {t("heroBody")}
+        </p>
+      </Masthead>
 
       {/* Les trois temps */}
       <section className="px-7 py-16 md:px-16 md:py-20">
@@ -212,7 +209,7 @@ export default async function MechanismPage() {
         </p>
         <Link
           href="/drops"
-          className="mt-9 inline-block bg-primary px-10 py-[18px] text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors hover:bg-[oklch(0.12_0.012_60)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          className="mt-9 inline-block bg-primary px-10 py-[18px] text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors rounded-sm hover:bg-[var(--btn-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           {t("cta.button")}
         </Link>

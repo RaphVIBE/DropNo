@@ -4,6 +4,8 @@ import { Link } from "@/i18n/navigation";
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
 import { DropVisual } from "@/components/drop/drop-visual";
 import { DropCountdown } from "@/components/drop/drop-countdown";
+import { Masthead } from "@/components/brand/masthead";
+import { CARD_CTA, PIECE_FRAME } from "@/components/brand/styles";
 import type { CalendarDrop } from "@/components/drop/calendar-row";
 import type { Locale } from "@/i18n/routing";
 
@@ -64,13 +66,13 @@ export async function HomeDropHero({
     : "—";
 
   return (
-    <section className="px-7 pb-16 pt-10 md:px-16 md:pb-20 md:pt-14">
+    <Masthead variant="movement" padding="px-7 pb-16 pt-10 md:px-16 md:pb-20 md:pt-14">
       <Link
         href={drop.id ? `/drop/${drop.id}` : "#"}
         className="group grid grid-cols-1 gap-8 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background md:grid-cols-[0.9fr_1fr] md:items-center md:gap-16"
       >
         {/* La pièce — présente sans écraser le reste */}
-        <div className="relative mx-auto aspect-[5/6] w-full max-w-[28rem] overflow-hidden rounded-xl bg-[oklch(0.16_0.012_60)] shadow-[0_28px_80px_-30px_oklch(0.2_0.02_60/0.6)] ring-1 ring-rule-soft transition-shadow duration-500 group-hover:shadow-[0_38px_100px_-32px_oklch(0.2_0.02_60/0.72)]">
+        <div className={`relative mx-auto aspect-[5/6] w-full max-w-[28rem] overflow-hidden ${PIECE_FRAME} shadow-[0_28px_80px_-30px_oklch(0.2_0.02_60/0.6)] transition-shadow duration-500 group-hover:shadow-[0_38px_100px_-32px_oklch(0.2_0.02_60/0.72)]`}>
           <DropVisual
             dropNumber={drop.drop_number ?? 0}
             title={drop.title ?? ""}
@@ -117,12 +119,12 @@ export async function HomeDropHero({
             </div>
           ) : null}
 
-          <span className="mt-1 inline-flex w-fit items-center gap-2 bg-primary px-7 py-3.5 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-colors group-hover:bg-[oklch(0.12_0.012_60)]">
+          <span className={`mt-1 px-7 py-3.5 ${CARD_CTA}`}>
             {open ? td("ctaMakeOffer") : td("ctaDiscover")}
             <Arrow />
           </span>
         </div>
       </Link>
-    </section>
+    </Masthead>
   );
 }

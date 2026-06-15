@@ -62,7 +62,7 @@ export default async function MaisonDetail({ params }: { params: { id: string } 
                   <form action={revokeManager}>
                     <input type="hidden" name="brand_id" value={brand.id} />
                     <input type="hidden" name="user_id" value={m.user_id} />
-                    <Button type="submit" variant="outline" size="sm" className="border-red-500/40 text-red-300 hover:bg-red-500/10">Révoquer</Button>
+                    <Button type="submit" variant="destructiveOutline" size="sm">Révoquer</Button>
                   </form>
                 </div>
               ))}

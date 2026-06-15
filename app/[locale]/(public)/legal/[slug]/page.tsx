@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 
 import { LEGAL_DOCS, getLegalDoc } from "@/lib/legal";
 import { renderMarkdown } from "@/lib/markdown";
+import { Masthead } from "@/components/brand/masthead";
 
 /**
  * Pages légales — rendues statiquement au build (le contenu vit dans le repo,
@@ -45,21 +46,27 @@ export default async function LegalPage({
   const body = renderMarkdown(raw.replace(/^#\s+.*\n/, ""));
 
   return (
-    <section className="mx-auto max-w-3xl px-7 pb-28 pt-20 md:pt-24">
-      <span className="eyebrow">Drop No. · Documents</span>
-      <h1 className="font-display mt-4 text-[clamp(2.25rem,5vw,3.5rem)]">
-        {doc.title}
-      </h1>
+    <>
+      {/* En-tête — bande sable + filigrane « sceau / authenticité » */}
+      <Masthead variant="seal" padding="px-7 pb-14 pt-20 md:pb-16 md:pt-24">
+        <div className="mx-auto max-w-3xl">
+          <span className="eyebrow">Drop No. · Documents</span>
+          <h1 className="font-display mt-4 text-[clamp(2.25rem,5vw,3.5rem)]">
+            {doc.title}
+          </h1>
+        </div>
+      </Masthead>
 
-      <div
-        className="legal-prose mt-12"
-        dangerouslySetInnerHTML={{ __html: body }}
-      />
+      <section className="mx-auto max-w-3xl px-7 pb-28 pt-14 md:pt-16">
+        <div
+          className="legal-prose"
+          dangerouslySetInnerHTML={{ __html: body }}
+        />
 
-      <nav
-        aria-label="Autres documents"
-        className="mt-20 border-t border-rule-soft pt-8"
-      >
+        <nav
+          aria-label="Autres documents"
+          className="mt-20 border-t border-rule-soft pt-8"
+        >
         <span className="eyebrow">Autres documents</span>
         <ul className="mt-4 flex flex-wrap gap-x-7 gap-y-2">
           {LEGAL_DOCS.filter((d) => d.slug !== doc.slug).map((d) => (
@@ -73,7 +80,8 @@ export default async function LegalPage({
             </li>
           ))}
         </ul>
-      </nav>
-    </section>
+        </nav>
+      </section>
+    </>
   );
 }

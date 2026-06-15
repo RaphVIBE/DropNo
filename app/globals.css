@@ -44,6 +44,17 @@
     --ink-2: oklch(0.32 0.012 60);
     --rule-soft: oklch(0.92 0.008 70);
     --sand: oklch(0.952 0.009 78); /* bande alternée, entre background et muted */
+    --masthead: oklch(0.935 0.014 78); /* bande d'en-tête : sable un poil plus foncé */
+
+    /* Hover des boutons PRIMAIRES (pleins) : remplissage bronze/champagne
+       profond, mat — texte clair conservé. Subtil, distinct du secondaire. */
+    --btn-hover: oklch(0.46 0.05 72);
+
+    /* Hover des boutons SECONDAIRES (outline) : voile + bordure + texte
+       champagne. Scopé par thème pour ne pas ternir le back-office (cf .admin). */
+    --btn-outline-hover-bg: oklch(0.72 0.07 80 / 0.12);
+    --btn-outline-hover-fg: var(--champagne-deep);
+    --btn-outline-hover-bd: var(--champagne-deep);
   }
 
   /*
@@ -85,6 +96,17 @@
     --ink-2: oklch(0.8 0.01 70);
     --rule-soft: oklch(0.3 0.012 65);
     --sand: oklch(0.235 0.012 65); /* bande alternée, entre background et card */
+
+    /* En back-office, le primaire EST déjà champagne (texte sombre) : on
+       éclaircit légèrement le hover pour garder un retour lisible. */
+    --btn-hover: oklch(0.82 0.07 82);
+
+    /* Outline : on conserve le hover neutre d'origine (gris secondaire, texte
+       clair) — le champagne ternirait les labels et écraserait le rouge des
+       actions destructives sur fond sombre. */
+    --btn-outline-hover-bg: var(--secondary);
+    --btn-outline-hover-fg: var(--secondary-foreground);
+    --btn-outline-hover-bd: var(--border);
 
     color-scheme: dark;
   }

@@ -43,8 +43,10 @@ const PUBLIC_LEGAL_PATHS = [
 ];
 
 function isPublicLegalPath(pathname: string): boolean {
-  // Retire un éventuel préfixe de locale `/en` (FR servi à la racine).
-  const p = pathname.replace(/^\/en(?=\/|$)/, "") || "/";
+  // Retire un éventuel préfixe de locale (`/en`, ou `/fr` explicite — la FR est
+  // servie à la racine, mais `/fr/...` doit rester laissé passer pour que
+  // next-intl le redirige ensuite vers l'URL nue plutôt que vers « bientôt »).
+  const p = pathname.replace(/^\/(en|fr)(?=\/|$)/, "") || "/";
   return PUBLIC_LEGAL_PATHS.some((base) => p === base || p.startsWith(base + "/"));
 }
 

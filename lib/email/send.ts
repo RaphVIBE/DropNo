@@ -6,6 +6,7 @@ import {
   alertConfirmEmail,
   alertNoticeEmail,
   serialOfferEmail,
+  contactMessageEmail,
   type EmailContent,
   type EmailLocale,
 } from "./templates";
@@ -19,7 +20,11 @@ type SendResult =
   | { ok: true; id?: string }
   | { ok: false; skipped?: true; error?: string };
 
-async function deliver(to: string, content: EmailContent): Promise<SendResult> {
+async function deliver(
+  to: string,
+  content: EmailContent,
+  opts?: { replyTo?: string; from?: string }
+): Promise<SendResult> {
   // Best-effort : sans clé Resend (dev), on no-op sans casser l'appelant.
   if (!isEmailConfigured()) {
     console.warn(`[email] RESEND_API_KEY absente, email non envoyé: ${content.subject}`);
@@ -27,11 +32,12 @@ async function deliver(to: string, content: EmailContent): Promise<SendResult> {
   }
   try {
     const { data, error } = await getResend().emails.send({
-      from: fromAddress(),
+      from: opts?.from ?? fromAddress(),
       to,
       subject: content.subject,
       html: content.html,
       text: content.text,
+      ...(opts?.replyTo ? { replyTo: opts.replyTo } : {}),
     });
     if (error) {
       console.error("[email] échec d'envoi:", error);
@@ -90,4 +96,19 @@ export function sendAlertNotice(
   locale: EmailLocale = "fr"
 ): Promise<SendResult> {
   return deliver(to, alertNoticeEmail(data, locale));
+}
+
+/**
+ * Message envoyé via le formulaire /contact, vers la boîte de l'équipe.
+ * `replyTo` = email du visiteur (réponse en un clic depuis Gmail). From dédié
+ * « Drop No. Contact » pour distinguer ces messages des emails transactionnels.
+ */
+export function sendContactMessage(
+  to: string,
+  data: Parameters<typeof contactMessageEmail>[0],
+  replyTo: string,
+  locale: EmailLocale = "fr"
+): Promise<SendResult> {
+  const from = `Drop No. Contact <${process.env.RESEND_FROM_EMAIL ?? "hello@dropno.eu"}>`;
+  return deliver(to, contactMessageEmail(data, locale), { replyTo, from });
 }

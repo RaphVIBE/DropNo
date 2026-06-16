@@ -23,6 +23,31 @@ import { NextResponse, type NextRequest } from "next/server";
  */
 const PREVIEW_COOKIE = "dropno_preview";
 
+/**
+ * Pages publiques laissées passer même site verrouillé : documents légaux
+ * (catalogue `/legal/*` + slugs attendus par Stripe Connect) et page contact.
+ * Stripe doit pouvoir crawler ces URLs publiquement pendant l'onboarding ;
+ * il est par ailleurs sain que ces pages restent accessibles en soft-launch.
+ */
+const PUBLIC_LEGAL_PATHS = [
+  "/legal",
+  "/privacy-policy",
+  "/confidentialite",
+  "/terms-of-service",
+  "/cgu",
+  "/cgv",
+  "/cookies",
+  "/retractation",
+  "/mentions-legales",
+  "/contact",
+];
+
+function isPublicLegalPath(pathname: string): boolean {
+  // Retire un éventuel préfixe de locale `/en` (FR servi à la racine).
+  const p = pathname.replace(/^\/en(?=\/|$)/, "") || "/";
+  return PUBLIC_LEGAL_PATHS.some((base) => p === base || p.startsWith(base + "/"));
+}
+
 export function constructionGate(request: NextRequest): NextResponse | null {
   if (process.env.SITE_LOCKED !== "true") return null;
 
@@ -47,7 +72,8 @@ export function constructionGate(request: NextRequest): NextResponse | null {
     pathname === "/dev-login" || // connexion dev par mot de passe (désactivée en prod)
     pathname === "/en/dev-login" ||
     pathname === "/robots.txt" ||
-    pathname === "/favicon.ico"
+    pathname === "/favicon.ico" ||
+    isPublicLegalPath(pathname) // légal + contact : crawlables par Stripe
   ) {
     return null;
   }

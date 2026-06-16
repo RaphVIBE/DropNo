@@ -13,7 +13,7 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 - Frontend : Next.js 14 (App Router) + Tailwind + shadcn/ui
 - Backend : Supabase (Postgres 17, Auth, RLS, Edge Functions Deno)
 - Paiement : Stripe (PaymentIntents pre-auth + Stripe Identity KYC)
-- Hosting : Vercel
+- Hosting : Netlify (déploiement auto sur push `main` ; preview par PR)
 - Analytics : PostHog
 - Support : Crisp
 - Email transactionnel : Resend

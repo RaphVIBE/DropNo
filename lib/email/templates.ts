@@ -689,3 +689,58 @@ ${textLink(t.unsubscribe, d.unsubscribeUrl)}`;
   const text = `${c.subject(num)}\n${c.body}\n\n${c.cta} : ${url(`/drop/${d.dropId}`, locale)}\n${t.unsubscribe} : ${d.unsubscribeUrl}`;
   return { subject: c.subject(num), html: layout(locale, c.title, inner), text };
 }
+
+// ---------------------------------------------------------------------------
+// Contact : message reçu via /contact (email interne vers l'équipe)
+// Le Reply-To est posé sur l'email du visiteur côté envoi (voir send.ts).
+// ---------------------------------------------------------------------------
+export type ContactReason = "brand" | "collector" | "press" | "other";
+
+const CONTACT_REASON_LABEL: Record<EmailLocale, Record<ContactReason, string>> = {
+  fr: {
+    brand: "Marque horlogère",
+    collector: "Collectionneur",
+    press: "Presse",
+    other: "Autre",
+  },
+  en: {
+    brand: "Watch brand",
+    collector: "Collector",
+    press: "Press",
+    other: "Other",
+  },
+};
+
+export function contactMessageEmail(
+  d: {
+    reason: ContactReason;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+  },
+  locale: EmailLocale = "fr"
+): EmailContent {
+  const label = CONTACT_REASON_LABEL[locale][d.reason];
+  const subject = `[${d.reason}] ${d.subject}`;
+  const preheader = `${label} : ${d.subject}`;
+  const rows = `${statRow("De", `${esc(d.name)} &lt;${esc(d.email)}&gt;`)}
+${statRow("Profil", label)}
+${statRow("Sujet", esc(d.subject))}`;
+  const messageHtml = esc(d.message).replace(/\r?\n/g, "<br/>");
+  const inner = `${eyebrow("Nouveau message via /contact")}
+${h1("Message reçu.")}
+${stats(rows)}
+<div style="margin:30px 0 12px;">${dashedRule()}</div>
+${p(messageHtml, 6)}
+${p(`Répondez directement à cet email pour reprendre le fil avec ${esc(d.name)}.`, 26)}`;
+  const text = `Nouveau message via /contact
+De : ${d.name} <${d.email}>
+Profil : ${label}
+Sujet : ${d.subject}
+
+${d.message}
+
+Répondez directement à cet email pour reprendre le fil avec ${d.name}.`;
+  return { subject, html: layout(locale, preheader, inner), text };
+}

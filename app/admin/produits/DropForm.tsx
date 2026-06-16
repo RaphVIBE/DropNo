@@ -34,6 +34,7 @@ type RevealSlot = { value: string; label: string };
 export type Drop = {
   id: string; brand_id: string; title: string; piece_reference: string | null;
   description: string | null; floor_price_cents: number; exemplaires: number;
+  all_or_nothing?: boolean | null;
   format: string | null;
   bid_window_opens_at: string | null; bid_lock_at: string | null; reveal_at: string | null;
   hero_image_url: string | null; images_urls: string[] | null;
@@ -149,6 +150,20 @@ export function DropForm({
           )}
         </div>
       </div>
+
+      {/* Sous-souscription : vente partielle (défaut) ou tout ou rien. */}
+      <label className={`flex items-start gap-3 rounded-lg border border-input/60 bg-background/40 p-3 ${lock ? locked : "cursor-pointer"}`}>
+        <input type="checkbox" name="all_or_nothing" value="1" disabled={lock}
+          defaultChecked={!!drop?.all_or_nothing}
+          className="mt-0.5 h-4 w-4 rounded border-input accent-[oklch(0.72_0.07_80)]" />
+        <span className="text-xs leading-relaxed">
+          <span className="font-medium text-foreground/90">Tout ou rien</span>
+          <span className="block text-muted-foreground">
+            Par défaut, si toutes les pièces ne trouvent pas preneur, on vend celles qui atteignent le plancher (prix = plus basse offre gagnante). Cochez pour annuler le drop tant que les {""}
+            <span className="tabular-nums">exemplaires</span> ne sont pas tous couverts.
+          </span>
+        </span>
+      </label>
 
       {/* ── Planning : format + reveal (ancre), reste dérivé ── */}
       <div className="rounded-lg border border-input/60 bg-background/40 p-4">

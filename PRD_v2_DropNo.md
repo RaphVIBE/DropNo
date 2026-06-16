@@ -65,7 +65,8 @@ Indépendants (Furlan Marri, Anordain, Massena LAB, Toledano & Chan) ou grandes 
 ### Règles d'arbitrage
 
 - **Égalité au seuil de coupure** : timestamp d'arrivée tranche (premier servi).
-- **Moins de N bids ≥ P** : drop annulé (libération de toutes les pré-auth), notification à la marque et aux bidders.
+- **Moins de N bids ≥ P (sous-souscription)** : par défaut, **vente partielle**. Les K offres ≥ P gagnent et payent toutes le clearing (la plus basse offre gagnante, soit la K-ième) ; les N−K exemplaires restants ne sont pas vendus et restent à la maison. La maison peut activer **`all_or_nothing`** à la création du drop : dans ce cas, tant que K < N, le drop est annulé et toutes les pré-auth libérées.
+- **Zéro bid ≥ P** : drop annulé (libération de toutes les pré-auth), notification à la marque et aux bidders.
 - **Modification de bid** : nouveau timestamp, ancien remplacé, pré-auth ajustée.
 - **Retrait de bid** : autorisé jusqu'à T-24h. Au-delà, engagement ferme.
 
@@ -286,7 +287,8 @@ Canaux : email obligatoire + push (si autorisé). Rate-limit : max 4 notifs par 
 | Cas | Comportement attendu |
 |---|---|
 | Bids identiques au seuil de coupure | Premier timestamp gagne, autres perdent |
-| Moins de N bids ≥ P | Drop annulé, pré-auths libérées, notification marque + bidders |
+| Zéro bid ≥ P | Drop annulé, pré-auths libérées, notification marque + bidders |
+| Moins de N bids ≥ P (K offres, K≥1) | Défaut : vente partielle des K exemplaires au clearing (K-ième bid), N−K invendus restent à la maison. Si `all_or_nothing` : drop annulé, pré-auths libérées |
 | Acheteur tente de bidder sans KYC | Modal Stripe Identity bloque l'action |
 | Acheteur KYC en cours (Pending) au moment de T | Bid annulé si non vérifié à T-1h, pré-auth libérée |
 | Pré-auth Stripe expire avant T | Retry de capture à J-1, sinon bid invalidé et N-ième bid suivant promu |

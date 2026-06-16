@@ -150,6 +150,7 @@ export type DropInput = {
   description: string | null;
   floor_price_cents: number;
   exemplaires: number;
+  all_or_nothing: boolean;
   format: DropFormat;
   bid_window_opens_at: string;
   bid_lock_at: string | null;

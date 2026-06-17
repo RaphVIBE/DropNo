@@ -5,8 +5,9 @@ import { Masthead } from "@/components/brand/masthead";
 import { WaitlistForm } from "./waitlist-form";
 
 /**
- * Bloc « le premier drop approche » + formulaire de liste d'attente.
- * Remplace l'état vide (aucun drop) sur la home et le calendrier au soft launch.
+ * « La Liste » — l'accès anticipé aux drops. Ce n'est pas une newsletter :
+ * on entre sur une liste et le prochain drop vous est annoncé avant tout le
+ * monde. Remplace l'état vide (aucun drop) sur la home et le calendrier.
  *
  * `hero` : en l'absence de drop, ce bloc EST le héros de la home — titre en h1,
  * plus de présence verticale, filet d'art (filigrane).
@@ -21,24 +22,44 @@ export async function WaitlistBlock({
   const t = await getTranslations("waitlist");
   const Heading = hero ? "h1" : "h2";
 
+  const perks = [
+    { title: t("perkFirstTitle"), body: t("perkFirstBody") },
+    { title: t("perkRitualTitle"), body: t("perkRitualBody") },
+    { title: t("perkQuietTitle"), body: t("perkQuietBody") },
+  ];
+
   const Body = (
-    <div
-      className={`mx-auto text-center ${hero ? "max-w-2xl" : "max-w-xl"}`}
-    >
-      <p className="eyebrow">{t("emptyEyebrow")}</p>
+    <div className={`mx-auto text-center ${hero ? "max-w-2xl" : "max-w-xl"}`}>
+      <p className="eyebrow">{t("kicker")}</p>
       <Heading
         className={`font-display mt-4 leading-[1.04] ${
           hero
-            ? "text-[clamp(2.4rem,6vw,4.5rem)]"
-            : "text-[clamp(1.8rem,4vw,2.75rem)]"
+            ? "text-[clamp(2.6rem,6.5vw,4.75rem)]"
+            : "text-[clamp(1.9rem,4vw,2.9rem)]"
         }`}
       >
-        {t("emptyTitle")}
+        {t("name")}
       </Heading>
-      <p className="mx-auto mt-5 max-w-[46ch] text-base leading-relaxed text-ink-2">
-        {t("emptyBody")}
+      <p className="font-serif mt-4 text-[clamp(1.05rem,2.4vw,1.4rem)] italic text-[var(--champagne-deep)]">
+        {t("tagline")}
       </p>
-      <div className="mx-auto mt-9 max-w-md text-left">
+      <p className="mx-auto mt-5 max-w-[48ch] text-base leading-relaxed text-ink-2">
+        {t("heroBody")}
+      </p>
+
+      {/* Les trois privilèges — ce qui distingue la Liste d'une newsletter. */}
+      <ul className="mx-auto mt-9 grid max-w-xl grid-cols-1 gap-6 text-left sm:grid-cols-3 sm:gap-7">
+        {perks.map((p) => (
+          <li key={p.title} className="border-t border-rule-soft pt-3">
+            <p className="text-sm font-medium text-foreground">{p.title}</p>
+            <p className="mt-1.5 text-[13px] leading-relaxed text-ink-2">
+              {p.body}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mx-auto mt-10 max-w-md text-left">
         <WaitlistForm source={source} />
       </div>
     </div>

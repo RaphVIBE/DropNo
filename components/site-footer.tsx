@@ -39,7 +39,8 @@ export async function SiteFooter() {
       <div className="border-b border-rule-soft px-7 py-12 md:px-16 md:py-14">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_1.1fr] md:items-center md:gap-12">
           <div>
-            <span className="eyebrow">{tw("footerTitle")}</span>
+            <p className="eyebrow">{tw("kicker")}</p>
+            <p className="font-serif mt-2 text-2xl italic">{tw("name")}</p>
             <p className="mt-3 max-w-[34ch] text-sm leading-relaxed text-ink-2">
               {tw("footerBody")}
             </p>

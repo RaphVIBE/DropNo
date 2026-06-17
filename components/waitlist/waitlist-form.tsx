@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 
 /**
- * Formulaire de liste d'attente (soft launch). Opt-in simple + consentement
- * marketing explicite (case obligatoire). Poste vers /api/waitlist.
+ * Formulaire d'inscription à « La Liste » — l'accès anticipé aux drops (et non
+ * une newsletter). Opt-in simple + consentement explicite (case obligatoire).
+ * Poste vers /api/waitlist (inchangé : email, consent, source).
  *
  * `source` trace l'origine (home / footer). `compact` densifie le rendu pour
- * le pied de page.
+ * le pied de page. Au succès : confirmation « sceau » révélée par clip-path
+ * (cf. .seal-reveal), dans l'esprit du reveal du prix de clôture.
  */
 export function WaitlistForm({
   source,
@@ -55,14 +57,29 @@ export function WaitlistForm({
     }
   }
 
+  // Confirmation « sceau » : un filet champagne, puis le verdict révélé.
   if (status === "done") {
     return (
-      <p
-        className={`text-ink-2 ${compact ? "text-sm" : "text-base leading-relaxed"}`}
-        role="status"
-      >
-        {t("success")}
-      </p>
+      <div role="status" aria-live="polite" className={compact ? "" : "text-center"}>
+        <span
+          aria-hidden="true"
+          className="seal-reveal block h-px w-12 bg-[var(--champagne-deep)]"
+          style={!compact ? { marginInline: "auto" } : undefined}
+        />
+        <p
+          className={`seal-reveal font-display italic leading-[1.05] text-foreground ${
+            compact ? "mt-4 text-2xl" : "mt-6 text-[clamp(1.9rem,4vw,2.9rem)]"
+          }`}
+          style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+        >
+          {t("successTitle")}
+        </p>
+        <p
+          className={`mt-3 text-ink-2 ${compact ? "text-sm" : "mx-auto max-w-[40ch] text-base leading-relaxed"}`}
+        >
+          {t("successBody")}
+        </p>
+      </div>
     );
   }
 
@@ -81,6 +98,7 @@ export function WaitlistForm({
         <button
           type="submit"
           disabled={status === "sending"}
+          aria-busy={status === "sending"}
           className="shrink-0 whitespace-nowrap bg-primary px-6 py-3 text-xs font-medium uppercase tracking-wider text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"
         >
           {status === "sending" ? t("submitting") : t("submit")}

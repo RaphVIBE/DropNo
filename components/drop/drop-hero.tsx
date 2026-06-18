@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
-import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
+import { formatDropNumber, formatRevealMoment } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
 import { Masthead } from "@/components/brand/masthead";
 
@@ -14,7 +14,6 @@ export async function DropHero({
   brandSlug,
   status,
   revealAt,
-  clearingPriceCents,
 }: {
   dropNumber: number;
   title: string;
@@ -22,23 +21,16 @@ export async function DropHero({
   brandSlug?: string | null;
   status: DropStatus;
   revealAt: string | null;
-  clearingPriceCents: number | null;
 }) {
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("dropDetail");
   return (
     <Masthead variant="caseSection" padding="px-7 pt-16 md:px-16 md:pt-24">
-      <div className="flex flex-wrap items-baseline justify-between gap-4 border-b border-rule pb-8">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-rule pb-8">
         <span className="font-serif text-[32px] italic">
           Drop No. {formatDropNumber(dropNumber)}
         </span>
-        <StatusLine
-          status={status}
-          revealAt={revealAt}
-          clearingPriceCents={clearingPriceCents}
-          t={t}
-          locale={locale}
-        />
+        <StatusLine status={status} revealAt={revealAt} t={t} locale={locale} />
       </div>
       <div className="pb-16 pt-10 md:pb-24 md:pt-14">
         {brandName ? (
@@ -72,22 +64,20 @@ export async function DropHero({
 function StatusLine({
   status,
   revealAt,
-  clearingPriceCents,
   t,
   locale,
 }: {
   status: DropStatus;
   revealAt: string | null;
-  clearingPriceCents: number | null;
   t: Awaited<ReturnType<typeof getTranslations>>;
   locale: Locale;
 }) {
-  const base =
-    "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em]";
+  const chip =
+    "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-[11px] uppercase tracking-[0.18em]";
 
   if (status === "open") {
     return (
-      <span className={`${base} text-champagne-deep`}>
+      <span className={`${chip} border-champagne text-champagne-deep`}>
         <span className="status-dot" aria-hidden />
         {revealAt
           ? t("statusOpenClosing", {
@@ -98,23 +88,29 @@ function StatusLine({
     );
   }
   if (status === "scheduled") {
-    return <span className={`${base} text-ink-2`}>{t("statusScheduled")}</span>;
+    return (
+      <span className={`${chip} border-rule text-ink-2`}>
+        {t("statusScheduled")}
+      </span>
+    );
   }
   if (status === "cancelled") {
     return (
-      <span className={`${base} text-muted-foreground`}>
+      <span className={`${chip} border-rule text-muted-foreground`}>
         {t("statusCancelled")}
       </span>
     );
   }
-  // closed / revealed
+  // closed = révélation en cours (transitoire) ; revealed = résultat publié
+  if (status === "closed") {
+    return (
+      <span className={`${chip} border-rule text-ink-2`}>
+        {t("statusRevealing")}
+      </span>
+    );
+  }
+  // revealed
   return (
-    <span className={`${base} text-muted-foreground`}>
-      {clearingPriceCents
-        ? t("statusClosedPrice", {
-            price: formatEuros(clearingPriceCents, locale),
-          })
-        : t("statusClosed")}
-    </span>
+    <span className={`${chip} border-rule text-ink-2`}>{t("statusClosed")}</span>
   );
 }

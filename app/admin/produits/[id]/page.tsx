@@ -54,7 +54,7 @@ export default async function EditDropPage({ params }: { params: { id: string } 
           </form>
         )}
         {status === "revealed" && (
-          <span className="text-sm text-muted-foreground">Clôturé à {eur(drop.clearing_price_cents)} · révélé le {dateTime(drop.revealed_at)}.</span>
+          <span className="text-sm text-muted-foreground">Résultat à {eur(drop.clearing_price_cents)} · révélé le {dateTime(drop.revealed_at)}.</span>
         )}
         {(status === "open" || status === "closed") && (
           <span className="text-sm text-muted-foreground">Enchère en cours · reveal {dateTime(drop.reveal_at)} (clôture automatique).</span>

@@ -39,6 +39,7 @@ function parseInput(fd: FormData): DropInput {
     description: str(fd, "description") || null,
     floor_price_cents: Number.isFinite(euros) ? Math.round(euros * 100) : NaN,
     exemplaires: parseInt(str(fd, "exemplaires"), 10),
+    all_or_nothing: fd.get("all_or_nothing") != null,
     format,
     bid_window_opens_at: openIso,
     bid_lock_at: lockIso,

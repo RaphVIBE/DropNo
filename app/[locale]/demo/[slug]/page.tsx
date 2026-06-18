@@ -90,6 +90,10 @@ export default async function DemoDropPage({
   // Le bouton « se connecter » du panneau d'offre reste sur la démo (jamais
   // vers /login, qui est verrouillé).
   const selfHref = `/demo/${params.slug}?key=${searchParams.key ?? ""}`;
+  // Lien vers la fiche maison (reste dans /demo, porte la clé). FR par défaut
+  // sans préfixe de locale.
+  const prefix = params.locale === "fr" ? "" : `/${params.locale}`;
+  const maisonHref = `${prefix}/demo/${params.slug}/maison?key=${searchParams.key ?? ""}`;
 
   return (
     <>
@@ -112,7 +116,6 @@ export default async function DemoDropPage({
         brandSlug={null}
         status={status}
         revealAt={drop.reveal_at}
-        clearingPriceCents={drop.clearing_price_cents}
       />
 
       <div className="grid grid-cols-1 px-7 pb-24 pt-10 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32 md:pt-14">
@@ -152,13 +155,29 @@ export default async function DemoDropPage({
             bidCount={drop.bid_count ?? 0}
             isAuthenticated={false}
             kycStatus="pending"
+            status={status}
             isOpen={isOpen}
             isLocked={isLocked}
+            clearingPriceCents={drop.clearing_price_cents ?? null}
             existingBidCents={null}
             loginHref={selfHref}
           />
 
           <DropAssurance />
+
+          {brandName ? (
+            <div className="mt-8 border-t border-rule-soft pt-6">
+              <a
+                href={maisonHref}
+                className="group inline-flex items-baseline gap-2 rounded-sm text-[13px] uppercase tracking-[0.16em] text-champagne-deep underline-offset-4 transition-colors hover:underline"
+              >
+                La maison · {brandName}
+                <span className="transition-transform group-hover:translate-x-0.5">
+                  {"→"}
+                </span>
+              </a>
+            </div>
+          ) : null}
         </div>
       </div>
 

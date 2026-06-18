@@ -167,7 +167,6 @@ export default async function DropPage({
         brandSlug={isDemo ? null : brand?.slug ?? null}
         status={status}
         revealAt={drop.reveal_at}
-        clearingPriceCents={drop.clearing_price_cents}
       />
 
       <div className="grid grid-cols-1 px-7 pb-24 pt-10 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32 md:pt-14">
@@ -214,8 +213,10 @@ export default async function DropPage({
             bidCount={drop.bid_count ?? 0}
             isAuthenticated={!!user}
             kycStatus={kycStatus}
+            status={status}
             isOpen={isOpen}
             isLocked={isLocked}
+            clearingPriceCents={drop.clearing_price_cents ?? null}
             existingBidCents={existingBidCents}
             loginHref={loginHref}
           />

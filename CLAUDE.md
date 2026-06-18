@@ -47,6 +47,7 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 | **Rétractation & remboursements** (workflow 14j sur `/admin/commandes/[id]` + edge function `refund-transaction`) | ✅ déployée (0024) — ⚠️ dépend de `STRIPE_SECRET_KEY` (absente) |
 | **Retours logistique** (trajet retour sur `deliveries` : direction, valeur assurée, tracking) | ✅ déployée (0025) — voir `BACKOFFICE.md` |
 | **Privilège № 001** (`serial_offers` + close-drop v3 + refund-transaction v2 + `/account/offre/[id]` + cron `expire_serial_offers`) | ✅ déployé (0026) — voir `Privilege_001.md` ; ⚠️ paiement supplément dépend aussi de `STRIPE_SECRET_KEY` |
+| **Vente partielle** (`drops.all_or_nothing` + close_drop v4 + toggle form création) | ✅ migration 0032 + front ; vente partielle par défaut, tout ou rien optionnel |
 | **Analytics PostHog** (tracking vitrine snippet + event `drop_view` ; cadrans `/admin`, fiche drop, `/admin/audience`) | ✅ code en place — ⚠️ clés env à poser (`NEXT_PUBLIC_POSTHOG_KEY`, `POSTHOG_PROJECT_ID`, `POSTHOG_PERSONAL_API_KEY`), voir `BACKOFFICE.md` |
 
 Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas superuser sur Supabase). Lookup via `vault.decrypted_secrets`, update via `vault.update_secret(<uuid>, ...)`.
@@ -54,6 +55,8 @@ Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas
 ## Décisions verrouillées (NE PAS re-questionner)
 
 - **Mécanisme** : sealed-bid uniform price, **N-ième bid clearing** (pas Vickrey N+1)
+- **Défaut gagnant** : capture Stripe échouée au reveal → clearing **figé** pour les autres gagnants, exemplaire **invendu** (re-list futur), **pas de cascade** au (N+1)-ième
+- **Sous-souscription** (décidé 2026-06-16) : si moins de N offres ≥ plancher, **vente partielle par défaut** — les K offres gagnent et payent le clearing (la plus basse gagnante, K-ième bid), les N−K exemplaires restent à la maison. Flag **`drops.all_or_nothing`** (réglé à la création) bascule en **annulation** tant que K < N. Annulation aussi si zéro offre ≥ plancher. Voir migration 0032 (close_drop v4)
 - **Marketplace** : brand-direct only B2C, pas de C2C revente
 - **Authentification** : certificat marque suffit (vendeur = marque)
 - **KYC acheteur** : Stripe Identity au 1er bid (light, dès 1€ pour respecter AML EU sur luxe)

@@ -13,7 +13,7 @@ Seul le bidder lui-même voit son propre bid. La marque voit un compteur agrég�
 Toute insertion/modification de bid laisse une trace hashée immuable dans `bid_audit_log`. Defense juridique en cas de litige sur l'ordre d'arrivée.
 
 **3. Atomicité du closeDrop.**
-La fonction `close_drop(drop_id)` doit être transactionnelle, idempotente et exécutée avec `SECURITY DEFINER` (contourne RLS). Lock du drop, tri des bids, attribution, marquage, mise à jour. Tout ou rien.
+La fonction `close_drop(drop_id)` doit être transactionnelle, idempotente et exécutée avec `SECURITY DEFINER` (contourne RLS). Lock du drop, tri des bids, attribution, marquage, mise à jour. Atomique : la résolution réussit en bloc ou rollback complet.
 
 **4. Pas de service role en runtime utilisateur.**
 Tout le code utilisateur (Next.js front + edge functions) utilise un JWT anon. Le service role est réservé aux cron de fermeture des drops et au backend admin.
@@ -90,9 +90,9 @@ Exécutée à `reveal_at` exact par cron (Supabase Edge Function planifiée).
 Algorithme :
 1. `SELECT … FOR UPDATE` sur le drop (lock).
 2. Tri des bids actifs par `amount_cents DESC, submitted_at ASC`.
-3. Top N = gagnants. Clearing price = N-ième bid (le plus bas gagnant).
-4. Si < N bids ≥ floor : annuler le drop, libérer toutes les pré-auth.
-5. Sinon : marquer gagnants `won`, perdants `lost`, créer transactions pour gagnants.
+3. Top N (au plus) = gagnants. Clearing price = la plus basse offre gagnante (N-ième bid, ou K-ième si seulement K < N offres ≥ floor).
+4. Annulation si : zéro bid ≥ floor, **ou** `drops.all_or_nothing = true` et offres qualifiées < N. Sinon, vente partielle autorisée (K exemplaires vendus, N−K invendus).
+5. Cas vendu : marquer gagnants `won`, perdants `lost`, créer transactions pour gagnants au clearing.
 6. Update `drops.status = 'revealed'`, `clearing_price_cents`, `revealed_at`.
 7. La logique Stripe (capture / release) est dans une edge function TypeScript qui suit cette fonction SQL.
 

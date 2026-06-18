@@ -21,8 +21,10 @@ type Props = {
   bidCount: number;
   isAuthenticated: boolean;
   kycStatus: string;
+  status: string;
   isOpen: boolean;
   isLocked: boolean;
+  clearingPriceCents: number | null;
   existingBidCents: number | null;
   loginHref: string;
 };
@@ -34,8 +36,10 @@ export function DropBidForm(props: Props) {
     bidCount,
     isAuthenticated,
     kycStatus,
+    status,
     isOpen,
     isLocked,
+    clearingPriceCents,
     existingBidCents,
     loginHref,
   } = props;
@@ -43,13 +47,18 @@ export function DropBidForm(props: Props) {
   const t = useTranslations("bidForm");
   const locale = useLocale();
 
-  // --- Drop pas ouvert ---
+  // --- Drop pas ouvert : résultat (clôturé), à venir, ou annulé ---
   if (!isOpen) {
-    return (
-      <Panel>
-        <p className="text-sm text-ink-2">{t("notOpen")}</p>
-      </Panel>
-    );
+    if (status === "revealed" && clearingPriceCents) {
+      return <ResultPanel clearingPriceCents={clearingPriceCents} />;
+    }
+    if (status === "closed" || status === "revealed") {
+      return <ClosedNotice noteKey="revealingNote" />;
+    }
+    if (status === "cancelled") {
+      return <ClosedNotice noteKey="cancelledNote" />;
+    }
+    return <ClosedNotice noteKey="upcomingNote" />;
   }
 
   // --- Offres verrouillées (T-1h) ---
@@ -372,6 +381,52 @@ function KycGate({ status, bidCount }: { status: string; bidCount: number }) {
 function Panel({ children }: { children: React.ReactNode }) {
   return (
     <div className="mt-8 border border-rule bg-card p-7">{children}</div>
+  );
+}
+
+/**
+ * Drop clôturé et révélé : le prix uniforme est le climax du drop. On le donne
+ * en grand, suivi d'une invitation chaleureuse vers le prochain rendez-vous.
+ */
+function ResultPanel({ clearingPriceCents }: { clearingPriceCents: number }) {
+  const t = useTranslations("bidForm");
+  const locale = useLocale();
+  return (
+    <Panel>
+      <span className="mb-5 block h-px w-8 bg-champagne" aria-hidden />
+      <span className="block text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+        {t("resultEyebrow")}
+      </span>
+      <p className="mt-2 font-serif text-[clamp(2.75rem,7vw,3.5rem)] italic leading-none tabular-nums text-foreground">
+        {formatEuros(clearingPriceCents, locale)}
+      </p>
+      <p className="mt-5 text-sm leading-relaxed text-ink-2">{t("resultNote")}</p>
+      <CalendarLink />
+    </Panel>
+  );
+}
+
+/** Drop à venir, révélation en cours ou annulé : message doux + calendrier. */
+function ClosedNotice({ noteKey }: { noteKey: string }) {
+  const t = useTranslations("bidForm");
+  return (
+    <Panel>
+      <p className="text-sm leading-relaxed text-ink-2">{t(noteKey)}</p>
+      <CalendarLink />
+    </Panel>
+  );
+}
+
+function CalendarLink() {
+  const t = useTranslations("bidForm");
+  return (
+    <Link
+      href="/drops"
+      className="mt-6 inline-flex items-center gap-2 rounded-sm text-[13px] font-medium uppercase tracking-[0.16em] text-foreground underline-offset-4 transition-colors hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
+      {t("seeCalendar")}
+      <span aria-hidden>&rarr;</span>
+    </Link>
   );
 }
 

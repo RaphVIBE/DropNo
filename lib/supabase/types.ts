@@ -504,6 +504,7 @@ export type Database = {
       }
       drops: {
         Row: {
+          all_or_nothing: boolean
           bid_count: number
           bid_lock_at: string | null
           bid_window_opens_at: string
@@ -529,6 +530,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          all_or_nothing?: boolean
           bid_count?: number
           bid_lock_at?: string | null
           bid_window_opens_at: string
@@ -554,6 +556,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          all_or_nothing?: boolean
           bid_count?: number
           bid_lock_at?: string | null
           bid_window_opens_at?: string

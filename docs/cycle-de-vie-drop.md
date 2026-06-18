@@ -95,4 +95,12 @@ Intégration prévue :
 - ✅ Renommages de vocabulaire (Ouvert / Résultat / Révélation en cours, prix
   unique) — messages FR+EN, `drop-hero` StatusLine (split closed/revealed),
   `STATUS_FR`.
-- ⏳ Phase Avant-première — décidée, pas encore codée (donnée + RLS + email + UI).
+- ✅ Avant-première **palier 1** — données (`previewLeadDays` / `isInPreview`),
+  RPC `am_i_on_the_list()` (migration 0033), section on-site membre + `PreviewCard`.
+- ✅ Avant-première **palier 2** — push email à `preview_at` : table
+  `avant_premiere_sent`, RPC `drops_entering_preview()` / `mark_preview_sent()`
+  + cron `dispatch_avant_premiere` (migration 0034, **créé inactif**), endpoint
+  `/api/notifications/avant-premiere`, template + `sendAvantPremiere`,
+  désinscription `/api/waitlist/unsubscribe`.
+  ⏳ Reste pour activer : configurer Resend (clé + SPF/DKIM) puis activer le cron
+  (`cron.alter_job(... active := true)`).

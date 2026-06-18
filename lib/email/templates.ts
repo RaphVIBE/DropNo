@@ -646,6 +646,61 @@ ${d.dropId ? button(c.cta, url(`/drop/${d.dropId}`, locale)) : ""}`;
 }
 
 // ---------------------------------------------------------------------------
+// Avant-première : teaser poussé à la Liste (waitlist) quand un drop entre dans
+// sa fenêtre de preview, avant l'annonce publique. Copie locale (hors EMAIL_COPY
+// pour rester contenu). Lien de désinscription obligatoire (email à une liste).
+// ---------------------------------------------------------------------------
+const AVANT_PREMIERE_COPY = {
+  fr: {
+    subject: (num: string) => `Avant-première · Drop No. ${num}`,
+    preheader: "Vous le découvrez avant tout le monde.",
+    eyebrow: "Avant-première",
+    h1: "Avant tout le monde.",
+    intro: (piece: string, opening: string) =>
+      `${piece} entre à l'agenda. En tant que membre de la Liste, vous le découvrez en avant-première. Les offres ouvriront le ${opening} ; d'ici là, le détail reste scellé.`,
+    cta: "Voir l'avant-première",
+    unsubscribe: "Me retirer de la Liste",
+  },
+  en: {
+    subject: (num: string) => `Preview · Drop No. ${num}`,
+    preheader: "You discover it before anyone else.",
+    eyebrow: "Preview",
+    h1: "Before anyone else.",
+    intro: (piece: string, opening: string) =>
+      `${piece} is joining the agenda. As a member of the List, you see it in preview. Bidding opens ${opening}; until then, the detail stays sealed.`,
+    cta: "View the preview",
+    unsubscribe: "Leave the List",
+  },
+} as const;
+
+export function avantPremiereEmail(
+  d: {
+    dropNumber: number;
+    title: string;
+    brandName?: string | null;
+    openingAt: string;
+    unsubscribeUrl: string;
+  },
+  locale: EmailLocale = "fr"
+): EmailContent {
+  const t = AVANT_PREMIERE_COPY[locale];
+  const num = formatDropNumber(d.dropNumber);
+  const opening = fullTimestamp(d.openingAt, locale);
+  const piece = d.brandName ? `${d.brandName} — ${d.title}` : d.title;
+  const inner = `${eyebrow(`${t.eyebrow} · Drop No. ${num}`)}
+${h1(t.h1)}
+${p(t.intro(esc(piece), opening))}
+${button(t.cta, url("/drops", locale))}
+${textLink(t.unsubscribe, d.unsubscribeUrl)}`;
+  const text = `${t.subject(num)}
+${t.intro(piece, opening)}
+
+${t.cta} : ${url("/drops", locale)}
+${t.unsubscribe} : ${d.unsubscribeUrl}`;
+  return { subject: t.subject(num), html: layout(locale, t.preheader, inner), text };
+}
+
+// ---------------------------------------------------------------------------
 // Alertes "montre" (visiteur sans compte, double opt-in)
 // ---------------------------------------------------------------------------
 export function alertConfirmEmail(

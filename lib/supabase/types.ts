@@ -1131,6 +1131,17 @@ export type Database = {
           user_id: string
         }[]
       }
+      drops_entering_preview: {
+        Args: never
+        Returns: {
+          drop_id: string
+          drop_number: number
+          title: string
+          brand_name: string | null
+          opening_at: string
+        }[]
+      }
+      mark_preview_sent: { Args: { p_drop_id: string }; Returns: undefined }
       get_client_overview: {
         Args: never
         Returns: {

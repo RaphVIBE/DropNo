@@ -5,6 +5,7 @@ import {
   dropReminderEmail,
   alertConfirmEmail,
   alertNoticeEmail,
+  avantPremiereEmail,
   serialOfferEmail,
   contactMessageEmail,
   type EmailContent,
@@ -96,6 +97,14 @@ export function sendAlertNotice(
   locale: EmailLocale = "fr"
 ): Promise<SendResult> {
   return deliver(to, alertNoticeEmail(data, locale));
+}
+
+export function sendAvantPremiere(
+  to: string,
+  data: Parameters<typeof avantPremiereEmail>[0],
+  locale: EmailLocale = "fr"
+): Promise<SendResult> {
+  return deliver(to, avantPremiereEmail(data, locale));
 }
 
 /**

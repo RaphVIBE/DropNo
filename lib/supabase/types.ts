@@ -1110,6 +1110,7 @@ export type Database = {
         Returns: Json
       }
       admin_expire_serial_offer: { Args: { p_offer_id: string }; Returns: Json }
+      am_i_on_the_list: { Args: never; Returns: boolean }
       close_drop: { Args: { p_drop_id: string }; Returns: Json }
       create_serial_offer: { Args: { p_drop_id: string }; Returns: Json }
       decline_serial_offer: { Args: { p_offer_id: string }; Returns: Json }

@@ -160,7 +160,11 @@
     "ctaMakeOffer": "Faire une offre",
     "ctaDiscover": "Découvrir le drop",
     "ctaResult": "Voir le résultat",
-    "teaseSoon": "Bientôt dévoilé"
+    "teaseSoon": "Bientôt dévoilé",
+    "previewHeading": "Avant-première",
+    "previewLead": "L'agenda avant tout le monde, réservé à la Liste.",
+    "previewBadge": "Avant-première",
+    "previewCount": "{count, plural, =0 {Rien en avant-première} one {# en avant-première} other {# en avant-première}}"
   },
   "dropDetail": {
     "metaNotFound": "Drop introuvable · Drop No.",

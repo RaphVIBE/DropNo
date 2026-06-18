@@ -5,7 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { Masthead } from "@/components/brand/masthead";
 import { CalendarRow, type CalendarDrop } from "@/components/drop/calendar-row";
 import { UpcomingCard } from "@/components/drop/upcoming-card";
-import { isAnnounced } from "@/lib/admin/drops";
+import { PreviewCard } from "@/components/drop/preview-card";
+import { isAnnounced, isInPreview } from "@/lib/admin/drops";
 import { formatDropNumber, formatEuros, formatShortDate } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
 import { localizedAlternates } from "@/lib/i18n/metadata";
@@ -62,6 +63,29 @@ export default async function DropsPage() {
       )
     );
 
+  // Avant-première : réservé à la Liste (membres waitlist), drops programmés
+  // dans la fenêtre de preview, avant l'annonce publique. Gating serveur via
+  // la RPC am_i_on_the_list() (ne révèle qu'un booléen sur l'email en session).
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  let onList = false;
+  if (user) {
+    const { data: member } = await supabase.rpc("am_i_on_the_list");
+    onList = member === true;
+  }
+  const preview = onList
+    ? drops
+        .filter(
+          (d) =>
+            d.status === "scheduled" &&
+            isInPreview(d.bid_window_opens_at, d.format, serverNowIso)
+        )
+        .sort((a, b) =>
+          (a.bid_window_opens_at ?? "").localeCompare(b.bid_window_opens_at ?? "")
+        )
+    : [];
+
   return (
     <>
       <Masthead variant="escapement" padding="px-7 pb-9 pt-20 md:px-16 md:pb-11 md:pt-28">
@@ -84,6 +108,28 @@ export default async function DropsPage() {
         </p>
       ) : (
         <>
+          {/* ── Avant-première : la Liste uniquement, teaser sobre. En tête. ── */}
+          {preview.length > 0 ? (
+            <section className="border-b border-rule-soft bg-sand px-7 pb-12 pt-12 md:px-16 md:pb-14 md:pt-14">
+              <div className="mb-2 flex flex-wrap items-end justify-between gap-x-10 gap-y-2 border-b border-champagne-deep pb-5">
+                <div>
+                  <span className="eyebrow text-champagne-deep">{t("previewHeading")}</span>
+                  <p className="mt-1 max-w-[48ch] text-sm leading-relaxed text-ink-2">
+                    {t("previewLead")}
+                  </p>
+                </div>
+                <span className="text-[13px] tracking-wide text-muted-foreground">
+                  {t("previewCount", { count: preview.length })}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 gap-x-12 md:grid-cols-2">
+                {preview.map((drop) => (
+                  <PreviewCard key={drop.id} drop={drop} />
+                ))}
+              </div>
+            </section>
+          ) : null}
+
           {/* ── En cours : pleine largeur, prioritaire. Masquée s'il n'y a
               aucun drop ouvert — « À venir » devient alors la section de tête. ── */}
           {open.length > 0 ? (

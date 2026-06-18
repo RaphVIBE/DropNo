@@ -31,6 +31,7 @@ export type FormatPreset = {
   hint: string;
   windowDays: number; // ouverture = reveal − windowDays
   announceLeadDays: number; // annonce « À venir » = ouverture − announceLeadDays
+  previewLeadDays: number; // avant-première (la Liste) = annonce − previewLeadDays
   lockBeforeMs: number; // verrouillage = reveal − lockBeforeMs
   exemplairesHint: number | null; // suggestion d'exemplaires (indicatif)
   offCadence: boolean; // hors créneau hebdo fixe ?
@@ -42,6 +43,7 @@ export const DROP_FORMATS: Record<DropFormat, FormatPreset> = {
     hint: "Drop hebdo · créneau fixe (jeudi 18:00) · fenêtre de 5 jours.",
     windowDays: 5,
     announceLeadDays: 14,
+    previewLeadDays: 7,
     lockBeforeMs: HOUR_MS,
     exemplairesHint: null,
     offCadence: false,
@@ -51,6 +53,7 @@ export const DROP_FORMATS: Record<DropFormat, FormatPreset> = {
     hint: "Pièce rare hors-cadence · runway long · fenêtre de 10 jours.",
     windowDays: 10,
     announceLeadDays: 25,
+    previewLeadDays: 14,
     lockBeforeMs: HOUR_MS,
     exemplairesHint: 3,
     offCadence: true,
@@ -86,6 +89,24 @@ export const announceFromOpen = (openIso: string | null, p: FormatPreset) =>
 export function isAnnounced(openIso: string | null, format: string | null, nowIso: string): boolean {
   const ann = announceFromOpen(openIso, formatPreset(format));
   return !!ann && new Date(nowIso).getTime() >= new Date(ann).getTime();
+}
+
+/** Avant-première (la Liste) = annonce − previewLeadDays. Dérivée de l'ouverture. */
+export const previewFromOpen = (openIso: string | null, p: FormatPreset) =>
+  openIso ? shiftIso(openIso, -(p.announceLeadDays + p.previewLeadDays) * DAY_MS) : "";
+
+/**
+ * Un drop programmé est visible « Avant-première » par la Liste à partir de sa
+ * date de preview et jusqu'à l'annonce publique (après, il bascule « À venir »
+ * pour tout le monde). Fenêtre : [previewFromOpen, announceFromOpen[.
+ */
+export function isInPreview(openIso: string | null, format: string | null, nowIso: string): boolean {
+  const p = formatPreset(format);
+  const prev = previewFromOpen(openIso, p);
+  const ann = announceFromOpen(openIso, p);
+  if (!prev || !ann) return false;
+  const now = new Date(nowIso).getTime();
+  return now >= new Date(prev).getTime() && now < new Date(ann).getTime();
 }
 
 /**

@@ -42,7 +42,11 @@
     "manifesto": "Pas une marketplace. Une maison, une pièce, un rendez-vous : le jeudi, 18 heures.",
     "manifestoSub": "En direct des maisons, sans revente ni intermédiaire. Livraison assurée, identité vérifiée, rétractation 14 jours. Aucun frais pour l'acheteur.",
     "aboutLink": "La maison Drop No. →",
-    "heroKicker": "Drop № {num} · offre scellée · révélation {moment}"
+    "heroKicker": "Drop № {num} · offre scellée · révélation {moment}",
+    "emptyKicker": "Le prochain rendez-vous se prépare",
+    "emptyTitle": "Une maison, une pièce, un prix unique.",
+    "emptySub": "Chaque jeudi à 18 heures, une maison ouvre un drop. Offres scellées jusqu'à la révélation, puis un seul prix pour tous les gagnants.",
+    "lastDrop": "Dernier drop"
   },
   "locale": {
     "switchLabel": "Langue",

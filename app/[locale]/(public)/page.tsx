@@ -5,11 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { MechanismVariantB } from "@/components/home/mechanism-variant-b";
 import { HomeDropHero } from "@/components/home/home-drop-hero";
+import { HomeEmptyHero } from "@/components/home/home-empty-hero";
 import { UpcomingCard } from "@/components/drop/upcoming-card";
 import type { CalendarDrop } from "@/components/drop/calendar-row";
 import { isAnnounced } from "@/lib/admin/drops";
 import { localizedAlternates } from "@/lib/i18n/metadata";
-import { WaitlistBlock } from "@/components/waitlist/waitlist-block";
 
 export const dynamic = "force-dynamic";
 
@@ -64,6 +64,15 @@ export default async function HomePage() {
   const rail = announcedUpcoming
     .filter((d) => d.id !== featured?.id)
     .slice(0, 2);
+  // Preuve pour l'état vide : le dernier drop révélé avec un prix de clôture.
+  const lastRevealed =
+    drops
+      .filter((d) => d.status === "revealed" && d.clearing_price_cents)
+      .sort((a, b) =>
+        (b.revealed_at ?? b.reveal_at ?? "").localeCompare(
+          a.revealed_at ?? a.reveal_at ?? ""
+        )
+      )[0] ?? null;
 
   return (
     <>
@@ -71,7 +80,7 @@ export default async function HomePage() {
       {featured ? (
         <HomeDropHero drop={featured} open={!!open} serverNowIso={serverNowIso} />
       ) : (
-        <WaitlistBlock source="home" hero />
+        <HomeEmptyHero lastDrop={lastRevealed} />
       )}
 
       {/* ── À VENIR : le rythme hebdo (masqué si rien de programmé) ── */}

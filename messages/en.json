@@ -42,7 +42,11 @@
     "manifesto": "Not a marketplace. One house, one piece, one appointment: Thursday, 6 PM.",
     "manifestoSub": "Direct from the houses, no resale, no middleman. Insured delivery, verified identity, 14-day withdrawal. No buyer fees.",
     "aboutLink": "The Drop No. house →",
-    "heroKicker": "Drop № {num} · sealed bid · reveal {moment}"
+    "heroKicker": "Drop № {num} · sealed bid · reveal {moment}",
+    "emptyKicker": "The next rendez-vous is taking shape",
+    "emptyTitle": "One house, one piece, one price.",
+    "emptySub": "Every Thursday at 6 PM, a house opens a drop. Sealed bids until the reveal, then a single price for every winner.",
+    "lastDrop": "Last drop"
   },
   "locale": {
     "switchLabel": "Language",

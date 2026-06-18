@@ -84,43 +84,52 @@ export default async function DropsPage() {
         </p>
       ) : (
         <>
-          {/* ── En cours : pleine largeur, prioritaire ── */}
-          <section className="px-7 pt-12 md:px-16 md:pt-14">
-            <div className="mb-6 flex items-baseline justify-between border-b border-foreground pb-5">
-              <h2 className="font-serif text-4xl italic">{t("openHeading")}</h2>
-              <span className="text-[13px] tracking-wide text-muted-foreground">
-                {t("openCount", { count: open.length })}
-              </span>
-            </div>
-            {open.length === 0 ? (
-              <p className="py-6 text-ink-2">
-                {t("openEmpty")}
-              </p>
-            ) : (
-              open.map((drop) => (
-                <CalendarRow key={drop.id} drop={drop} variant="open" serverNowIso={serverNowIso} />
-              ))
-            )}
-          </section>
-
-          {/* ── À venir : grille 2 colonnes ── */}
-          <section className="px-7 pt-16 md:px-16 md:pt-20">
-            <div className="mb-2 flex items-baseline justify-between border-b border-rule pb-5">
-              <h3 className="font-serif text-2xl italic">{t("upcomingHeading")}</h3>
-              <span className="text-[13px] tracking-wide text-muted-foreground">
-                {t("upcomingCount", { count: upcoming.length })}
-              </span>
-            </div>
-            {upcoming.length === 0 ? (
-              <p className="py-6 text-ink-2">{t("upcomingEmpty")}</p>
-            ) : (
-              <div className="grid grid-cols-1 gap-x-12 md:grid-cols-2">
-                {upcoming.map((drop) => (
-                  <UpcomingCard key={drop.id} drop={drop} serverNowIso={serverNowIso} />
-                ))}
+          {/* ── En cours : pleine largeur, prioritaire. Masquée s'il n'y a
+              aucun drop ouvert — « À venir » devient alors la section de tête. ── */}
+          {open.length > 0 ? (
+            <section className="px-7 pt-12 md:px-16 md:pt-14">
+              <div className="mb-6 flex items-baseline justify-between border-b border-foreground pb-5">
+                <h2 className="font-serif text-4xl italic">{t("openHeading")}</h2>
+                <span className="text-[13px] tracking-wide text-muted-foreground">
+                  {t("openCount", { count: open.length })}
+                </span>
               </div>
-            )}
-          </section>
+              {open.map((drop) => (
+                <CalendarRow key={drop.id} drop={drop} variant="open" serverNowIso={serverNowIso} />
+              ))}
+            </section>
+          ) : null}
+
+          {/* ── À venir : grille 2 colonnes. Promue en tête (titre + trait
+              principaux) quand aucun drop n'est en cours. ── */}
+          {(() => {
+            const lead = open.length === 0;
+            return (
+              <section className={`px-7 md:px-16 ${lead ? "pt-12 md:pt-14" : "pt-16 md:pt-20"}`}>
+                <div
+                  className={`mb-6 flex items-baseline justify-between pb-5 ${lead ? "border-b border-foreground" : "border-b border-rule"}`}
+                >
+                  {lead ? (
+                    <h2 className="font-serif text-4xl italic">{t("upcomingHeading")}</h2>
+                  ) : (
+                    <h3 className="font-serif text-2xl italic">{t("upcomingHeading")}</h3>
+                  )}
+                  <span className="text-[13px] tracking-wide text-muted-foreground">
+                    {t("upcomingCount", { count: upcoming.length })}
+                  </span>
+                </div>
+                {upcoming.length === 0 ? (
+                  <p className="py-6 text-ink-2">{t("upcomingEmpty")}</p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-x-12 md:grid-cols-2">
+                    {upcoming.map((drop) => (
+                      <UpcomingCard key={drop.id} drop={drop} serverNowIso={serverNowIso} />
+                    ))}
+                  </div>
+                )}
+              </section>
+            );
+          })()}
 
           {/* ── Passés : volet replié, discret ── */}
           {past.length > 0 ? (

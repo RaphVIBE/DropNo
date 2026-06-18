@@ -79,7 +79,7 @@ Intégration prévue :
    Les drops en avant-première passent par une **vue/RPC séparée gated par
    appartenance à la Liste** — jamais un simple filtre applicatif (sinon fuite
    API). RLS = sacrée.
-2. **Canaux** (à confirmer avec l'owner) — double canal recommandé :
+2. **Canaux** (✅ validé) — double canal :
    - **Email** (principal) : à `preview_at`, la Liste reçoit le teaser + date
      (Resend, sur le modèle du cron `dispatch_reminders`). C'est ça, le vrai
      « accès en avant-première ».

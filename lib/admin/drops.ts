@@ -122,8 +122,8 @@ export const STATUS_FR: Record<DropStatus, string> = {
   draft: "Brouillon",
   scheduled: "Programmé",
   open: "Ouvert",
-  closed: "Verrouillé",
-  revealed: "Révélé",
+  closed: "Révélation en cours",
+  revealed: "Résultat",
   cancelled: "Annulé",
 };
 

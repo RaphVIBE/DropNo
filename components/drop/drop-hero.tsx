@@ -101,7 +101,15 @@ function StatusLine({
       </span>
     );
   }
-  // closed / revealed
+  // closed = révélation en cours (transitoire) ; revealed = résultat publié
+  if (status === "closed") {
+    return (
+      <span className={`${chip} border-rule text-ink-2`}>
+        {t("statusRevealing")}
+      </span>
+    );
+  }
+  // revealed
   return (
     <span className={`${chip} border-rule text-ink-2`}>{t("statusClosed")}</span>
   );

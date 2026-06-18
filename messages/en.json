@@ -230,6 +230,12 @@
   },
   "bidForm": {
     "notOpen": "Bidding is not open for this drop.",
+    "resultEyebrow": "Unit price",
+    "resultNote": "This drop has closed. The next one is already on the calendar.",
+    "revealingNote": "Bidding has closed. The result is being revealed.",
+    "upcomingNote": "Bidding has not opened yet. The next rendez-vous is on the calendar.",
+    "cancelledNote": "This drop was cancelled and the pre-authorisations released. More pieces await on the calendar.",
+    "seeCalendar": "View the calendar",
     "lockedWithBidPrefix": "Your sealed bid:",
     "lockedWithBidSuffix": ". Bids are locked until the reveal.",
     "lockedNoBid": "Bids are locked (final hour before the reveal).",

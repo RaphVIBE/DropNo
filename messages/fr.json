@@ -230,6 +230,12 @@
   },
   "bidForm": {
     "notOpen": "Les offres ne sont pas ouvertes pour ce drop.",
+ "resultEyebrow": "Prix unique",
+ "resultNote": "Ce drop est clôturé. Le prochain est déjà au calendrier.",
+ "revealingNote": "Offres clôturées. Le résultat est en cours de révélation.",
+ "upcomingNote": "Les offres ne sont pas encore ouvertes. Le prochain rendez-vous est au calendrier.",
+ "cancelledNote": "Ce drop a été annulé et les pré-autorisations libérées. D'autres pièces vous attendent au calendrier.",
+ "seeCalendar": "Voir le calendrier",
     "lockedWithBidPrefix": "Votre offre scellée :",
     "lockedWithBidSuffix": ". Les offres sont verrouillées jusqu'à la révélation.",
     "lockedNoBid": "Les offres sont verrouillées (dernière heure avant révélation).",

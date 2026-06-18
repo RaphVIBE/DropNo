@@ -39,6 +39,7 @@ export default async function HomePage() {
       .from("drops_public")
       .select(SELECT)
       .eq("is_demo", false)
+      .in("status", ["open", "scheduled"]) // les drops passés vivent au calendrier
       .order("reveal_at", { ascending: true }),
     supabase
       .from("brands")
@@ -65,14 +66,21 @@ export default async function HomePage() {
     .filter((d) => d.id !== featured?.id)
     .slice(0, 2);
   // Preuve pour l'état vide : le dernier drop révélé avec un prix de clôture.
-  const lastRevealed =
-    drops
-      .filter((d) => d.status === "revealed" && d.clearing_price_cents)
-      .sort((a, b) =>
-        (b.revealed_at ?? b.reveal_at ?? "").localeCompare(
-          a.revealed_at ?? a.reveal_at ?? ""
-        )
-      )[0] ?? null;
+  // Requête ciblée (1 ligne) et seulement s'il n'y a rien à mettre en avant —
+  // sinon la home ne charge aucun drop passé (ceux-ci vivent au calendrier).
+  let lastRevealed: CalendarDrop | null = null;
+  if (!featured) {
+    const { data: lastData } = await supabase
+      .from("drops_public")
+      .select(SELECT)
+      .eq("is_demo", false)
+      .eq("status", "revealed")
+      .not("clearing_price_cents", "is", null)
+      .order("revealed_at", { ascending: false, nullsFirst: false })
+      .limit(1)
+      .maybeSingle();
+    lastRevealed = (lastData as unknown as CalendarDrop) ?? null;
+  }
 
   return (
     <>

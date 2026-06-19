@@ -108,28 +108,6 @@ export default async function DropsPage() {
         </p>
       ) : (
         <>
-          {/* ── Avant-première : la Liste uniquement, teaser sobre. En tête. ── */}
-          {preview.length > 0 ? (
-            <section className="border-b border-rule-soft bg-sand px-7 pb-12 pt-12 md:px-16 md:pb-14 md:pt-14">
-              <div className="mb-2 flex flex-wrap items-end justify-between gap-x-10 gap-y-2 border-b border-champagne-deep pb-5">
-                <div>
-                  <span className="eyebrow text-champagne-deep">{t("previewHeading")}</span>
-                  <p className="mt-1 max-w-[48ch] text-sm leading-relaxed text-ink-2">
-                    {t("previewLead")}
-                  </p>
-                </div>
-                <span className="text-[13px] tracking-wide text-muted-foreground">
-                  {t("previewCount", { count: preview.length })}
-                </span>
-              </div>
-              <div className="grid grid-cols-1 gap-x-12 md:grid-cols-2">
-                {preview.map((drop) => (
-                  <PreviewCard key={drop.id} drop={drop} />
-                ))}
-              </div>
-            </section>
-          ) : null}
-
           {/* ── En cours : pleine largeur, prioritaire. Masquée s'il n'y a
               aucun drop ouvert — « À venir » devient alors la section de tête. ── */}
           {open.length > 0 ? (
@@ -176,6 +154,29 @@ export default async function DropsPage() {
               </section>
             );
           })()}
+
+          {/* ── Avant-première : encart discret réservé à la Liste, placé bas
+              (le calendrier public reste la priorité de la page). ── */}
+          {preview.length > 0 ? (
+            <section className="px-7 pt-16 md:px-16 md:pt-20">
+              <div className="rounded-sm border border-rule-soft bg-sand px-6 py-6 md:px-8 md:py-7">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+                  <span className="eyebrow text-champagne-deep">{t("previewHeading")}</span>
+                  <span className="text-[13px] tracking-wide text-muted-foreground">
+                    {t("previewCount", { count: preview.length })}
+                  </span>
+                </div>
+                <p className="mt-1.5 max-w-[48ch] text-sm leading-relaxed text-ink-2">
+                  {t("previewLead")}
+                </p>
+                <div className="mt-1">
+                  {preview.map((drop) => (
+                    <PreviewCard key={drop.id} drop={drop} />
+                  ))}
+                </div>
+              </div>
+            </section>
+          ) : null}
 
           {/* ── Passés : volet replié, discret ── */}
           {past.length > 0 ? (

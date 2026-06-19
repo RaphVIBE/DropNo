@@ -24,7 +24,7 @@ type SendResult =
 async function deliver(
   to: string,
   content: EmailContent,
-  opts?: { replyTo?: string; from?: string }
+  opts?: { replyTo?: string; from?: string; headers?: Record<string, string> }
 ): Promise<SendResult> {
   // Best-effort : sans clé Resend (dev), on no-op sans casser l'appelant.
   if (!isEmailConfigured()) {
@@ -39,6 +39,7 @@ async function deliver(
       html: content.html,
       text: content.text,
       ...(opts?.replyTo ? { replyTo: opts.replyTo } : {}),
+      ...(opts?.headers ? { headers: opts.headers } : {}),
     });
     if (error) {
       console.error("[email] échec d'envoi:", error);
@@ -104,7 +105,17 @@ export function sendAvantPremiere(
   data: Parameters<typeof avantPremiereEmail>[0],
   locale: EmailLocale = "fr"
 ): Promise<SendResult> {
-  return deliver(to, avantPremiereEmail(data, locale));
+  // Envoi de masse (toute la Liste) : Gmail/Yahoo EXIGENT List-Unsubscribe +
+  // one-click (RFC 8058) depuis 2024, sinon spam direct malgré un DNS parfait.
+  // Le lien https pointe sur l'endpoint POST one-click ; le mailto sert de repli.
+  const unsub = data.unsubscribeUrl;
+  const headers = unsub
+    ? {
+        "List-Unsubscribe": `<${unsub}>, <mailto:${process.env.RESEND_FROM_EMAIL ?? "hello@dropno.eu"}?subject=unsubscribe>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      }
+    : undefined;
+  return deliver(to, avantPremiereEmail(data, locale), { headers });
 }
 
 /**

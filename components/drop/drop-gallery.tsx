@@ -1,48 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { WatchArt } from "@/components/drop/watch-art";
 import { PIECE_FRAME } from "@/components/brand/styles";
-
-/**
- * Filigrane « Pour illustration » posé PAR-DESSUS la photo (motif texte
- * répété en diagonale). Utilisé uniquement en environnement de démo, pour que
- * le watermark fasse partie de l'image affichée, pas d'une légende HTML à côté.
- */
-function PhotoWatermark({ label }: { label: string }) {
-  const id = useId().replace(/:/g, "");
-  return (
-    <svg
-      aria-hidden
-      className="pointer-events-none absolute inset-0 z-10 h-full w-full"
-      preserveAspectRatio="xMidYMid slice"
-    >
-      <defs>
-        <pattern
-          id={`wm-${id}`}
-          width="240"
-          height="150"
-          patternUnits="userSpaceOnUse"
-          patternTransform="rotate(-30)"
-        >
-          <text
-            x="0"
-            y="80"
-            fontFamily="Georgia, 'Times New Roman', serif"
-            fontStyle="italic"
-            fontSize="20"
-            fill="rgba(255,255,255,0.42)"
-          >
-            {label}
-          </text>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#wm-${id})`} />
-    </svg>
-  );
-}
 
 /**
  * Galerie de la pièce : visionneuse principale (cadre sombre encadré, cohérent
@@ -61,14 +23,11 @@ export function DropGallery({
   imagesUrls,
   title,
   seed = 0,
-  watermark,
 }: {
   heroImageUrl: string | null;
   imagesUrls: string[] | null;
   title: string;
   seed?: number;
-  /** Filigrane « Pour illustration » sur les photos (démo uniquement). */
-  watermark?: string;
 }) {
   const t = useTranslations("dropDetail");
   const all = [heroImageUrl, ...(imagesUrls ?? [])].filter(
@@ -110,7 +69,6 @@ export function DropGallery({
         <span className="absolute left-6 top-6 font-serif text-[13px] italic tracking-wide text-[oklch(0.95_0.005_80)]">
           {title}
         </span>
-        {watermark ? <PhotoWatermark label={watermark} /> : null}
       </div>
     );
   }
@@ -141,7 +99,6 @@ export function DropGallery({
               alt={title}
               className="absolute inset-0 h-full w-full object-cover"
             />
-            {watermark ? <PhotoWatermark label={watermark} /> : null}
           </div>
         ))}
       </div>

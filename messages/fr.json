@@ -235,8 +235,10 @@
     "submitSending": "Envoi...",
     "submitNotify": "Me prévenir",
     "galleryThumbAria": "Voir la photo {index} sur {total}",
-    "demoBanner": "Environnement de démo · données fictives · ceci ne constitue pas une offre",
-    "demoWatermark": "Pour illustration"
+    "demoBanner": "Données d’illustration — ceci n’est pas une offre de vente",
+    "demoPreview": "Aperçu privé",
+    "demoPreparedFor": "Préparé pour",
+    "demoPhotosCaption": "Visuels {brand} · aperçu"
   },
   "bidForm": {
     "notOpen": "Les offres ne sont pas ouvertes pour ce drop.",

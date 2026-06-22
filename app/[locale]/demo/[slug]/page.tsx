@@ -95,18 +95,32 @@ export default async function DemoDropPage({
   const prefix = params.locale === "fr" ? "" : `/${params.locale}`;
   const maisonHref = `${prefix}/demo/${params.slug}/maison?key=${searchParams.key ?? ""}`;
 
+  const preparedDate = new Intl.DateTimeFormat(params.locale, {
+    month: "long",
+    year: "numeric",
+  }).format(new Date());
+
   return (
     <>
-      {/* En-tête minimal NON cliquable : présence de marque, zéro lien sortant. */}
-      <div className="flex items-center justify-center border-b border-rule-soft px-7 py-5">
+      {/* En-tête : aperçu privé préparé pour la maison. Sobre, non cliquable. */}
+      <header className="flex items-center justify-between gap-4 border-b border-rule-soft px-7 py-5 md:px-16">
         <span className="font-serif text-lg italic">Drop No.</span>
-      </div>
+        <span className="text-[10px] uppercase tracking-[0.24em] text-champagne-deep">
+          {t("demoPreview")}
+        </span>
+      </header>
 
-      {/* Bandeau environnement de démo — rouge, sans ambiguïté. */}
-      <div className="border-y-2 border-red-600 bg-red-50 px-7 py-3 text-center md:px-16">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-red-700">
-          {t("demoBanner")}
-        </p>
+      {/* Filet « préparé pour {maison} » + mention légale discrète. */}
+      <div className="border-b border-rule-soft bg-sand px-7 py-2.5 md:px-16">
+        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
+          <p className="text-[11px] tracking-wide text-muted-foreground">
+            {t("demoPreparedFor")}{" "}
+            <span className="text-foreground">{brandName}</span> · {preparedDate}
+          </p>
+          <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            {t("demoBanner")}
+          </p>
+        </div>
       </div>
 
       <DropHero
@@ -125,8 +139,10 @@ export default async function DemoDropPage({
             imagesUrls={(drop.images_urls as string[] | null) ?? null}
             title={drop.title ?? ""}
             seed={drop.drop_number ?? 0}
-            watermark={t("demoWatermark")}
           />
+          <p className="mt-3 text-[11px] italic text-muted-foreground">
+            {t("demoPhotosCaption", { brand: brandName ?? "" })}
+          </p>
         </div>
 
         <div className="pt-8 md:sticky md:top-10 md:self-start md:pt-0">

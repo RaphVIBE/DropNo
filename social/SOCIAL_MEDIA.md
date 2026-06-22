@@ -97,7 +97,7 @@ Ton : quiet luxury, éditorial, précis, jamais hype. Phrases courtes. On affirm
 2. **Savoir-faire** : calibres, complications, cadrans, métiers d'art. Le « comment c'est fait ». *Prépare : la justification du prix, l'éducation de l'acheteur.*
 3. **Culture du collectionneur** : numéros de série, provenance, listes d'attente, culture du drop, ventes scellées. *Prépare : directement le mécanisme Drop No. et le Privilège № 001.*
 
-Le pilier 3 est le seeding stratégique : chaque post sur les ventes scellées de Christie's, la folie des waiting lists ou la valeur du serial 001 rend le reveal évident a posteriori (« ah, c'était ça »).
+Le pilier 3 est le seeding stratégique : chaque post sur les ventes scellées, la folie des waiting lists ou la valeur du serial 001 rend le reveal évident a posteriori (« ah, c'était ça »).
 
 ### Formats
 
@@ -149,15 +149,15 @@ Visuel : macro d'un fond de boîte gravé « 001 ».
 > Somewhere between the maison and you, something broke.
 
 **05 · Savoir-faire**
-> Grand feu enamel: powdered glass, fired at 800°C, layer after layer. One speck of dust and the dial is destroyed. A master enameller loses one dial in three.
+> Grand feu enamel: powdered glass, fired at 800°C, layer after layer. One speck of dust and the dial is destroyed. More dials die in the kiln than survive it.
 > The survivors carry no signature of the struggle. That is the point.
 
 **06 · Collecting · seed sealed bids**
-> In 2019, Christie's sold a watch collection without an auction room. No paddles, no shouting, no last-second drama. Every buyer submitted one sealed bid. Highest offers won.
-> The format is older than the auction house itself. Quiet money has always preferred sealed envelopes.
+> The most consequential auctions on earth happen in silence. Every week, the US Treasury sells billions in bonds by sealed bid. No room, no paddles. Each buyer submits one offer, and everyone who wins pays the same clearing price.
+> The format is older than the auction houses. Quiet money has always preferred sealed envelopes.
 
 **07 · Maisons**
-> The quartz crisis killed two thirds of Swiss watchmaking jobs in a decade. The maisons that survived did not survive by becoming cheaper. They survived by becoming unreasonable: more handwork, more finishing, more time per piece.
+> The quartz crisis killed two thirds of Swiss watchmaking jobs in a little over a decade. The maisons that survived did not survive by becoming cheaper. They survived by becoming unreasonable: more handwork, more finishing, more time per piece.
 > When technology commoditises a craft, the craft goes upmarket or dies.
 
 **08 · Savoir-faire**
@@ -213,4 +213,58 @@ Règle : la phase stealth est light (off-white), la phase tease bascule en dark 
 5. X : compte standard, activer la protection des DM.
 6. YouTube : chaîne au nom de la marque (compte Google dédié).
 7. Réserver les handles même sur les plateformes non actives (YouTube, X) le même jour : le squatting est rapide après un lancement.
-8. Gestion : Buffer ou Metricool (plan gratuit suffit en stealth) pour programmer IG + TikTok + LinkedIn d'un coup.
+8. Gestion : **Buffer** (voir section 9). Plan gratuit pour programmer IG + X + LinkedIn d'un coup.
+
+---
+
+## 9. Publication (scheduler) — décidé 2026-06-15
+
+**Outil retenu : Buffer (plan gratuit) pour démarrer.**
+
+Raison : nos trois canaux actifs (IG feed + Reels, X, LinkedIn page) tiennent pile dans le plan gratuit de Buffer (**3 canaux, 10 posts programmés par canal**), et **Buffer inclut la publication X sans surcoût**. Point clé : l'API X gratuite n'autorise aucune publication ; tout outil qui poste sur X paie cet accès. Buffer l'absorbe, Metricool le facture (€5/compte/mois) et son plan gratuit exclut X et LinkedIn (IG/FB seulement). Pour notre setup exact, Buffer = zéro coût ; Metricool deviendrait payant à cause de X.
+
+**Le scheduler distribue, il ne crée pas.** La source de création reste le repo (cartes HTML, reels) + la revue du dimanche. Buffer n'est que la couche file d'attente + publication.
+
+**Boucle d'approbation** : rien ne part sans le OK de Raph (cf. ligne éditoriale). On reste en brouillon, Raph valide le dimanche, puis on passe en programmé (auto-publication à l'heure dite).
+
+**Reels** : on uploade le MP4 monté dans CapCut (audio Bach déjà intégré), donc l'auto-publication feed/Reels suffit. Limites connues de l'API (audio tendance in-app, tags collab, Stories) = à faire au téléphone si besoin, mais hors de notre usage.
+
+**X = maillon fragile** : dépend de l'accès API payant que Buffer porte pour nous. Si les conditions X changent encore, c'est la première chose qui peut casser.
+
+**Déclencheur d'upgrade vers Metricool (payant)** : quand on veut vraiment les KPIs (saves/post, reach cartes vs Reels) + un link-in-bio pour la capture newsletter. Tant que la mesure se fait à la main, Buffer suffit. Metricool Starter (~€18/mois + €5 add-on X) le jour où l'analytique pilote les décisions.
+
+### Limites du connecteur Buffer (MCP) — constaté 2026-06-18
+- **Pas d'upload média via le connecteur** : un post Instagram exige une image/vidéo et l'API refuse un brouillon IG sans média. Donc les posts IG (cartes, Reels) se chargent à la main dans Buffer (coller la caption + joindre le PNG/MP4). Les posts **texte seul (X, LinkedIn)** se créent en brouillon par le connecteur sans souci.
+- **Planning non modifiable par le connecteur** : `postingSchedule` est en lecture seule via l'API. Corriger les créneaux récurrents dans l'UI Buffer (ex. mercredi IG passé par erreur à 00:00 → remettre 12:30). Contournement pour un post précis : le créer en `customScheduled` avec une heure explicite (indépendant des créneaux récurrents).
+
+### Mise en route Buffer (à faire par Raph)
+1. Créer le compte Buffer avec l'email social dédié (2FA).
+2. Connecter les 3 canaux : Instagram (compte Business, via la page Facebook liée), X (`@dropno_official`), LinkedIn (page `dropno-official`, droits admin requis).
+3. Vérifier l'auto-publication IG : connexion Business + page FB liée (sinon IG passe en mode rappel mobile).
+4. Caler les créneaux récurrents : lun 18h30, mer 12h30, ven 18h30 (IG) ; jeu 09h00 (LinkedIn) ; X +30min après l'IG du jour (19h).
+5. Workflow hebdo : importer les visuels validés, coller les captions depuis `batch-*.md`, programmer, vérifier la conformité stealth (pas d'em dash / emoji / « ! »).
+
+---
+
+## 9. Comptes suivis & repartage (stealth)
+
+Le compte suit comme un collectionneur exigeant, pas comme une marque qui prospecte. Cible ~80-120 comptes max, sinon ça fait ferme à follow. Suivre les comptes **vérifiés** (badge). Liste constituée le 2026-06-15 (tout suivi par Raph).
+
+**Grandes maisons** : Audemars Piguet, Patek Philippe, Vacheron Constantin, A. Lange & Söhne, Jaeger-LeCoultre, Cartier, Omega, Rolex.
+
+**Indépendants** : F.P. Journe, De Bethune, Greubel Forsey, H. Moser & Cie, MB&F, Laurent Ferrier, Akrivia / Rexhep Rexhepi, Kari Voutilainen, Petermann Bédat.
+
+**Métiers d'art** : Voutilainen, Anita Porchet (émailleuse), comptes manufactures montrant l'établi.
+
+**Maisons de vente** : Phillips Watches (Aurel Bacs), Christie's Watches, Sotheby's Watches, Antiquorum.
+
+**Voix éditoriales / collectors** : Hodinkee, A Collected Man, SJX Watches, Monochrome, Fratello, Revolution.
+
+**À ne PAS suivre en stealth** (trahirait le modèle) : revendeurs et plateformes du secondaire / grey market (Chrono24, WatchBox/1916, Bezel, Subdial, StockX), comptes hype/drop. À observer sans suivre.
+
+### Règle de repartage
+- Repartage en **Story** uniquement (pas de repost feed en stealth), comme un carnet qui épingle ce qui mérite l'œil.
+- Repartager : archives de maisons, métiers d'art / établi, provenance et ventes scellées (sur-narratif), pièces historiques.
+- Ne jamais repartager : lancements produit, hype, prix, marché secondaire, contenu lifestyle/bling.
+- Toujours créditer le compte source. Pas de commentaire qui révèle l'intention.
+- Comportement stealth : suivre + liker/sauvegarder discrètement plutôt que commenter. Commentaires rares, réservés aux posts d'archives ou de métier.

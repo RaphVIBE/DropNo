@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Drop № — Contact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          oklch(0.975 0.006 80);
+    --bg-elev:     oklch(0.99 0.004 80);
+    --ink:         oklch(0.18 0.012 60);
+    --ink-2:       oklch(0.32 0.012 60);
+    --muted:       oklch(0.52 0.01 60);
+    --rule:        oklch(0.85 0.01 70);
+    --rule-soft:   oklch(0.92 0.008 70);
+    --champagne:        oklch(0.72 0.07 80);
+    --champagne-deep:   oklch(0.52 0.06 70);
+    --serif: 'Fraunces', 'Times New Roman', serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --gutter: clamp(20px, 6vw, 80px);
+    --ease-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-weight: 400; line-height: 1.55;
+  }
+  ::selection { background: var(--champagne); color: var(--ink); }
+
+  .italic-light { font-family: var(--serif); font-style: italic; font-weight: 300; }
+  .eyebrow {
+    font-family: var(--sans); font-size: 10px; font-weight: 500;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted);
+  }
+
+  /* NAV */
+  nav.top {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px var(--gutter);
+    background: oklch(0.975 0.006 80 / 0.82);
+    backdrop-filter: blur(16px) saturate(150%);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .wordmark {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 22px; color: var(--ink); text-decoration: none;
+  }
+  .wordmark sup { font-feature-settings: "sups"; font-size: 0.78em; margin-left: -2px; }
+  .nav-back {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    transition: color 240ms var(--ease-quart);
+  }
+  .nav-back:hover { color: var(--ink); }
+
+  /* HERO */
+  .hero {
+    padding: 160px var(--gutter) 80px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .hero-inner { max-width: 900px; }
+  .hero h1 {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(56px, 9vw, 140px); line-height: 0.92; letter-spacing: -0.025em;
+    margin: 40px 0 32px;
+  }
+  .hero p.lede {
+    font-size: clamp(17px, 1.6vw, 21px); line-height: 1.5; color: var(--ink-2);
+    max-width: 56ch;
+  }
+
+  /* CHANNELS */
+  .channels {
+    padding: clamp(80px, 10vw, 140px) var(--gutter);
+    display: grid; grid-template-columns: 1fr; gap: 0;
+  }
+  @media (min-width: 900px) {
+    .channels { grid-template-columns: 1fr 1fr 1fr; gap: 0; }
+  }
+  .channel {
+    padding: 40px 0;
+    border-top: 1px solid var(--rule);
+  }
+  @media (min-width: 900px) {
+    .channel { padding: 0 40px 0 0; border-top: none; border-left: 1px solid var(--rule-soft); padding-left: 40px; }
+    .channel:first-child { border-left: none; padding-left: 0; }
+  }
+  .channel .eyebrow { display: block; margin-bottom: 18px; }
+  .channel h3 {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(26px, 2.6vw, 36px); line-height: 1.1; letter-spacing: -0.012em;
+    margin-bottom: 14px;
+  }
+  .channel p {
+    font-size: 14px; color: var(--muted); line-height: 1.6;
+    margin-bottom: 24px; max-width: 28ch;
+  }
+  .channel a.email-link {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: 18px; color: var(--ink); text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 4px;
+    transition: border-color 240ms var(--ease-quart), color 240ms var(--ease-quart);
+  }
+  .channel a.email-link:hover {
+    border-bottom-color: var(--champagne);
+    color: var(--champagne-deep);
+  }
+
+  /* FORM */
+  .form-section {
+    padding: clamp(96px, 12vw, 160px) var(--gutter);
+    background: var(--bg-elev);
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .form-inner { max-width: 720px; margin: 0 auto; }
+  .form-inner .eyebrow { display: block; margin-bottom: 16px; }
+  .form-inner h2 {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(36px, 5vw, 56px); line-height: 1; letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .form-inner p.intro {
+    font-size: 16px; color: var(--ink-2); line-height: 1.6;
+    margin-bottom: 56px; max-width: 52ch;
+  }
+
+  form .field { margin-bottom: 32px; }
+  form label {
+    display: block; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 12px; font-weight: 500;
+  }
+  form input,
+  form textarea,
+  form select {
+    width: 100%; border: none; background: transparent;
+    border-bottom: 1px solid var(--rule);
+    padding: 12px 0;
+    font-family: var(--sans); font-size: 17px; color: var(--ink);
+    outline: none;
+    transition: border-color 240ms var(--ease-quart);
+  }
+  form select {
+    -webkit-appearance: none; appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+                      linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 22px, calc(100% - 13px) 22px;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 32px;
+    cursor: pointer;
+  }
+  form input:focus,
+  form textarea:focus,
+  form select:focus {
+    border-bottom-color: var(--champagne);
+  }
+  form input::placeholder,
+  form textarea::placeholder {
+    color: var(--muted);
+  }
+  form textarea {
+    resize: vertical; min-height: 140px;
+    line-height: 1.6;
+  }
+  /* honeypot field, visually hidden */
+  form .honeypot { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+  .form-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 16px; gap: 32px; flex-wrap: wrap;
+  }
+  form button[type=submit] {
+    background: var(--ink); color: var(--bg);
+    border: none; padding: 16px 32px;
+    font-family: var(--sans); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 240ms var(--ease-quart);
+  }
+  form button[type=submit]:hover { opacity: 0.86; }
+  form button[type=submit]:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .form-fine {
+    font-size: 12px; color: var(--muted); line-height: 1.55; max-width: 36ch;
+  }
+
+  /* SLA */
+  .sla {
+    padding: clamp(80px, 10vw, 120px) var(--gutter);
+    display: flex; justify-content: space-between; align-items: baseline;
+    flex-wrap: wrap; gap: 24px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .sla h4 {
+    font-family: var(--serif); font-style: italic; font-weight: 300;
+    font-size: clamp(22px, 2vw, 28px); max-width: 36ch;
+  }
+  .sla .meta {
+    font-size: 13px; color: var(--muted); letter-spacing: 0.04em;
+    text-align: right; max-width: 32ch;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 48px var(--gutter) 32px;
+    background: oklch(0.94 0.008 80);
+    border-top: 1px solid var(--rule);
+  }
+  .foot-bottom {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.08em;
+  }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <a href="/" class="wordmark">Drop <sup>№</sup></a>
+  <a href="/" class="nav-back">← Retour</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Contact</span>
+    <h1>Écrivez-nous.</h1>
+    <p class="lede">Drop No. est une petite équipe. Vous recevrez toujours une réponse d'une personne réelle, jamais d'un service. Voici les bonnes adresses, selon la raison de votre message.</p>
+  </div>
+</section>
+
+<section class="channels">
+  <div class="channel">
+    <span class="eyebrow">Vous êtes une marque</span>
+    <h3>Proposer un drop</h3>
+    <p>Pour discuter d'un drop de votre nouvelle référence, d'une édition limitée, ou d'une collaboration.</p>
+    <a class="email-link" href="mailto:raph@dropno.eu">raph@dropno.eu</a>
+  </div>
+  <div class="channel">
+    <span class="eyebrow">Vous êtes collectionneur</span>
+    <h3>Question, compte, commande</h3>
+    <p>Pour toute question sur le fonctionnement, votre vérification d'identité, votre offre ou une livraison.</p>
+    <a class="email-link" href="mailto:hello@dropno.eu">hello@dropno.eu</a>
+  </div>
+  <div class="channel">
+    <span class="eyebrow">Vous êtes journaliste</span>
+    <h3>Presse et interview</h3>
+    <p>Pour une interview, un dossier de presse, une demande d'invitation à un drop. Réponse sous 24h ouvrées.</p>
+    <a class="email-link" href="mailto:hello@dropno.eu">hello@dropno.eu</a>
+  </div>
+</section>
+
+<section class="form-section">
+  <div class="form-inner">
+    <span class="eyebrow">Ou simplement</span>
+    <h2>Laissez un message.</h2>
+    <p class="intro">Une réponse dans les quarante-huit heures ouvrées, depuis Bruxelles. Pas de bot, pas de réponse automatique.</p>
+
+    <form id="contact-form" method="POST" action="/api/contact" novalidate>
+      <div class="field">
+        <label for="reason">Vous écrivez en tant que</label>
+        <select id="reason" name="reason" required>
+          <option value="" disabled selected>Choisir une option</option>
+          <option value="brand">Représentant d'une marque horlogère</option>
+          <option value="collector">Collectionneur ou amateur</option>
+          <option value="press">Journaliste, média, presse</option>
+          <option value="other">Autre</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="name">Votre nom</label>
+        <input id="name" name="name" type="text" placeholder="Raphaël Hombroeck" autocomplete="name" required maxlength="120" />
+      </div>
+
+      <div class="field">
+        <label for="email">Votre email</label>
+        <input id="email" name="email" type="email" placeholder="vous@maison.eu" autocomplete="email" required maxlength="200" />
+      </div>
+
+      <div class="field">
+        <label for="subject">Sujet</label>
+        <input id="subject" name="subject" type="text" placeholder="En quelques mots" required maxlength="200" />
+      </div>
+
+      <div class="field">
+        <label for="message">Votre message</label>
+        <textarea id="message" name="message" placeholder="Le contexte, votre question, ce que vous attendez de nous." required minlength="20" maxlength="3000"></textarea>
+      </div>
+
+      <!-- Honeypot anti-bot, ne pas remplir -->
+      <div class="honeypot" aria-hidden="true">
+        <label for="website">Ne rien remplir ici</label>
+        <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div class="form-footer">
+        <p class="form-fine">En envoyant ce message, vous acceptez que vos données soient traitées par Veracruz SRL pour vous répondre, conformément à notre <a href="/privacy-policy" style="color: var(--ink-2); text-decoration: underline;">politique de confidentialité</a>.</p>
+        <button type="submit">Envoyer</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="sla">
+  <h4>Bruxelles. Un humain. Quarante-huit heures.</h4>
+  <p class="meta">Lundi au vendredi, 9h à 18h CET.<br/>Hors jours fériés belges.</p>
+</section>
+
+<footer>
+  <div class="foot-bottom">
+    <span>© 2026 Veracruz SRL · BCE BE 0799.209.229 · Lincent, Belgique</span>
+    <span>hello@dropno.eu</span>
+  </div>
+</footer>
+
+</body>
+</html>

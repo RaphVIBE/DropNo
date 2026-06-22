@@ -47,6 +47,11 @@ export default async function EditDropPage({ params }: { params: { id: string } 
       </div>
 
       <Card className="mb-4 mt-4 flex flex-wrap items-center gap-3">
+        {["scheduled", "open", "closed", "revealed"].includes(status) && (
+          <Button asChild variant="outline">
+            <a href={`/drop/${drop.id}`} target="_blank" rel="noreferrer">Voir la page publique ↗</a>
+          </Button>
+        )}
         {canPublish(status) && (
           <form action={publishDrop}>
             <input type="hidden" name="id" value={drop.id} />
@@ -110,7 +115,7 @@ export default async function EditDropPage({ params }: { params: { id: string } 
         </Card>
       )}
 
-      <Card className="max-w-2xl">
+      <Card>
         <DropForm action={saveDrop} brands={brands ?? []} revealSlots={revealSlots} drop={drop as unknown as Drop} status={status} />
       </Card>
     </>

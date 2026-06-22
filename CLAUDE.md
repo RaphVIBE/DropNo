@@ -13,10 +13,20 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 - Frontend : Next.js 14 (App Router) + Tailwind + shadcn/ui
 - Backend : Supabase (Postgres 17, Auth, RLS, Edge Functions Deno)
 - Paiement : Stripe (PaymentIntents pre-auth + Stripe Identity KYC)
-- Hosting : Netlify (déploiement auto sur push `main` ; preview par PR)
+- Hosting : Vercel
 - Analytics : PostHog
 - Support : Crisp
 - Email transactionnel : Resend
+
+## Entité légale, domaine, email
+
+- **Personne morale** : **Veracruz SRL** (exploitant la marque « Drop No. »)
+- **Siège social** : Route de Huy 134, 4287 Lincent, Belgique
+- **BCE** : BE 0799.209.229
+- **Domaine** : `dropno.eu` (lock chez Combell, DNS pointe vers Google Workspace pour les MX)
+- **Emails** : `raph@dropno.eu` (perso founder, boîte primaire), `hello@dropno.eu` (alias public, forward vers raph@)
+- **DNS auth email** : SPF ✅ (`v=spf1 include:_spf.google.com ~all`), DKIM Google Workspace ✅ posé chez Combell et propagé au 2026-06-21 (`google._domainkey`, clé 2048 bits), DMARC ✅ en `p=none` (observation, à durcir plus tard). Reste : ajouter `amazonses.com` au SPF quand Resend sera branché pour le transactionnel. Baseline mail-tester avant fix : 0.7/10 au 2026-06-13.
+- **Stripe Connect** : onboarding Veracruz SRL en cours, URLs publiques à pointer vers `dropno.eu/privacy-policy` et `dropno.eu/terms-of-service` (slugs anglais attendus par Stripe).
 
 ## Coordonnées Supabase (projet drop-no)
 
@@ -92,9 +102,16 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 3. `db/schema-design.md` — narratif schéma
 4. `db/security-review.md` — modèle de menace + walkthrough attaques
 5. `supabase/README.md` — architecture backend + déploiement
-6. `mockups/dropno-mockups.html` — rendu visuel des 3 écrans clés
-7. `BACKOFFICE.md` — **back-office `/admin` + `/maison`** : architecture, surfaces, conventions, migrations 0010–0016, accès dev, données démo
-8. `Privilege_001.md` — spec du Privilège № 001 (offre série 001 au top bidder)
+6. `design-system/tokens.css` + `design-system/components.md` — source of truth design
+7. `mockups/dropno-mockups.html` — rendu visuel des 3 écrans produit
+8. `mockups/dropno-homepage-public.html` — homepage publique dropno.eu (manifeste + calendar + lire + newsletter)
+9. `mockups/reveal-hero.html` — moment de révélation à T (bascule dark, clip-path reveal du clearing price)
+10. `content/legal/` — drafts CGU, CGV, Privacy, Cookies, Mentions, Rétractation (à valider juriste avant publication)
+11. `content/essays/` — essais éditoriaux pour `/lire` (Vickrey/Trésor publié, autres à paraître)
+12. `outreach/` — emails de prospection marques (Ressence, Furlan Marri)
+13. `decks/drop-no-presentation-marques.pptx` — pitch deck 12 slides pour les marques (généré depuis `outputs/build-deck.js`)
+14. `BACKOFFICE.md` — **back-office `/admin` + `/maison`** : architecture, surfaces, conventions, migrations 0010–0016, accès dev, données démo
+15. `Privilege_001.md` — spec du Privilège № 001 (offre série 001 au top bidder)
 
 ## Design tokens (depuis le mockup)
 

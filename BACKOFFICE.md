@@ -135,6 +135,26 @@ delete from support_tickets where subject like 'Quand ma pièce%';
 -- la transaction/bid démo du drop #0 : supprimer manuellement si besoin
 ```
 
+## Avant prod — sécurité (bascule soft-launch, cible octobre 2026)
+
+Décidé 2026-06-14. Le login admin passe à **OTP 6 chiffres comme unique voie, partout**. Le compte admin vit dans `platform_admins` (indépendant de la méthode de login) — garder un admin ≠ garder un mot de passe.
+
+1. **Purger le mot de passe de tous les `platform_admins`** (levier garanti, par compte) :
+   ```sql
+   update auth.users u set encrypted_password = null
+   from public.platform_admins pa where pa.user_id = u.id;
+   -- vérif : has_password doit être false pour tous
+   select u.email, (u.encrypted_password is not null and u.encrypted_password <> '') as has_password
+   from auth.users u join public.platform_admins pa on pa.user_id = u.id;
+   ```
+   ⚠️ Casse l'accès `/dev-login` (preview local) — à faire **au cutover**, pas avant. Récupération possible via Dashboard Supabase (service role).
+2. **Couper le provider password** côté projet (Dashboard → Authentication → Email) en gardant Magic Link / OTP. Activer **leaked password protection**.
+3. **Vérifier `/dev-login` mort en prod** : `GET /dev-login` et `/fr/dev-login` → « Indisponible » (formulaire masqué par `NODE_ENV`). `/dev-login` rétrogradé en issue de secours documentée uniquement.
+4. **Second facteur sur l'unique compte admin** (risque résiduel n°1 une fois le password coupé) : cible itsme/Signicat (login+KYC, déjà roadmap) ou passkey/MFA. Avant hard-launch, pas bloquant pour le soft-open gated.
+5. **Nettoyage données démo** (cf. « Données de démo ») : 10 enchérisseurs `@dropno.test`, commande/bid démo drop #0, ticket démo — sinon ils polluent les agrégats `/admin` et le premier vrai clearing.
+
+> L'architecture d'autorisation applicative est saine (middleware session + layout rôle + chaque server action gardée + RLS backstop ; les 7 fichiers d'actions vérifiés). Les risques réels sont en **config Supabase Auth** (provider password) et l'**absence de 2FA** sur le compte unique — d'où cette checklist.
+
 ## TODO / pistes
 
 - ⚠️ **`STRIPE_SECRET_KEY` absente des secrets edge function** (constaté 2026-06-12 : un run réel de capture échouerait). À reposer : Dashboard → Edge Functions → Secrets, ou `supabase secrets set STRIPE_SECRET_KEY=sk_test_…`. Le snapshot CLAUDE.md la disait configurée — plus le cas.

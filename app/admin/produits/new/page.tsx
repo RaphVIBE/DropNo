@@ -20,7 +20,7 @@ export default async function NewDropPage() {
       <p className="mb-6 mt-1 text-sm text-muted-foreground">
         Créé en brouillon. Tu le publieras (→ programmé) une fois prêt ; le cron l&apos;ouvrira à l&apos;heure d&apos;ouverture.
       </p>
-      <Card className="max-w-2xl">
+      <Card>
         <DropForm action={createDraft} brands={brands ?? []} revealSlots={revealSlots} />
       </Card>
     </>

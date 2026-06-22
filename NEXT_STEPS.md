@@ -1,140 +1,146 @@
-# Passage à Claude Code — guide opérationnel
+# Drop No. — Brief de session Claude Code
 
-## 1. Installation Claude Code
+*Mis à jour 2026-06-13 après session Cowork (legal, design system, brand assets, Stripe onboarding).*
 
-```bash
-npm install -g @anthropic-ai/claude-code
+## Contexte d'entrée
+
+Tu reprends sur un repo Next.js déjà avancé (back-office `/admin` + `/maison` déployé, schéma DB live sur Supabase, edge functions actives, migrations 0001 à 0032+ appliquées). Tu **NE scaffolds RIEN** : tu codes par-dessus l'existant.
+
+Avant de toucher le code, **lis `CLAUDE.md` en entier**. Il contient toutes les décisions verrouillées, les coordonnées Supabase, la stack, et les conventions.
+
+## État au démarrage de cette session
+
+### Foundations posées en Cowork ce mois-ci
+
+| Domaine | État |
+|---|---|
+| Personne morale Veracruz SRL | ✅ existante, BCE BE 0799.209.229 |
+| Domaine dropno.eu | ✅ locké chez Combell |
+| Email pro (Google Workspace) | ✅ `raph@dropno.eu` + alias `hello@dropno.eu` |
+| DNS auth (SPF/DKIM/DMARC) | ⚠️ DKIM Google OK ; SPF manque `_spf.google.com` (mail-tester 0.7/10) |
+| Stripe Connect onboarding | ⏳ en cours, attend les pages légales pour validation |
+| Design system locké | ✅ `design-system/tokens.css` + `components.md` |
+| 4 mockups HTML | ✅ home publique, produit 3 vues, calendrier, révélation |
+| Deck marques 12 slides | ✅ `decks/drop-no-presentation-marques.pptx` |
+| Drafts légaux 6 docs | ✅ `content/legal/` — à valider juriste avant publication |
+| Premier essai éditorial | ✅ `content/essays/vickrey-tresor-clearing-price.md` |
+| Cold emails | ✅ `outreach/email_ressence.md`, `email_furlan_marri.md` |
+
+### Ce qui reste à faire pour aller en production
+
+1. Pages légales servies par Next.js (8 routes)
+2. SPF DNS fix + mail-tester ≥ 8/10 avant envoi cold outreach
+3. Stripe Connect : compléter avec URLs publiques + valider
+4. Homepage publique portée depuis mockup HTML vers React/MDX
+5. Newsletter signup fonctionnel (Resend audience)
+6. Cookie consent banner (granular)
+
+## Priorités de cette session (ordre fixé)
+
+### 🔥 P0 — Bloquer les paiements Stripe
+
+**Tâche 1. Créer les routes légales Next.js**
+
+Pour que Stripe Connect valide l'onboarding, les URLs suivantes doivent résoudre vers un contenu réel :
+
+| Slug Stripe attendu | Source markdown |
+|---|---|
+| `/privacy-policy` | `content/legal/politique-confidentialite.md` |
+| `/terms-of-service` | `content/legal/cgu.md` + lien vers CGV |
+| `/cgv` | `content/legal/cgv.md` |
+| `/cookies` | `content/legal/politique-cookies.md` |
+| `/retractation` | `content/legal/retractation.md` |
+| `/mentions-legales` | `content/legal/mentions-legales.md` |
+| `/contact` | nouvelle page minimaliste : email hello@dropno.eu + form simple |
+| `/cgu` | alias de `/terms-of-service` |
+| `/confidentialite` | alias FR de `/privacy-policy` |
+
+Implementation suggérée :
+- `app/(legal)/[slug]/page.tsx` qui lit le markdown dans `content/legal/<slug>.md` via gray-matter + remark
+- Layout simple : nav top minimale + container max-w-prose + Inter body + Fraunces italic h1/h2
+- Aliases FR/EN via `app/(legal)/(fr)/cgu/page.tsx` qui réexporte le rendu de `terms-of-service`
+- Style : reprendre les tokens de `design-system/tokens.css`
+
+Une fois en place, retourner sur le dashboard Stripe et valider les URLs.
+
+### 🟠 P1 — Sales unlock
+
+**Tâche 2. Fix SPF DNS chez Combell**
+
+Combell → DNS zone → trouver le record TXT `@` SPF. Remplacer par :
 ```
-
-Doc : https://docs.claude.com/en/docs/claude-code/overview
-
-## 2. Préparation du repo
-
-Dans un terminal, depuis le dossier projet :
-
-```bash
-cd "/Users/raphael/Documents/Claude/Projects/FlashSales"
-
-# Init git si pas déjà fait
-git init
-git add .
-git commit -m "chore: foundations Drop No. — PRD v2, schéma DB, mockups, edge function"
-
-# Setup .env.local depuis le template
-cp .env.local.example .env.local
-# Puis ouvrir .env.local et remplir SUPABASE_SERVICE_ROLE_KEY + clés Stripe
-
-# Ajouter .env.local au gitignore
-echo ".env.local" >> .gitignore
-echo "node_modules/" >> .gitignore
-echo ".next/" >> .gitignore
-git add .gitignore
-git commit -m "chore: gitignore env + node_modules"
+v=spf1 include:_spf.google.com include:amazonses.com ~all
 ```
+Attendre 15 min. Re-test sur mail-tester.com depuis `raph@dropno.eu` avec un email contenant subject + body. Objectif ≥ 8/10.
 
-## 3. Lancer Claude Code
+**Tâche 3. Page contact + formulaire newsletter**
 
-```bash
-claude
-```
+- `/contact` : email visible, form simple (nom, email, message) → API route qui envoie via Resend à `hello@dropno.eu`
+- `/api/newsletter/subscribe` : POST email → Resend Audiences API, doublé d'un email de confirmation
 
-Claude Code va lire `CLAUDE.md` automatiquement et avoir tout le contexte produit + backend.
+### 🟡 P2 — Homepage publique
 
-## 4. Premiers prompts recommandés (dans l'ordre)
+**Tâche 4. Porter `mockups/dropno-homepage-public.html` vers React**
 
-### Prompt 1 — Scaffold
+Le mockup est une référence. Construire dans `app/(public)/page.tsx` les 6 sections :
 
-> Lis CLAUDE.md et PRD_v2_DropNo.md. Scaffold un projet Next.js 14 App Router avec TypeScript strict, Tailwind, shadcn/ui, le client Supabase (browser + server avec @supabase/ssr), et la lib Stripe. Suis les conventions de CLAUDE.md. Setup auth Supabase basique (sign in avec magic link email). Crée la structure de dossiers :
-> ```
-> app/(public)/(home|drops|drop/[id])
-> app/(auth)/(login|callback)
-> app/(account)/dashboard
-> app/api/stripe/(webhook|create-payment-intent)
-> lib/supabase/(browser|server|service)
-> lib/stripe/client.ts
-> components/ui/        # shadcn
-> components/drop/      # composants métier
-> ```
-> Setup le middleware Supabase pour les routes protégées. Génère les types TS depuis Supabase avec `npx supabase gen types` (project ID dans CLAUDE.md). Lance `npm run build` à la fin pour valider.
+1. Hero (Drop № wordmark + tagline + meta colonne)
+2. Manifeste (3 paragraphes Fraunces italic, fond bg-elev)
+3. Drop Calendar (lire de `drops_public` Supabase, fallback "À annoncer" si vide)
+4. Lire (3 essai cards, lire depuis `content/essays/*.md`)
+5. Newsletter signup (intégré à la tâche 3)
+6. Footer
 
-### Prompt 2 — Drop Calendar (premier écran)
+Utiliser les tokens de `design-system/tokens.css` portés en Tailwind config.
 
-> Implémente le Drop Calendar (route `/drops`) en suivant le mockup `mockups/dropno-mockups.html` section calendrier. Layout en 3 sections : En cours, À venir, Passés. Fetch depuis la vue `drops_public` Supabase (RLS-safe). Affiche compte à rebours live pour les drops en cours/à venir. Style avec les tokens design dans CLAUDE.md. Mobile-first.
+### 🟢 P3 — Polish frontend
 
-### Prompt 3 — Page Drop (cœur produit)
+**Tâche 5. Cookie consent banner**
 
-> Implémente la page Drop (route `/drop/[id]`) en suivant le mockup. Composants à créer :
-> - DropHero (titre, marque, hero image, status dot animé)
-> - DropCountdown (live, ticking seconde, sync serveur)
-> - DropSpecs (prix plancher, exemplaires, nb bids)
-> - DropBidForm (input sealed bid, validation client : ≥ floor, intégration Stripe PaymentIntent en mode `manual_capture`)
-> - DropDetail (story marque, specs techniques)
->
-> Validation côté serveur via RLS Supabase. Si user pas authentifié → CTA login. Si user authentifié sans KYC → trigger flow Stripe Identity. Si user a déjà un bid → afficher montant + bouton modifier.
+Cookie consent à charger en RSC + client component pour le state :
+- 3 catégories : essential (toujours on), functional (Crisp, NEXT_LOCALE), analytics (PostHog)
+- Bannière au premier visite, dismissible
+- Lien permanent en footer pour ré-ouvrir les préférences
 
-### Prompt 4 — Auth + KYC flow
+**Tâche 6. Page `/lire/[slug]` avec MDX**
 
-> Implémente le flow d'authentification + KYC :
-> - Login : magic link Supabase (route `/login`)
-> - Callback : route `/auth/callback`, crée la row `profiles` en upsert si nouveau user
-> - KYC : composant `KYCGate` qui détecte `profiles.kyc_status != 'verified'`, ouvre une session Stripe Identity Verification, redirige sur le site Stripe, retour via webhook qui update `profiles.kyc_status = 'verified'`
-> - Webhook Stripe Identity : route `/api/stripe/webhook` qui handle `identity.verification_session.verified`
->
-> Tester chaque étape avec un user de test.
+Pour servir l'essai `vickrey-tresor-clearing-price.md` proprement :
+- Reader avec measure max 65ch
+- Typography Fraunces italic pour h1/h2, Inter pour body
+- Citations, blockquotes, code, tables stylisés
 
-### Prompt 5 — Dashboard utilisateur
+## Workflow recommandé
 
-> Crée `/account/dashboard` avec 3 sections : Mes bids (en cours / passés), Mes gains (transactions status=captured), Mes livraisons (deliveries). Chaque section liste depuis Supabase avec RLS (le user ne voit que les siennes). Lien vers `/drop/[id]` depuis chaque ligne.
+1. Branche feature par tâche (`feature/legal-pages`, `feature/contact-newsletter`, etc.)
+2. Commit fréquents en FR
+3. À chaque tâche : `npm run build` doit passer, `npm run typecheck` doit passer
+4. Test smoke : visiter chaque route ajoutée dans le navigateur avant de marquer la tâche done
+5. Quand toutes les pages légales sont up, retour Stripe pour valider l'onboarding
 
-## 5. Reprendre les sujets ouverts
+## Quand revenir en Cowork
 
-Une fois le MVP code en place :
+- Itérer sur les mockups visuels (skill impeccable)
+- Réviser les drafts légaux après retour juriste (annotations)
+- Discuter stratégie acquisition (next outreach après Ressence/Furlan)
+- Générer du contenu éditorial supplémentaire pour `/lire`
+- Pitch deck v4 si nouveau angle commercial à tester
 
-- Appliquer migration `0003_scheduler.sql` après config des settings DB (`ALTER DATABASE postgres SET app.settings.service_role_key = '...'`)
-- Configurer `supabase secrets set STRIPE_SECRET_KEY=...`
-- Tester un drop end-to-end en staging (créer une marque, un drop avec reveal_at à T+5min, soumettre 3 bids de test, attendre la clôture)
-- Implémenter le webhook Stripe Identity pour KYC auto
-- Ajouter Resend pour les emails de notification (ouverture, J-1, H-1, résultat)
-- Setup PostHog côté front + côté Supabase events
-- Ajouter Crisp widget
+## Anti-patterns à éviter
 
-## 6. Si tu veux continuer en Cowork pour certains sujets
+- Re-scaffolder le projet : il existe déjà, ne recrée pas la structure
+- Toucher au back-office `/admin` ou `/maison` sans lire `BACKOFFICE.md`
+- Modifier les migrations DB sans incrémenter le numéro
+- Mettre du contenu publicitaire (RAS de pixel Facebook, RAS de Google Ads)
+- Ajouter des em dashes dans la copy utilisateur
+- Utiliser `service_role_key` côté client
+- Mettre des cookies analytics avant consentement explicite
 
-Cowork reste utile pour :
+## Verification de session avant fin
 
-- Itérer sur les mockups visuels (impeccable skill)
-- Réviser le PRD ou les décisions business
-- Appliquer des migrations Supabase via MCP
-- Discussions stratégiques (acquisition, juridique, marques cibles)
-- Génération de documents (.docx pitch, contrat-cadre)
-
-Tu peux switcher entre les deux librement : Claude Code pour le code itératif, Cowork pour la discovery / strategy / docs.
-
-## 7. État courant des fichiers du projet
-
-```
-FlashSales/
-├── CLAUDE.md                          # contexte Claude Code
-├── NEXT_STEPS.md                      # ce fichier
-├── .env.local.example
-├── PRD_v2_DropNo.md                   # PRD v2 source de vérité
-├── PRD_Critique.md                    # audit du PRD initial
-├── Decisions_Mecanisme.md             # choix sealed-bid vs english
-├── Decisions_Mecanisme.md
-├── Mecanisme_Enchere.md               # taxonomie + diagnostic
-├── mockups/
-│   └── dropno-mockups.html            # 3 écrans interactifs
-├── db/
-│   ├── schema-design.md
-│   ├── security-review.md
-│   └── migrations/
-│       ├── 0001_init_drop_no.sql      # ✅ appliquée
-│       ├── 0002_harden_security.sql   # ✅ appliquée
-│       └── 0003_scheduler.sql         # ⏳ en attente
-└── supabase/
-    ├── README.md
-    └── functions/
-        └── close-drop/
-            ├── index.ts               # ✅ déployée v1
-            └── deno.json
-```
+À la fin de cette session, valider :
+- [ ] 8 routes légales servent du contenu (curl http://localhost:3000/privacy-policy → 200 OK)
+- [ ] SPF mail-tester ≥ 8/10
+- [ ] `/contact` form envoie un email réel vers hello@dropno.eu
+- [ ] Newsletter signup ajoute à Resend Audiences
+- [ ] Homepage publique rend les 6 sections sans erreur
+- [ ] Stripe Connect onboarding validé (statut "Active")

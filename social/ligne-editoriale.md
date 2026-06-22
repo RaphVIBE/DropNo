@@ -49,7 +49,7 @@ Décision : déclencheur = **date fixe**. Tout glissement produit (Stripe key, s
 
 ## Boucle de validation
 
-Tâche planifiée chaque **dimanche 18h** : revue de la semaine à venir, chaque post visualisé (caption + visuel), validation explicite de Raph avant toute programmation. Rien ne part sans OK. Programmation manuelle dans Metricool/Buffer après validation.
+Tâche planifiée chaque **dimanche 18h** : revue de la semaine à venir, chaque post visualisé (caption + visuel), validation explicite de Raph avant toute programmation. Rien ne part sans OK. Programmation dans Buffer après validation (scheduler retenu, voir `SOCIAL_MEDIA.md` §9).
 
 ## KPIs (point d'étape toutes les 2 semaines, à la fin de chaque batch)
 

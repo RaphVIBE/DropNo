@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 
 import { Button } from "@/components/ui/button";
@@ -89,6 +89,14 @@ export function DropForm({
   const [openLocal, setOpenLocal] = useState(initialOpen);
   const [lockLocal, setLockLocal] = useState(initialLock);
 
+  // Visuels : état contrôlé pour alimenter l'aperçu live à droite.
+  const [heroUrl, setHeroUrl] = useState(drop?.hero_image_url ?? "");
+  const [galleryText, setGalleryText] = useState((drop?.images_urls ?? []).join("\n"));
+  const galleryLines = useMemo(
+    () => galleryText.split("\n").map((s) => s.trim()).filter(Boolean),
+    [galleryText],
+  );
+
   const preset = DROP_FORMATS[format];
 
   // Valeurs dérivées du reveal (servent de défaut et d'aperçu).
@@ -108,7 +116,8 @@ export function DropForm({
   }
 
   return (
-    <form action={formAction} className="space-y-4">
+    <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <form action={formAction} className="min-w-0 space-y-4">
       {drop && <input type="hidden" name="id" value={drop.id} />}
 
       {lock && (
@@ -247,12 +256,12 @@ export function DropForm({
 
       <div>
         <label className={label}>Visuel principal (URL)</label>
-        <input name="hero_image_url" defaultValue={drop?.hero_image_url ?? ""} className={field} placeholder="https://…" />
+        <input name="hero_image_url" value={heroUrl} onChange={(e) => setHeroUrl(e.target.value)} className={field} placeholder="https://…" />
       </div>
 
       <div>
         <label className={label}>Galerie (une URL par ligne)</label>
-        <textarea name="images_urls" rows={3} defaultValue={(drop?.images_urls ?? []).join("\n")} className={`${field} font-mono text-xs`} />
+        <textarea name="images_urls" rows={3} value={galleryText} onChange={(e) => setGalleryText(e.target.value)} className={`${field} font-mono text-xs`} />
       </div>
 
       <div>
@@ -264,6 +273,55 @@ export function DropForm({
       {state?.ok && <p className="text-sm text-emerald-300">Enregistré.</p>}
 
       <SubmitButton isNew={!drop} />
-    </form>
+      </form>
+
+      <aside className="space-y-3 lg:sticky lg:top-6">
+        <div className="rounded-lg border border-input/60 bg-background/40 p-3">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Aperçu visuels
+          </div>
+          <Thumb url={heroUrl} className="aspect-square w-full" emptyLabel="Visuel principal" />
+          {galleryLines.length > 0 && (
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              {galleryLines.map((u, i) => (
+                <Thumb key={`${i}-${u}`} url={u} className="aspect-square w-full" />
+              ))}
+            </div>
+          )}
+          <p className="mt-2 text-[10.5px] leading-relaxed text-muted-foreground">
+            Aperçu en direct des URLs saisies. Les liens cassés sont signalés.
+          </p>
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+/** Vignette d'aperçu d'une URL d'image : vide, invalide ou cassée → marqueur lisible. */
+function Thumb({
+  url, className = "", emptyLabel,
+}: {
+  url: string; className?: string; emptyLabel?: string;
+}) {
+  const [err, setErr] = useState(false);
+  useEffect(() => setErr(false), [url]); // une URL corrigée réessaie de charger
+  const trimmed = url.trim();
+  const valid = /^https?:\/\//i.test(trimmed);
+
+  if (!trimmed)
+    return (
+      <div className={`flex items-center justify-center rounded-md border border-dashed border-input bg-background/40 px-2 text-center text-[10px] text-muted-foreground ${className}`}>
+        {emptyLabel ?? "—"}
+      </div>
+    );
+  if (!valid || err)
+    return (
+      <div className={`flex items-center justify-center rounded-md border border-dashed border-amber-500/40 bg-amber-500/5 px-2 text-center text-[10px] text-amber-200/80 ${className}`}>
+        {valid ? "image cassée" : "URL invalide"}
+      </div>
+    );
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={trimmed} alt="" onError={() => setErr(true)} className={`rounded-md bg-white/5 object-cover ${className}`} />
   );
 }

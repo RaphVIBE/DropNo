@@ -23,7 +23,8 @@
 - Égalité au seuil de coupure (ex : 3 bids identiques pour la dernière place) → ordre d'arrivée (timestamp) tranche
 - Modification de bid : nouveau timestamp, ancien remplacé
 - Retrait de bid : autorisé jusqu'à T-24h, après → engagement ferme (impose KYC)
-- Moins de N bids ≥ P : vendeur peut annuler le drop ou vendre aux acheteurs présents au prix plancher
+- Moins de N bids ≥ P (mais ≥ 1) : tous les qualifiants gagnent et paient le **MIN des offres qualifiantes** (la plus basse ≥ P), pas le plancher. Annulation automatique du drop **uniquement si 0 offre ≥ P**. (Conforme à `close_drop`.)
+- **Défaut de paiement d'un gagnant (capture Stripe échouée au reveal)** : le prix de clearing est **figé au reveal** et ne change jamais pour les autres gagnants — la capture refusée d'un gagnant ne réouvre pas le prix uniforme. L'exemplaire correspondant est déclaré **invendu** et pourra être re-listé dans un drop ultérieur. **Pas de cascade** vers le (N+1)-ième : son offre étant par construction inférieure au clearing, lui proposer l'exemplaire au prix de clearing reviendrait à lui demander de payer plus que son offre. *(Cascade au bid propre du suivant = évolution v2 possible si trop d'invendus, au prix d'une entorse à l'uniform-price sur cette unité.)*
 
 ---
 

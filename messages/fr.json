@@ -235,7 +235,8 @@
     "submitSending": "Envoi...",
     "submitNotify": "Me prévenir",
     "galleryThumbAria": "Voir la photo {index} sur {total}",
-    "demoBanner": "Simulation privée · données fictives · ceci ne constitue pas une offre"
+    "demoBanner": "Environnement de démo · données fictives · ceci ne constitue pas une offre",
+    "demoWatermark": "Pour illustration"
   },
   "bidForm": {
     "notOpen": "Les offres ne sont pas ouvertes pour ce drop.",

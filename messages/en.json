@@ -235,7 +235,8 @@
     "submitSending": "Sending...",
     "submitNotify": "Notify me",
     "galleryThumbAria": "View photo {index} of {total}",
-    "demoBanner": "Private simulation · fictional data · this is not an offer"
+    "demoBanner": "Demo environment · fictional data · this is not an offer",
+    "demoWatermark": "For illustration"
   },
   "bidForm": {
     "notOpen": "Bidding is not open for this drop.",

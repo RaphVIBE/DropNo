@@ -185,9 +185,9 @@ export default async function DemoMaisonPage({
         <span className="font-serif text-lg italic">Drop No.</span>
       </div>
 
-      {/* Bandeau simulation. */}
-      <div className="border-b border-champagne bg-sand px-7 py-3 text-center md:px-16">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-champagne-deep">
+      {/* Bandeau environnement de démo — rouge, sans ambiguïté. */}
+      <div className="border-y-2 border-red-600 bg-red-50 px-7 py-3 text-center md:px-16">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-red-700">
           {t("demoBanner")}
         </p>
       </div>

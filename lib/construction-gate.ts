@@ -30,6 +30,7 @@ const PREVIEW_COOKIE = "dropno_preview";
  * il est par ailleurs sain que ces pages restent accessibles en soft-launch.
  */
 const PUBLIC_LEGAL_PATHS = [
+  "/mecanisme", // page « comment ça marche » laissée ouverte en soft-launch (contexte prospects)
   "/legal",
   "/privacy-policy",
   "/confidentialite",

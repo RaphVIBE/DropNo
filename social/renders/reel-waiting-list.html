@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Drop № — Reel Waiting list (Provenance)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300;1,9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: oklch(0.975 0.006 80);
+    --ink: oklch(0.18 0.012 60);
+    --ink-soft: oklch(0.35 0.012 60);
+    --champagne: oklch(0.72 0.07 80);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden}
+  body{background:#1a1714;font-family:Inter,sans-serif}
+  .stage{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+  .frame{position:relative;width:1080px;height:1920px;overflow:hidden;
+    background:var(--bg);color:var(--ink);transform-origin:top left}
+  .grain{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;pointer-events:none;z-index:5}
+  .vign{position:absolute;inset:0;pointer-events:none;z-index:4;
+    background:radial-gradient(120% 80% at 50% 42%, transparent 55%, rgba(40,30,18,.10) 100%)}
+  /* fond dégradé : la zone basse redevient propre pour le texte */
+  .scrim{position:absolute;left:0;right:0;bottom:0;top:38%;z-index:2;pointer-events:none;
+    background:linear-gradient(to bottom, transparent 0%, var(--bg) 30%)}
+
+  .engrave{position:absolute;left:50%;top:40%;width:1300px;height:1300px;transform:translate(-50%,-50%);
+    z-index:1;opacity:0;animation:bgIn 2.4s ease-out .2s forwards, bgDrift 26s ease-in-out infinite}
+  .engrave svg{width:100%;height:100%;display:block}
+  /* lignes de la liste d'attente : se dessinent une à une */
+  .row{stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw 1.1s ease-out forwards}
+  .row.r1{animation-delay:.4s}.row.r2{animation-delay:.7s}.row.r3{animation-delay:1.0s}
+  .row.r4{animation-delay:1.3s}.row.r5{animation-delay:1.6s}.row.r6{animation-delay:1.9s}
+  .row.r7{animation-delay:2.2s}
+  .frameline{stroke-dasharray:3200;stroke-dashoffset:3200;animation:draw 3s ease-out .2s forwards}
+  /* la fêlure : « something broke » se dessine en dernier */
+  .crack{stroke-dasharray:1600;stroke-dashoffset:1600;animation:draw 1.4s ease-in 9.6s forwards}
+
+  .copy{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:120px 110px 160px}
+  .line{font-family:Fraunces,serif;font-style:italic;font-weight:300;font-size:104px;line-height:1.1;
+    color:var(--ink);opacity:0;transform:translateY(26px)}
+  .l1{animation:up 1.4s ease-out 5.0s forwards}
+  .l2{animation:up 1.4s ease-out 6.2s forwards}
+  .sub{margin-top:54px;font:400 40px/1.5 Inter;color:var(--ink-soft);opacity:0;transform:translateY(20px);
+    animation:up 1.4s ease-out 9.4s forwards}
+  .sign{margin-top:90px;opacity:0;animation:up 1.4s ease-out 12.4s forwards}
+  .rule{height:3px;width:120px;background:var(--champagne)}
+  .wordmark{font-family:Fraunces,serif;font-style:italic;font-weight:400;font-size:58px;margin-top:40px;color:var(--ink)}
+
+  @keyframes bgIn{to{opacity:.12}}
+  @keyframes bgDrift{0%{transform:translate(-50%,-50%) scale(1) rotate(0deg)}
+    100%{transform:translate(-50%,-50%) scale(1.03) rotate(1.2deg)}}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes up{to{opacity:1;transform:translateY(0)}}
+
+  .bar{position:fixed;top:14px;left:14px;right:14px;display:flex;gap:10px;align-items:center;
+    color:#cdbfa6;font:500 13px Inter;z-index:30}
+  .bar button{background:#cdbfa6;color:#1a1714;border:0;border-radius:5px;padding:8px 16px;font:600 13px Inter;cursor:pointer}
+  .bar button:hover{background:var(--champagne)}
+  .bar .hint{opacity:.75;max-width:620px;line-height:1.4}
+  body.clean{background:#000}
+  body.clean .hint, body.clean #clean{display:none}
+  body.clean #replay{opacity:.5}
+  body.clean #replay:hover{opacity:1}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <button id="replay">Rejouer</button>
+    <button id="clean">Masquer les repères</button>
+    <span class="hint">Reel 9:16 muet, ~18s. Audio : Bach, Art de la fugue, Contrapunctus I (BWV 1080). Caler la fêlure (« something broke ») sur la suspension finale, vers 0:14. Export : « Masquer les repères », plein écran, enregistre le rectangle, ajoute le son dans CapCut.</span>
+  </div>
+
+  <div class="stage" id="stage">
+  <div class="frame" id="frame">
+    <div class="engrave">
+      <svg viewBox="0 0 1300 1300" aria-hidden="true">
+        <g stroke="oklch(0.18 0.012 60)" fill="none" stroke-linecap="round">
+          <!-- registre / page de liste d'attente -->
+          <rect class="frameline" x="230" y="180" width="840" height="940" rx="8" stroke-width="3"/>
+          <line class="frameline" x1="360" y1="180" x2="360" y2="1120" stroke-width="1.4" opacity=".5"/>
+          <!-- en-tête -->
+          <line class="row r1" x1="290" y1="300" x2="1010" y2="300" stroke-width="1.2" opacity=".5" stroke-dasharray="2 14"/>
+          <!-- rangs : numéro + nom barré (rature) -->
+          <g stroke-width="3">
+            <line class="row r1" x1="430" y1="400" x2="980" y2="400"/>
+            <line class="row r2" x1="430" y1="500" x2="940" y2="500"/>
+            <line class="row r3" x1="430" y1="600" x2="990" y2="600"/>
+            <line class="row r4" x1="430" y1="700" x2="900" y2="700"/>
+            <line class="row r5" x1="430" y1="800" x2="960" y2="800"/>
+            <line class="row r6" x1="430" y1="900" x2="930" y2="900"/>
+          </g>
+          <!-- la ligne qui reste vide : ton nom -->
+          <line class="row r7" x1="430" y1="1000" x2="430" y2="1000" stroke-width="3"/>
+          <circle class="row r7" cx="305" cy="1000" r="20" stroke-width="2" stroke-dasharray="4 10"/>
+          <!-- numéros de rang -->
+        </g>
+        <!-- la fêlure traversante -->
+        <line class="crack" x1="250" y1="360" x2="1050" y2="980"
+          stroke="oklch(0.72 0.07 80)" stroke-width="2.4" stroke-linecap="round"/>
+        <g fill="oklch(0.18 0.012 60)" opacity=".5" style="font-family:Fraunces,Georgia,serif;font-style:italic">
+          <text x="318" y="412" text-anchor="end" style="font-size:30px">01</text>
+          <text x="318" y="1012" text-anchor="end" style="font-size:30px">—</text>
+          <text x="1060" y="1170" text-anchor="end" style="font-size:38px">Fig. 04 · liste d'attente</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="copy">
+      <div class="line l1">You cannot</div>
+      <div class="line l2">buy this watch.</div>
+      <div class="sub">The list is eight years long, and the boutique will not add your name. Somewhere between the maison and you, something broke.</div>
+      <div class="sign">
+        <div class="rule"></div>
+        <div class="wordmark">Drop №</div>
+      </div>
+    </div>
+
+    <div class="vign"></div>
+    <svg class="grain"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  </div>
+  </div>
+
+<script>
+  var FW=1080, FH=1920;
+  function fit(){
+    var pad = document.body.classList.contains('clean') ? 0 : 24;
+    var s = Math.min((window.innerWidth-pad*2)/FW, (window.innerHeight-pad*2)/FH);
+    var frame=document.getElementById('frame'), stage=document.getElementById('stage');
+    frame.style.transform='scale('+s+')';
+    stage.style.width=(FW*s)+'px'; stage.style.height=(FH*s)+'px';
+  }
+  function replay(){
+    var f=document.getElementById('frame'), s=document.getElementById('stage');
+    var c=f.cloneNode(true); c.id='frame'; s.replaceChild(c, f); fit();
+  }
+  document.getElementById('replay').onclick=replay;
+  window.addEventListener('keydown',function(e){if(e.key==='r'||e.key==='R')replay();});
+  document.getElementById('clean').onclick=function(){
+    document.body.classList.toggle('clean');
+    this.textContent=document.body.classList.contains('clean')?'Afficher les repères':'Masquer les repères';
+    fit();
+  };
+  window.addEventListener('resize',fit);
+  window.addEventListener('load',fit);
+  fit();
+</script>
+</body>
+</html>

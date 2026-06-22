@@ -23,6 +23,14 @@ values
    'active', true),
   ('trilobe', 'Trilobe', 'FR',
    'Maison parisienne fondée en 2018. Lecture de l''heure sans aiguilles, par disques tournants. Production confidentielle, esprit collectionneur.',
+   'active', true),
+  -- slug dédié : un échantillon PUBLIC « raidillon » (drop No.4 Speed) existe
+  -- déjà dans la vitrine ; on ne le clobbere pas. Le name affiché reste Raidillon.
+  ('raidillon-55', 'Raidillon', 'BE',
+   'Maison belge fondée en 2001, nommée d''après la courbe de Spa-Francorchamps. Design belge, mouvements suisses, chaque modèle édité à 55 exemplaires.',
+   'active', true),
+  ('col-macarthur', 'Col&MacArthur', 'BE',
+   'Maison belge de Liège (Sébastien Colen, 2014). Montres commémoratives renfermant un fragment authentique d''Histoire. Séries limitées numérotées, assemblées et gravées à l''atelier.',
    'active', true)
 on conflict (slug) do update set
   name = excluded.name,
@@ -70,7 +78,19 @@ d (drop_number, slug, title, piece_reference, floor_price_cents, exemplaires, de
        E'Lecture de l''heure par trois disques tournants concentriques, sans aiguille. Cadran bleu nuit guilloché main, boîtier acier 40,5 mm. Une autre grammaire du temps.',
        '{"Boîtier":"Acier, 40,5 mm","Mouvement":"Automatique, calibre X-Centric","Glace":"Saphir plat","Cadran":"Bleu nuit guilloché, disques tournants","Étanchéité":"30 m","Bracelet":"Veau bleu, boucle acier"}'::jsonb,
        'https://images.unsplash.com/photo-1539874754764-5a96559165b0?auto=format&fit=crop&w=1200&q=80',
-       '["https://images.unsplash.com/photo-1539874754764-5a96559165b0?auto=format&fit=crop&w=1200&q=80","https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1200&q=80"]'::jsonb)
+       '["https://images.unsplash.com/photo-1539874754764-5a96559165b0?auto=format&fit=crop&w=1200&q=80","https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=1200&q=80"]'::jsonb),
+    (104, 'raidillon-55', 'Chrono /55 Eau Rouge',
+       'Réf. RD-55ER · Série démo 10 pièces', 320000::bigint, 10,
+       E'Chronographe de circuit : cadran anthracite, échelle tachymétrique rouge, fond gravé du tracé de Spa-Francorchamps. Boîtier acier 42 mm, mouvement suisse automatique. Dix exemplaires de la série de 55, le plus haut bid choisit son numéro.',
+       '{"Boîtier":"Acier, 42 mm","Mouvement":"Suisse automatique, chronographe","Cadran":"Anthracite, tachymètre rouge","Fond":"Gravé du tracé de Spa-Francorchamps","Étanchéité":"100 m","Édition":"10 pièces parmi la série de 55"}'::jsonb,
+       'https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=1200&q=80',
+       '["https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=1200&q=80","https://images.unsplash.com/photo-1620625515032-6ed0c1790c75?auto=format&fit=crop&w=1200&q=80"]'::jsonb),
+    (105, 'col-macarthur', 'Francorchamps 1921 Automatique',
+       'Réf. CM-F1921-AUTO · Drop de 12 pièces', 314900::bigint, 12,
+       E'Née d''une collaboration officielle avec le Circuit de Spa-Francorchamps. Le cadran est taillé dans l''asphalte même de la piste, les compteurs dans les vibreurs (kerbs) du circuit, les poussoirs usinés dans l''acier de la Tour Uniroyal. Rien n''est symbolique : chaque matière a une provenance.\n\nBoîtier titane 41 mm, mouvement automatique suisse Sellita SW500, glace et fond saphir gravé du tracé du circuit. Édition automatique numérotée, assemblée à l''atelier de Liège. Ce drop en propose douze, par offre scellée.',
+       '{"Boîtier":"Titane, 41 mm","Mouvement":"Automatique suisse Sellita SW500","Cadran":"Asphalte du circuit de Spa-Francorchamps","Compteurs":"Vibreurs (kerbs) du circuit","Poussoirs":"Acier de la Tour Uniroyal","Fond":"Saphir, tracé du circuit gravé","Étanchéité":"100 m (10 ATM)","Édition":"Numérotée · collaboration officielle Spa"}'::jsonb,
+       'https://colandmacarthur.com/cdn/shop/files/Francorchamps1921_face_cuir_noir.webp?width=1200',
+       '["https://colandmacarthur.com/cdn/shop/files/Francorchamps1921_face_cuir_noir.webp?width=1200","https://colandmacarthur.com/cdn/shop/files/Francorchamps1921_face_titane.webp?width=1200","https://colandmacarthur.com/cdn/shop/files/Backcover_automatique_Francorchamps_1921.webp?width=1200"]'::jsonb)
 )
 insert into public.drops (
   drop_number, brand_id, title, piece_reference, description, specs,

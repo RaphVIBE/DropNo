@@ -8,7 +8,9 @@
 
 Bonjour Hamad, Andrea,
 
-Pas de mystère sur l'effet : trois minutes pour vider une référence en ligne, des collectionneurs sincères qui n'arrivent pas à acheter, et vous deux qui ne savez probablement pas si vous laissez vingt, quarante ou soixante pour cent sur la table à chaque sortie.
+J'espère que vous allez bien. D'abord, un mot sincère : ce que vous avez construit en quelques saisons force le respect — des chronographes au dessin juste, des cadrans sector qu'on reconnaît au premier coup d'œil, et une communauté qui répond présente à chaque sortie. C'est rare, et c'est précisément ce qui rend la suite intéressante.
+
+Car derrière l'engouement, il y a un angle mort : trois minutes pour vider une référence en ligne, des collectionneurs sincères qui n'arrivent pas à acheter, et vous deux qui ne savez probablement pas si vous laissez vingt, quarante ou soixante pour cent sur la table à chaque sortie.
 
 Je travaille sur ce problème précis. Drop No. est une maison de drops scellés pour l'horlogerie premium. Chaque acheteur soumet une offre cachée pendant cinq jours. À la révélation, les huit plus hautes offres remportent la pièce, et toutes payent le même prix : la huitième. Pas de course, pas de bots, pas de bid war public. Surtout, à chaque drop, vous repartez avec une donnée que personne d'autre ne peut vous donner : ce que vos collectionneurs étaient vraiment prêts à payer, distribution complète, profil acheteurs KYC.
 

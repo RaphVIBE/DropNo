@@ -1,16 +1,16 @@
 # Email — Ressence
 
-**À :** Maxime Cousin (fondateur)
+**À :** Benoît Mintiens (fondateur)
 **De :** Raphaël Hombroeck — raph@dropno.eu
 **Objet :** Test grandeur réelle pour une pièce confidentielle
 
 ---
 
-Bonjour Maxime,
+Bonjour Benoît,
 
-Une question d'un Belge à un autre.
+J'espère que vous allez bien. Un mot d'un Belge à un autre, avant tout : j'admire la cohérence avec laquelle vous portez Ressence depuis Anvers — le système ROCS, les cadrans-disques, cette discipline du silence visuel. Vous êtes une des seules maisons capables de poser une pièce confidentielle sans jamais la diluer.
 
-Vous portez Ressence depuis Anvers avec une cohérence rare : le système ROCS, les cadrans-disques, la discipline du silence visuel. Une des seules maisons capables de poser une pièce confidentielle sans la diluer.
+Si je me permets de vous écrire, c'est qu'un projet sur lequel je travaille pourrait justement servir ce type de pièce.
 
 Je viens de lancer Drop No., une maison de drops scellés pour l'horlogerie premium brand-direct. Le mécanisme tient en une ligne : huit exemplaires d'une pièce, cinq jours d'offres scellées, révélation jeudi 18h. Les huit plus hautes offres gagnent, et toutes payent le même prix — la huitième. Pas de surenchère publique, pas de course, pas de grey market dans les heures qui suivent.
 

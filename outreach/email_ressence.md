@@ -26,7 +26,7 @@ Bien à vous,
 
 Raphaël Hombroeck
 Fondateur, Drop No.
-raph@dropno.eu  ·  +32 […]
+raph@dropno.eu  ·  +32 475 72 27 63
 
 ---
 

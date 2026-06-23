@@ -235,10 +235,11 @@
     "submitSending": "Envoi...",
     "submitNotify": "Me prévenir",
     "galleryThumbAria": "Voir la photo {index} sur {total}",
-    "demoBanner": "Données d’illustration — ceci n’est pas une offre de vente",
+    "demoBanner": "Exemple d’une sortie en exclusivité — ceci n’est pas une offre de vente",
     "demoPreview": "Aperçu privé",
     "demoPreparedFor": "Préparé pour",
-    "demoPhotosCaption": "Visuels {brand} · aperçu"
+    "demoPhotosCaption": "Visuels {brand} · aperçu",
+    "demoExampleLine": "Exemple : comment une prochaine sortie limitée vivrait, en exclusivité sur Drop No."
   },
   "bidForm": {
     "notOpen": "Les offres ne sont pas ouvertes pour ce drop.",

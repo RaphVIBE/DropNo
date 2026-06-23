@@ -132,6 +132,13 @@ export default async function DemoDropPage({
         revealAt={drop.reveal_at}
       />
 
+      {/* Cadrage : ceci est l'aperçu d'une future sortie en exclusivité. */}
+      <div className="border-b border-rule-soft px-7 pt-4 md:px-16">
+        <p className="text-[12px] italic text-muted-foreground">
+          {t("demoExampleLine")}
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 px-7 pb-24 pt-10 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-16 md:pb-32 md:pt-14">
         <div>
           <DropGallery

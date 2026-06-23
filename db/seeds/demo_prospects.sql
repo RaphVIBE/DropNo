@@ -79,12 +79,12 @@ d (drop_number, slug, title, piece_reference, floor_price_cents, exemplaires, de
        '{"Boîtier":"Acier, 40,5 mm","Mouvement":"Automatique, calibre X-Centric","Glace":"Saphir plat","Cadran":"Bleu nuit guilloché, disques tournants","Étanchéité":"30 m","Bracelet":"Veau bleu, boucle acier"}'::jsonb,
        null,
        null::jsonb),
-    (104, 'raidillon-55', 'Chrono /55 Eau Rouge',
-       'Réf. RD-55ER · Série démo 10 pièces', 320000::bigint, 10,
-       E'Chronographe de circuit : cadran anthracite, échelle tachymétrique rouge, fond gravé du tracé de Spa-Francorchamps. Boîtier acier 42 mm, mouvement suisse automatique. Dix exemplaires de la série de 55, le plus haut bid choisit son numéro.',
-       '{"Boîtier":"Acier, 42 mm","Mouvement":"Suisse automatique, chronographe","Cadran":"Anthracite, tachymètre rouge","Fond":"Gravé du tracé de Spa-Francorchamps","Étanchéité":"100 m","Édition":"10 pièces parmi la série de 55"}'::jsonb,
+    (104, 'raidillon-55', 'Speed /55 · Édition Eau Rouge',
+       'Réf. RD-S55 · Drop de 10 pièces', 320000::bigint, 10,
+       E'Édition circuit de la Speed : cadran vert profond, index « 55 », rehauts jaune et touches de course. Boîtier acier 42 mm, mouvement suisse automatique, fond gravé du tracé de Spa-Francorchamps. Dix exemplaires de la série de 55, le plus haut bid choisit son numéro.',
+       '{"Boîtier":"Acier, 42 mm","Mouvement":"Suisse automatique (Sellita SW200)","Cadran":"Vert circuit, index 55","Verre":"Saphir","Étanchéité":"100 m","Édition":"10 pièces parmi la série de 55"}'::jsonb,
        'https://raidillon.odoo.com/web/image/11235-61728d10/SPEED-A10-259_530x%402x.webp',
-       '["https://raidillon.odoo.com/web/image/11235-61728d10/SPEED-A10-259_530x%402x.webp","https://raidillon.odoo.com/web/image/11241-e5c96f96/SPEED-C10-257_530x%402x.webp","https://raidillon.odoo.com/web/image/11237-d8450cd5/SPEED-A10-258_530x%402x.webp"]'::jsonb),
+       '["https://raidillon.odoo.com/web/image/11235-61728d10/SPEED-A10-259_530x%402x.webp"]'::jsonb),
     (105, 'col-macarthur', 'Francorchamps 1921 Automatique',
        'Réf. CM-F1921-AUTO · Drop de 12 pièces', 314900::bigint, 12,
        E'Née d''une collaboration officielle avec le Circuit de Spa-Francorchamps. Le cadran est taillé dans l''asphalte même de la piste, les compteurs dans les vibreurs (kerbs) du circuit, les poussoirs usinés dans l''acier de la Tour Uniroyal. Rien n''est symbolique : chaque matière a une provenance.\n\nBoîtier titane 41 mm, mouvement automatique suisse Sellita SW500, glace et fond saphir gravé du tracé du circuit. Édition automatique numérotée, assemblée à l''atelier de Liège. Ce drop en propose douze, par offre scellée.',
@@ -133,5 +133,11 @@ on conflict (drop_number) do update set
   clearing_price_cents = null,
   revealed_at = null,
   updated_at = now();
+
+-- Compteur d'offres plausible (démo) : évite l'affichage « 0 offre soumise ».
+update public.drops d
+set bid_count = v.bc
+from (values (101, 11), (102, 7), (103, 9), (104, 13), (105, 16)) as v(drop_number, bc)
+where d.drop_number = v.drop_number and d.is_demo;
 
 commit;

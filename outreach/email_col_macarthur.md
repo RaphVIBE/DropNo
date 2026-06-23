@@ -16,7 +16,9 @@ Je viens de lancer Drop No., une maison de drops scellés pour l'horlogerie prem
 
 Votre maison fait déjà presque tout ce qu'un drop demande : un récit, une matière à provenance réelle, une édition numérotée. La Francorchamps automatique — autour de trois mille euros, limitée à cinq cents pièces — entre naturellement dans ce que nous visons. L'idée : en proposer une courte allocation en offre scellée, et laisser les passionnés de Spa décider eux-mêmes de ce qu'ils sont prêts à mettre pour le numéro qu'ils veulent. Vous gardez le plancher, le calendrier, le nombre d'exemplaires.
 
-Plutôt que de vous l'expliquer à plat, je vous ai préparé une simulation à votre nom, avec la Francorchamps en vedette. Je vous envoie le lien avec plaisir si l'idée vous parle.
+Plutôt que de vous l'expliquer à plat, je vous l'ai préparé : une simulation privée à votre nom, avec la Francorchamps 1921 en vedette.
+
+→ https://dropno.netlify.app/demo/col-macarthur?key=34304ef966ccbb5785604f69bcbffd8d
 
 On est à trois quarts d'heure l'un de l'autre — un café à Liège, ou quinze minutes en visio quand vous voulez ?
 

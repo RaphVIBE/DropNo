@@ -16,7 +16,11 @@ Je travaille sur ce problème précis. Drop No. est une maison de drops scellés
 
 Plancher minimum trois mille euros. Vous gardez la maîtrise du nombre d'exemplaires, du prix plancher, et du calendrier. Pré-autorisation Stripe et KYC Stripe Identity côté acheteurs, donc zéro fraude. Notre commission : douze pour cent, uniquement sur les ventes effectives. Drop annulé, zéro frais.
 
-Pour la prochaine référence chronograph ou pour un drop anniversaire, je serais ravi d'en discuter quinze minutes. Disponible la semaine du 8 ou du 15 juin, en visio.
+Plutôt que de vous l'expliquer, je vous l'ai préparé : une simulation privée à votre nom, en ligne, avec le mécanisme qui tourne sur une de vos pièces.
+
+→ https://dropno.netlify.app/demo/furlan-marri?key=34304ef966ccbb5785604f69bcbffd8d
+
+Pour la prochaine référence chrono ou un drop anniversaire, je serais ravi d'en discuter quinze minutes en visio, cette semaine ou la suivante.
 
 Bien à vous,
 

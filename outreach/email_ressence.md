@@ -16,7 +16,11 @@ Je viens de lancer Drop No., une maison de drops scellés pour l'horlogerie prem
 
 Ce qui me semble pertinent pour Ressence : utiliser un drop comme test de prix sur une variante (cadran, finition, métal) avant de décider d'un éventuel run en boutique. Ou pour une capsule anniversaire, hors circuit dealer. Vous gardez le plancher, le calendrier, le nombre d'exemplaires. Notre commission : douze pour cent, uniquement sur les ventes effectives.
 
-Quinze minutes en visio, la semaine du 8 ou du 15 juin ?
+Plutôt que de vous le décrire, je vous l'ai préparé : une simulation privée à votre nom, sur une pièce confidentielle.
+
+→ https://dropno.netlify.app/demo/ressence?key=34304ef966ccbb5785604f69bcbffd8d
+
+Quinze minutes en visio dans les prochains jours pour en parler ?
 
 Bien à vous,
 

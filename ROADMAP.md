@@ -94,6 +94,18 @@ Chaque lane a un agent propriétaire (voir `.claude/agents/`). Statut tenu à jo
 | Export comptable CSV + base TVA | P2 | ⏳ |
 | RGPD : export/suppression compte, registre | P1 | ⏳ |
 
+### 🔒 Sécurité & durcissement — `ops` / owner
+| Item | P | Statut |
+|---|---|---|
+| **Action owner — Activer « Leaked Password Protection » dans Supabase Auth (ou désactiver le grant password)** | P2 | ⏳ |
+
+> **Pourquoi** : l'audit sécurité du 2026-06-26 a relevé l'advisor Supabase « Leaked Password Protection Disabled ». Supabase peut vérifier les mots de passe contre la base HaveIBeenPwned.org pour refuser ceux déjà compromis — c'est désactivé aujourd'hui. C'est le **seul item résiduel de l'audit non faisable en code/MCP** : il faut un clic dans le dashboard. Durcissement, pas un trou ouvert exploitable.
+>
+> **Comment** : Supabase Dashboard → projet drop-no (`ygzyzvjxregoqbzmcmyq`) → Authentication → Policies / Password settings → activer « Leaked password protection ».
+> **Alternative recommandée** : Drop No. étant passé au login par **code OTP 6 chiffres**, le password n'est plus la voie d'auth normale → envisager de **désactiver carrément le grant « email + password »** côté Auth (ferme la voie d'auth parallèle plutôt que juste la durcir). Le formulaire `/dev-login` (`signInWithPassword`) n'est de toute façon dispo qu'en `NODE_ENV != production`.
+>
+> **Traçabilité** : le reste de l'audit (authz edge functions `close-drop`/`refund-transaction`, anti-bot alerts/waitlist, fuites `error.message`, fallback sans Stripe en prod) est corrigé, déployé et commité sur la branche `fix/security-hardening` (commit `cbf99e8`, 2026-06-26). Voir mémoire `security-audit-2026-06.md`. Pas de date imposée.
+
 ### 🔎 Critique — `critique` (panel design · business · marketing · sécurité)
 Invoqué **à la demande**, avant qu'une chose sortante ne parte (changement visible, email cold, migration, asset public). Lecture seule, ne modifie rien — rend un verdict + findings. Voir aussi `/code-review`, `/security-review`, skill `web-design-guidelines`.
 

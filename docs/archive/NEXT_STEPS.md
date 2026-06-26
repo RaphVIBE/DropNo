@@ -19,7 +19,7 @@ Avant de toucher le code, **lis `CLAUDE.md` en entier**. Il contient toutes les 
 | Email pro (Google Workspace) | ✅ `raph@dropno.eu` + alias `hello@dropno.eu` |
 | DNS auth (SPF/DKIM/DMARC) | ⚠️ DKIM Google OK ; SPF manque `_spf.google.com` (mail-tester 0.7/10) |
 | Stripe Connect onboarding | ⏳ en cours, attend les pages légales pour validation |
-| Design system locké | ✅ `design-system/tokens.css` + `components.md` |
+| Design system locké | ✅ `docs/design/design-system/tokens.css` + `components.md` |
 | 4 mockups HTML | ✅ home publique, produit 3 vues, calendrier, révélation |
 | Deck marques 12 slides | ✅ `decks/drop-no-presentation-marques.pptx` |
 | Drafts légaux 6 docs | ✅ `content/legal/` — à valider juriste avant publication |
@@ -59,7 +59,7 @@ Implementation suggérée :
 - `app/(legal)/[slug]/page.tsx` qui lit le markdown dans `content/legal/<slug>.md` via gray-matter + remark
 - Layout simple : nav top minimale + container max-w-prose + Inter body + Fraunces italic h1/h2
 - Aliases FR/EN via `app/(legal)/(fr)/cgu/page.tsx` qui réexporte le rendu de `terms-of-service`
-- Style : reprendre les tokens de `design-system/tokens.css`
+- Style : reprendre les tokens de `docs/design/design-system/tokens.css`
 
 Une fois en place, retourner sur le dashboard Stripe et valider les URLs.
 
@@ -80,7 +80,7 @@ Attendre 15 min. Re-test sur mail-tester.com depuis `raph@dropno.eu` avec un ema
 
 ### 🟡 P2 — Homepage publique
 
-**Tâche 4. Porter `mockups/dropno-homepage-public.html` vers React**
+**Tâche 4. Porter `docs/design/mockups/dropno-homepage-public.html` vers React**
 
 Le mockup est une référence. Construire dans `app/(public)/page.tsx` les 6 sections :
 
@@ -91,7 +91,7 @@ Le mockup est une référence. Construire dans `app/(public)/page.tsx` les 6 sec
 5. Newsletter signup (intégré à la tâche 3)
 6. Footer
 
-Utiliser les tokens de `design-system/tokens.css` portés en Tailwind config.
+Utiliser les tokens de `docs/design/design-system/tokens.css` portés en Tailwind config.
 
 ### 🟢 P3 — Polish frontend
 
@@ -128,7 +128,7 @@ Pour servir l'essai `vickrey-tresor-clearing-price.md` proprement :
 ## Anti-patterns à éviter
 
 - Re-scaffolder le projet : il existe déjà, ne recrée pas la structure
-- Toucher au back-office `/admin` ou `/maison` sans lire `BACKOFFICE.md`
+- Toucher au back-office `/admin` ou `/maison` sans lire `docs/specs/BACKOFFICE.md`
 - Modifier les migrations DB sans incrémenter le numéro
 - Mettre du contenu publicitaire (RAS de pixel Facebook, RAS de Google Ads)
 - Ajouter des em dashes dans la copy utilisateur

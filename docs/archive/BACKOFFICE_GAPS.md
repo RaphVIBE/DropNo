@@ -1,6 +1,6 @@
 # Back-office Drop No. — Gap analysis (2026-06-12)
 
-Objectif : pouvoir gérer **tout le business** depuis `/admin` (+ `/maison`). Audit basé sur BACKOFFICE.md et le code actuel (8 surfaces existantes : dashboard, historique, produits, commandes, clients, maisons, support, dashboard maison).
+Objectif : pouvoir gérer **tout le business** depuis `/admin` (+ `/maison`). Audit basé sur docs/specs/BACKOFFICE.md et le code actuel (8 surfaces existantes : dashboard, historique, produits, commandes, clients, maisons, support, dashboard maison).
 
 Priorités : **P0** = bloquant pour opérer au lancement · **P1** = nécessaire dès les premières semaines · **P2** = confort/scale.
 

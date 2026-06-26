@@ -1,6 +1,6 @@
 # Drop No. — Components reference
 
-Composants extraits des mockups existants (`mockups/dropno-mockups.html`, `mockups/reveal-hero.html`).
+Composants extraits des mockups existants (`../mockups/dropno-mockups.html`, `../mockups/reveal-hero.html`).
 À porter dans le futur Next.js comme composants React, ou à utiliser comme spec pour Tailwind classes.
 
 ---

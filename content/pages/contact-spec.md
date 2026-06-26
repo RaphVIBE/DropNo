@@ -224,7 +224,7 @@ export default function ContactNotificationEmail({ reason, name, email, subject,
 
 ## États UI
 
-Le formulaire utilise `useFormState` + `useFormStatus` (cohérent avec `BACKOFFICE.md`) :
+Le formulaire utilise `useFormState` + `useFormStatus` (cohérent avec `docs/specs/BACKOFFICE.md`) :
 
 - **Initial** : champs vides, submit actif
 - **Pending** : submit `disabled`, label change vers "Envoi…"

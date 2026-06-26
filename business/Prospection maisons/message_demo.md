@@ -3,18 +3,8 @@
 Message à envoyer (email de relance ou DM) une fois la maison intéressée, pour
 lui montrer sa propre simulation. Données fictives, son nom sur l'écran.
 
-⚠️ Chaque maison a SA clé (une maison ne peut pas deviner la simulation d'une
-autre en changeant le slug). Les liens ne fonctionnent qu'une fois la variable
-`DEMO_KEYS` posée dans Netlify et le déploiement passé. Valeur à poser (objet
-JSON, une ligne) :
-
-```
-DEMO_KEYS={"furlan-marri":"ebb9fae3ae39a4b2adbb435baa016569","ressence":"e2ccdb4bcb12378588cd513429fddc92","trilobe":"d2ca34c4a04207b033ee25b7db3699e8","raidillon-55":"327844c1f831e8e9a8396719d0f44c38","col-macarthur":"b721c0088717c72649d9d5db91d101e5"}
-```
-
-Tant que `DEMO_KEYS` est absente, le code retombe sur l'ancienne `DEMO_KEY`
-unique (rien ne casse). Une fois `DEMO_KEYS` posée, l'ancienne clé partagée
-ne marche plus.
+⚠️ Les liens ne fonctionnent qu'une fois `DEMO_KEY` posée dans Netlify et le
+déploiement passé. Le lien reste actif (un clic recale l'accès pour 4h).
 
 ---
 
@@ -24,7 +14,7 @@ Bonjour Hamad, Andrea,
 
 Je vous ai préparé une simulation à votre nom, en ligne, pour voir le mécanisme tourner sur une de vos pièces plutôt que de vous l'expliquer.
 
-→ https://dropno.netlify.app/demo/furlan-marri?key=ebb9fae3ae39a4b2adbb435baa016569
+→ https://dropno.netlify.app/demo/furlan-marri?key=34304ef966ccbb5785604f69bcbffd8d
 
 Offre cachée pendant cinq jours, les huit plus hautes l'emportent, toutes au même prix : la huitième. La révélation est calée sur jeudi 18h. Tout est fictif, c'est juste pour sentir le rituel.
 
@@ -41,7 +31,7 @@ Bonjour Benoît,
 
 Plutôt que de décrire, je vous montre. Voici une simulation privée à votre nom, sur une pièce confidentielle.
 
-→ https://dropno.netlify.app/demo/ressence?key=e2ccdb4bcb12378588cd513429fddc92
+→ https://dropno.netlify.app/demo/ressence?key=34304ef966ccbb5785604f69bcbffd8d
 
 Le principe : offres scellées sur cinq jours, prix unique pour tous les gagnants, révélation jeudi 18h. Données fictives, aucun engagement. L'idée est juste de vous laisser ressentir l'objet.
 
@@ -58,7 +48,7 @@ Bonjour,
 
 Une simulation privée à votre nom, en ligne, pour voir notre mécanisme sur une pièce Trilobe plutôt que vous l'expliquer à plat.
 
-→ https://dropno.netlify.app/demo/trilobe?key=d2ca34c4a04207b033ee25b7db3699e8
+→ https://dropno.netlify.app/demo/trilobe?key=34304ef966ccbb5785604f69bcbffd8d
 
 Offres cachées sur cinq jours, prix unique pour les gagnants, révélation jeudi 18h. Tout est fictif. Juste le rituel, et la donnée que ça vous donnerait sur vos collectionneurs.
 
@@ -75,7 +65,7 @@ Bonjour Fabien,
 
 Une simulation privée à votre nom, en ligne, sur une édition circuit. Plus parlant qu'un long discours.
 
-→ https://dropno.netlify.app/demo/raidillon-55?key=327844c1f831e8e9a8396719d0f44c38
+→ https://dropno.netlify.app/demo/raidillon-55?key=34304ef966ccbb5785604f69bcbffd8d
 
 Offres cachées sur cinq jours, prix unique pour les gagnants, révélation jeudi 18h. Vos 55 exemplaires sont déjà un format de drop : il ne manque que le prix. Tout est fictif, c'est pour sentir le mécanisme.
 
@@ -92,7 +82,7 @@ Bonjour Sébastien,
 
 Plutôt que de l'expliquer, je vous le montre : une simulation privée à votre nom, en ligne, avec en vedette le Francorchamps 1921.
 
-→ https://dropno.netlify.app/demo/col-macarthur?key=b721c0088717c72649d9d5db91d101e5
+→ https://dropno.netlify.app/demo/col-macarthur?key=34304ef966ccbb5785604f69bcbffd8d
 
 Offres cachées sur cinq jours, les plus hautes l'emportent, toutes au même prix : la dernière gagnante. Révélation jeudi 18h. C'est une édition haute fictive, juste pour voir ce qu'un sealed bid donnerait sur une pièce aussi désirable qu'un morceau du circuit de Spa.
 

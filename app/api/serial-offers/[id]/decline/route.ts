@@ -27,7 +27,8 @@ export async function POST(
     p_offer_id: params.id,
   });
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    console.error("[serial-offer/decline] échoué:", error.message);
+    return NextResponse.json({ error: "Action impossible." }, { status: 400 });
   }
 
   const result = data as { ok: boolean; reason?: string };

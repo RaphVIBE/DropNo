@@ -60,7 +60,8 @@ export async function POST(
     p_payment_intent_id: pi.id,
   });
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    console.error("[serial-offer/confirm] accept échoué:", error.message);
+    return NextResponse.json({ error: "Confirmation impossible." }, { status: 400 });
   }
 
   return NextResponse.json({ ok: true, result: data });

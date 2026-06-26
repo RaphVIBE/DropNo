@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { alertsClient, isValidEmail, newAlertToken } from "@/lib/alerts";
+import { clientIp, isHoneypotFilled, rateLimited } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -11,11 +12,19 @@ export const dynamic = "force-dynamic";
  * uniforme (on ne révèle pas si l'email est déjà inscrit). Service role only.
  */
 export async function POST(request: NextRequest) {
-  let body: { email?: unknown; consent?: unknown; source?: unknown };
+  let body: { email?: unknown; consent?: unknown; source?: unknown; website?: unknown };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+  }
+
+  // Honeypot : bot détecté -> faux succès, aucune écriture.
+  if (isHoneypotFilled(body as Record<string, unknown>)) {
+    return NextResponse.json({ ok: true });
+  }
+  if (rateLimited("waitlist", clientIp(request), 5)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 
   const email =

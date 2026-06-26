@@ -22,6 +22,8 @@ export function WaitlistForm({
   const t = useTranslations("waitlist");
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
+  // Honeypot anti-bot : un humain ne le remplit jamais (masqué visuellement).
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">(
     "idle"
   );
@@ -40,7 +42,7 @@ export function WaitlistForm({
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, consent, source }),
+        body: JSON.stringify({ email, consent, source, website }),
       });
       if (res.ok) {
         setStatus("done");
@@ -85,6 +87,19 @@ export function WaitlistForm({
 
   return (
     <form onSubmit={handleSubmit} className={compact ? "space-y-3" : "space-y-4"}>
+      {/* Honeypot : invisible, hors tabulation, masqué aux AT. */}
+      <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+        <label>
+          Website
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
+        </label>
+      </div>
       <div className={compact ? "flex gap-2" : "flex flex-col gap-3 sm:flex-row"}>
         <input
           type="email"

@@ -93,6 +93,16 @@ export async function POST(request: NextRequest) {
 
   const stripeConfigured = !!process.env.STRIPE_SECRET_KEY;
 
+  // En production, le chemin sans Stripe (offre enregistree sans pre-autorisation
+  // de paiement) ne doit JAMAIS s'executer : une cle manquante serait sinon un
+  // bypass silencieux de l'autorisation de paiement. Reserve au dev.
+  if (!stripeConfigured && process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "Paiement temporairement indisponible." },
+      { status: 503 }
+    );
+  }
+
   // --------------------------------------------------------------------------
   // Cas 1 : Stripe configure -> pre-autorisation via PaymentIntent + Elements.
   // --------------------------------------------------------------------------
@@ -149,7 +159,11 @@ export async function POST(request: NextRequest) {
         })
         .eq("id", existing.id);
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
+        console.error("[bids] enregistrement offre échoué:", error.message);
+        return NextResponse.json(
+          { error: "Offre refusée." },
+          { status: 400 }
+        );
       }
     } else {
       const { error } = await supabase.from("bids").insert({
@@ -161,7 +175,11 @@ export async function POST(request: NextRequest) {
         status: "active",
       });
       if (error) {
-        return NextResponse.json({ error: error.message }, { status: 400 });
+        console.error("[bids] enregistrement offre échoué:", error.message);
+        return NextResponse.json(
+          { error: "Offre refusée." },
+          { status: 400 }
+        );
       }
     }
 

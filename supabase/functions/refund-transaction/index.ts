@@ -65,6 +65,9 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
     return json({ error: "POST only" }, 405);
   }
+  if (!isAuthorizedCaller(req)) {
+    return json({ error: "Unauthorized" }, 401);
+  }
 
   let body: { transaction_id?: string };
   try {
@@ -209,4 +212,25 @@ function json(payload: unknown, status: number): Response {
     status,
     headers: { "Content-Type": "application/json" },
   });
+}
+
+// Comparaison à temps constant pour éviter toute fuite par timing.
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+/**
+ * Autorise l'appelant : le seul invocateur légitime (server action admin de
+ * remboursement) envoie déjà `Authorization: Bearer <service_role>`. Le gateway
+ * `verify_jwt` accepte aussi la clé anon (publique) ; ce contrôle dans le corps
+ * borne réellement l'accès au service role — sans lui, n'importe qui muni de la
+ * clé publishable pourrait déclencher un refund Stripe avec un transaction_id.
+ */
+function isAuthorizedCaller(req: Request): boolean {
+  if (!SERVICE_ROLE_KEY) return false;
+  const header = req.headers.get("authorization") ?? "";
+  return safeEqual(header, `Bearer ${SERVICE_ROLE_KEY}`);
 }

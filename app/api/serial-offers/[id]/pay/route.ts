@@ -51,6 +51,15 @@ export async function POST(
 
   const stripeConfigured = !!process.env.STRIPE_SECRET_KEY;
 
+  // En production, jamais d'acceptation sans paiement : une clé manquante
+  // serait sinon un bypass du supplément. Réservé au dev (parité /api/bids).
+  if (!stripeConfigured && process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: "Paiement temporairement indisponible." },
+      { status: 503 }
+    );
+  }
+
   if (!stripeConfigured) {
     // Dev sans clé Stripe : acceptation directe (parité avec /api/bids).
     const service = createServiceClient();
@@ -59,7 +68,11 @@ export async function POST(
       p_payment_intent_id: "dev_no_stripe",
     });
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+      console.error("[serial-offer/pay] accept échoué:", error.message);
+      return NextResponse.json(
+        { error: "Acceptation impossible." },
+        { status: 400 }
+      );
     }
     return NextResponse.json({ ok: true, accepted: true, result: data });
   }

@@ -29,6 +29,8 @@ export function DropAlertBell({
   const [open, setOpen] = useState(false);
   const [persisted, setPersisted] = useState<Persisted>("none");
   const [email, setEmail] = useState("");
+  // Honeypot anti-bot : un humain ne le remplit jamais (masqué visuellement).
+  const [website, setWebsite] = useState("");
   const [notifyOpen, setNotifyOpen] = useState(status === "scheduled");
   const [notifyLock, setNotifyLock] = useState(true);
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">(
@@ -93,7 +95,7 @@ export function DropAlertBell({
       const res = await fetch("/api/alerts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dropId, email, notifyOpen, notifyLock }),
+        body: JSON.stringify({ dropId, email, notifyOpen, notifyLock, website }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -186,6 +188,19 @@ export function DropAlertBell({
             <p className="text-sm text-ink-2">{t("alertActiveBody")}</p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Honeypot : invisible, hors tabulation, masqué aux AT. */}
+              <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+                <label>
+                  Website
+                  <input
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </label>
+              </div>
               <p className="text-sm text-ink-2">{t("alertFormIntro")}</p>
               <fieldset className="space-y-2">
                 <label className="flex cursor-pointer items-start gap-2.5">

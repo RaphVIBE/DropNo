@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { sendAlertConfirm, emailLocale } from "@/lib/email/send";
 import { alertsClient, isValidEmail, newAlertToken, siteUrl } from "@/lib/alerts";
+import { clientIp, isHoneypotFilled, rateLimited } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
   }
   const b = (body ?? {}) as Record<string, unknown>;
+
+  // Honeypot : bot détecté -> faux succès, aucun email envoyé.
+  if (isHoneypotFilled(b)) {
+    return NextResponse.json({ ok: true });
+  }
+  // Rate-limit best-effort : empêche le bombardement d'emails de confirmation.
+  if (rateLimited("alerts", clientIp(request), 5)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
   const dropId = typeof b.dropId === "string" ? b.dropId : "";
   const email =
     typeof b.email === "string" ? b.email.trim().toLowerCase() : "";

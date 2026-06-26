@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { isValidDemoKey } from "@/lib/demo-access";
 import { BoutiqueHero } from "@/components/brand/boutique-hero";
 import { countryLabel } from "@/lib/countries";
 import { formatDropNumber, formatEuros } from "@/lib/format";
@@ -24,11 +25,17 @@ import type { Locale } from "@/i18n/routing";
 export const dynamic = "force-dynamic";
 
 type Repere = { label: string; value: string };
+// Chiffres ILLUSTRATIFS pour la bande « ce qu'un drop révélerait ». Pas une
+// promesse, pas un vrai résultat : une simulation, affichée comme telle. Co-
+// localisés ici (contenu marketing) plutôt qu'en base, pour ne jamais polluer
+// la fiche du drop ni laisser croire à une vente réelle.
+type SimGain = { attenduCents: number; clearingCents: number };
 type MaisonContent = {
   founded: string;
   signature: string;
   lead: string[];
   reperes: Repere[];
+  sim: SimGain;
 };
 
 const MAISONS: Record<string, MaisonContent> = {
@@ -45,6 +52,7 @@ const MAISONS: Record<string, MaisonContent> = {
       { label: "Pièces", value: "Chronographes méca-quartz et mécaniques" },
       { label: "Distribution", value: "Vente directe, séries limitées" },
     ],
+    sim: { attenduCents: 390000, clearingCents: 546000 },
   },
   ressence: {
     founded: "2010",
@@ -59,6 +67,7 @@ const MAISONS: Record<string, MaisonContent> = {
       { label: "Système", value: "ROCS, modules orbitaux sous glace" },
       { label: "Distribution", value: "Très petits volumes" },
     ],
+    sim: { attenduCents: 1350000, clearingCents: 1720000 },
   },
   trilobe: {
     founded: "2018",
@@ -73,6 +82,7 @@ const MAISONS: Record<string, MaisonContent> = {
       { label: "Calibre", value: "X-Centric, lecture par disques" },
       { label: "Distribution", value: "Production confidentielle" },
     ],
+    sim: { attenduCents: 520000, clearingCents: 718000 },
   },
   "raidillon-55": {
     founded: "2001",
@@ -87,6 +97,7 @@ const MAISONS: Record<string, MaisonContent> = {
       { label: "Mouvement", value: "Suisse (Sellita)" },
       { label: "Série", value: "55 exemplaires, jamais de n°13" },
     ],
+    sim: { attenduCents: 340000, clearingCents: 476000 },
   },
   "col-macarthur": {
     founded: "2014",
@@ -101,6 +112,7 @@ const MAISONS: Record<string, MaisonContent> = {
       { label: "Collaboration", value: "Officielle, Circuit de Spa-Francorchamps" },
       { label: "Francorchamps 1921", value: "Auto Sellita SW500, titane 41 mm, /500" },
     ],
+    sim: { attenduCents: 330000, clearingCents: 456000 },
   },
 };
 
@@ -126,8 +138,8 @@ export default async function DemoMaisonPage({
   params: { locale: Locale; slug: string };
   searchParams: { key?: string };
 }) {
-  // Garde d'accès : sans la bonne clé, 404 neutre.
-  if (!process.env.DEMO_KEY || searchParams.key !== process.env.DEMO_KEY) {
+  // Garde d'accès : clé propre à cette maison, sinon 404 neutre.
+  if (!isValidDemoKey(params.slug, searchParams.key)) {
     notFound();
   }
 
@@ -164,6 +176,15 @@ export default async function DemoMaisonPage({
 
   const country = countryLabel(brand.country_code);
   const pieces = drops.reduce((sum, d) => sum + (d.exemplaires ?? 0), 0);
+
+  // Bande « ce qu'un drop révélerait » : chiffres illustratifs (content.sim),
+  // delta calculé sur le nombre d'exemplaires de la simulation.
+  const editionPieces = pieces > 0 ? pieces : 1;
+  const perPieceCents = content.sim.clearingCents - content.sim.attenduCents;
+  const editionGainCents = perPieceCents * editionPieces;
+  const gainPct = Math.round(
+    (perPieceCents / content.sim.attenduCents) * 100,
+  );
 
   // Liens internes : restent dans /demo et portent la clé. Le FR par défaut
   // n'a pas de préfixe de locale (localePrefix « as-needed »).
@@ -246,6 +267,57 @@ export default async function DemoMaisonPage({
         {facts.map((f) => (
           <Fact key={f.label} label={f.label} value={f.value} />
         ))}
+      </div>
+
+      {/* Bande « ce qu'un drop révélerait » — chiffres illustratifs, marqués
+          comme simulation. C'est la valeur, en euros, avant tout discours. */}
+      <div className="border-b border-rule-soft bg-ink px-7 pb-14 pt-12 text-[oklch(0.95_0.008_82)] md:px-16 md:pb-16 md:pt-14">
+        <div className="max-w-[70ch]">
+          <p className="text-[10px] uppercase tracking-[0.24em] text-champagne-deep">
+            Simulation · à titre d&rsquo;illustration
+          </p>
+          <h2 className="font-serif mt-3 text-3xl italic md:text-4xl">
+            Ce qu&rsquo;un drop scellé pourrait révéler
+          </h2>
+
+          <div className="mt-8 flex flex-wrap items-end gap-x-10 gap-y-6">
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-[oklch(0.95_0.008_82)]/55">
+                Prix attendu
+              </div>
+              <div className="font-serif mt-1.5 text-2xl italic text-[oklch(0.95_0.008_82)]/70 line-through decoration-[oklch(0.72_0.07_80)]/60">
+                {formatEuros(content.sim.attenduCents, locale)}
+              </div>
+            </div>
+            <div className="self-center text-champagne-deep">{"→"}</div>
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-[oklch(0.95_0.008_82)]/55">
+                Prix unitaire révélé
+              </div>
+              <div className="font-serif mt-1.5 text-[2.6rem] leading-none italic text-[oklch(0.98_0.006_80)]">
+                {formatEuros(content.sim.clearingCents, locale)}
+              </div>
+            </div>
+            <div className="rounded-sm border border-[oklch(0.72_0.07_80)]/40 px-3 py-1.5 text-[13px] tracking-wide text-champagne-deep">
+              +{gainPct}%
+            </div>
+          </div>
+
+          <p className="mt-7 text-[15px] leading-relaxed text-[oklch(0.95_0.008_82)]/80">
+            Soit{" "}
+            <span className="text-[oklch(0.98_0.006_80)]">
+              +{formatEuros(perPieceCents, locale)} par pièce
+            </span>{" "}
+            et{" "}
+            <span className="text-[oklch(0.98_0.006_80)]">
+              +{formatEuros(editionGainCents, locale)} sur l&rsquo;édition de{" "}
+              {editionPieces}
+            </span>
+            . La N-ième offre fixe le prix ; tous les gagnants paient ce même
+            prix unique. Aucun calcul ne donne ce nombre à l&rsquo;avance, il
+            vit dans la tête des collectionneurs.
+          </p>
+        </div>
       </div>
 
       {/* Repères maison. */}

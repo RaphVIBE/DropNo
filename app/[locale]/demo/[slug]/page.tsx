@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { createClient } from "@/lib/supabase/server";
+import { isValidDemoKey } from "@/lib/demo-access";
 import { DropAssurance } from "@/components/drop/drop-assurance";
 import { DropHero, type DropStatus } from "@/components/drop/drop-hero";
 import { DropGallery } from "@/components/drop/drop-gallery";
@@ -42,8 +43,9 @@ export default async function DemoDropPage({
   params: { locale: Locale; slug: string };
   searchParams: { key?: string };
 }) {
-  // Garde d'accès : sans la bonne clé, 404 neutre (on ne révèle rien).
-  if (!process.env.DEMO_KEY || searchParams.key !== process.env.DEMO_KEY) {
+  // Garde d'accès : clé propre à cette maison, sinon 404 neutre (on ne révèle
+  // rien). Une maison ne peut pas deviner la simulation d'une autre.
+  if (!isValidDemoKey(params.slug, searchParams.key)) {
     notFound();
   }
 

@@ -216,7 +216,7 @@ export default async function DemoDropPage({
             isOpen={isOpen}
             isLocked={isLocked}
             clearingPriceCents={drop.clearing_price_cents ?? null}
-            existingBidCents={null}
+            existingBidCents={sim ? sim.reservedBidCents : null}
             loginHref={selfHref}
           />
 

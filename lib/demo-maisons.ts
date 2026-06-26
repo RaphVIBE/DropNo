@@ -105,6 +105,10 @@ export function computeSim(slug: string, exemplaires: number) {
   const { attenduCents, clearingCents } = content.sim;
   const editionPieces = exemplaires > 0 ? exemplaires : 1;
   const perPieceCents = clearingCents - attenduCents;
+  // Offre « réservée » simulée du gagnant : son bid scellé, au-dessus du
+  // clearing (en sealed-bid uniform price, on bid haut et on paie le clearing).
+  // Arrondi à 500 € pour un montant net affiché en dernière heure.
+  const reservedBidCents = Math.round((clearingCents * 1.12) / 50000) * 50000;
   return {
     attenduCents,
     clearingCents,
@@ -112,5 +116,6 @@ export function computeSim(slug: string, exemplaires: number) {
     editionPieces,
     editionGainCents: perPieceCents * editionPieces,
     gainPct: Math.round((perPieceCents / attenduCents) * 100),
+    reservedBidCents,
   };
 }

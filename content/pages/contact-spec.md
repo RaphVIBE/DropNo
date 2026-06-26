@@ -3,7 +3,7 @@
 *Dernière mise à jour : 13 juin 2026*
 
 Route : `/contact`
-Référence visuelle : `mockups/dropno-contact.html` (ouvrir dans le navigateur, c'est le contrat de design)
+Référence visuelle : `docs/design/mockups/dropno-contact.html` (ouvrir dans le navigateur, c'est le contrat de design)
 Stack : Next.js 14 App Router + Server Action + Resend + Zod
 
 ## Structure de la page

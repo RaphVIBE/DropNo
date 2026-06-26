@@ -13,7 +13,7 @@ Walkthrough adversarial sur le schéma `0001_init_drop_no.sql`. Objectif : valid
 | Service role (cron, edge) | JWT service_role, BYPASSRLS |
 | Founder admin | Service role + supabase_admin |
 
-Hypothèse : Stripe, Supabase Auth et Vercel sont configurés correctement (hors scope RLS).
+Hypothèse : Stripe, Supabase Auth et Netlify sont configurés correctement (hors scope RLS).
 
 ## Walkthrough
 
@@ -75,7 +75,7 @@ Hypothèse : Stripe, Supabase Auth et Vercel sont configurés correctement (hors
 |---|---|---|---|
 | R1 | Brand admin observe `bid_count` croître en quasi temps réel et infère l'intérêt | Volontaire (transparence agrégée OK) | Aucune |
 | R2 | Brand admin voit `amount_paid_cents` post-reveal (= clearing price) | Volontaire (payout) | Aucune |
-| R3 | Compromission du service role (clé fuit) | Stockage Vercel encrypted env, rotation 90j | Audit log pull externe (Datadog), alerte sur usage abusif |
+| R3 | Compromission du service role (clé fuit) | Stockage Netlify encrypted env, rotation 90j | Audit log pull externe (Datadog), alerte sur usage abusif |
 | R4 | Bug logique edge function `closeDrop` | Tests automatisés exhaustifs | Dry-run sur staging avant chaque drop, runbook incident |
 | R5 | Bidder révoqué KYC après bid | Pas de recheck KYC sur UPDATE | À discuter : faut-il invalider les bids si KYC perdu ? |
 | R6 | Acheteur retire son bid à T-23h, libère sa pré-auth, dépose un nouveau bid avec montant différent | Permis par design (modifiable jusqu'à T-1h) | Documenter en CGV |

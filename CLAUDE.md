@@ -13,7 +13,7 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 - Frontend : Next.js 14 (App Router) + Tailwind + shadcn/ui
 - Backend : Supabase (Postgres 17, Auth, RLS, Edge Functions Deno)
 - Paiement : Stripe (PaymentIntents pre-auth + Stripe Identity KYC)
-- Hosting : Vercel
+- Hosting : Netlify
 - Analytics : PostHog
 - Support : Crisp
 - Email transactionnel : Resend
@@ -46,19 +46,19 @@ Une marque ouvre un drop hebdo : N exemplaires d'une pièce, prix plancher P, fe
 | Edge function `close-drop` (TS, Stripe capture/release) | ✅ déployée v2 ACTIVE (persiste les runs dans `drop_close_runs`) |
 | Vault secrets (`edge_function_url`, `service_role_key`) | ✅ configurés |
 | Cron `dispatch_ripe_drops` / `open_ripe_drops` / `dispatch_reminders` | ✅ actifs |
-| Edge function secret `STRIPE_SECRET_KEY` | ⚠️ **ABSENTE** (constaté 2026-06-12 — toute capture/release échouerait). À reposer avant tout drop réel |
-| **Back-office** (`/admin` opérateur + `/maison` responsables, thème dark) | ✅ intégré — voir `BACKOFFICE.md` |
+| Edge function secret `STRIPE_SECRET_KEY` | ⚠️ **probablement posée** (run de clôture du 2026-06-25 passe le garde-fou — plus de « not configured » → clé lue par close-drop). Le constat « ABSENTE » du 2026-06-12 est périmé. À confirmer définitivement via `supabase secrets list` (= L1 du ROADMAP) |
+| **Back-office** (`/admin` opérateur + `/maison` responsables, thème dark) | ✅ intégré — voir `docs/specs/BACKOFFICE.md` |
 | Rôle admin-plateforme (`platform_admins` + `is_platform_admin()`) | ✅ déployé (0010) |
 | Policies admin + fonctions agrégées + support + contraintes maison | ✅ déployé (0011–0015) |
 | ⚠️ Correctif bug `log_bid_change` (digest hors search_path → bids bloqués) | ✅ déployé (0016) ; cause racine à patcher aussi dans 0002 |
-| **Console de clôture** (`/admin/cloture` : runs, santé crons, relance manuelle) | ✅ déployée (0021 + close-drop v2) — voir `BACKOFFICE.md` |
-| **Finance / payouts maisons** (`/admin/finance` : dû par drop, rétractation, marquer payé) | ✅ déployée (0022) — voir `BACKOFFICE.md` |
-| **Plateforme** (`/admin/plateforme` : équipe d'admins owners/staff + journal d'audit des enchères) | ✅ déployée (0023) — voir `BACKOFFICE.md` |
-| **Rétractation & remboursements** (workflow 14j sur `/admin/commandes/[id]` + edge function `refund-transaction`) | ✅ déployée (0024) — ⚠️ dépend de `STRIPE_SECRET_KEY` (absente) |
-| **Retours logistique** (trajet retour sur `deliveries` : direction, valeur assurée, tracking) | ✅ déployée (0025) — voir `BACKOFFICE.md` |
-| **Privilège № 001** (`serial_offers` + close-drop v3 + refund-transaction v2 + `/account/offre/[id]` + cron `expire_serial_offers`) | ✅ déployé (0026) — voir `Privilege_001.md` ; ⚠️ paiement supplément dépend aussi de `STRIPE_SECRET_KEY` |
+| **Console de clôture** (`/admin/cloture` : runs, santé crons, relance manuelle) | ✅ déployée (0021 + close-drop v2) — voir `docs/specs/BACKOFFICE.md` |
+| **Finance / payouts maisons** (`/admin/finance` : dû par drop, rétractation, marquer payé) | ✅ déployée (0022) — voir `docs/specs/BACKOFFICE.md` |
+| **Plateforme** (`/admin/plateforme` : équipe d'admins owners/staff + journal d'audit des enchères) | ✅ déployée (0023) — voir `docs/specs/BACKOFFICE.md` |
+| **Rétractation & remboursements** (workflow 14j sur `/admin/commandes/[id]` + edge function `refund-transaction`) | ✅ déployée (0024) — dépend de `STRIPE_SECRET_KEY` (probablement posée, cf. L1 — à confirmer via `supabase secrets list`) |
+| **Retours logistique** (trajet retour sur `deliveries` : direction, valeur assurée, tracking) | ✅ déployée (0025) — voir `docs/specs/BACKOFFICE.md` |
+| **Privilège № 001** (`serial_offers` + close-drop v3 + refund-transaction v2 + `/account/offre/[id]` + cron `expire_serial_offers`) | ✅ déployé (0026) — voir `docs/specs/Privilege_001.md` ; paiement supplément dépend aussi de `STRIPE_SECRET_KEY` (probablement posée, cf. L1 — à confirmer via `supabase secrets list`) |
 | **Vente partielle** (`drops.all_or_nothing` + close_drop v4 + toggle form création) | ✅ migration 0032 + front ; vente partielle par défaut, tout ou rien optionnel |
-| **Analytics PostHog** (tracking vitrine snippet + event `drop_view` ; cadrans `/admin`, fiche drop, `/admin/audience`) | ✅ code en place — ⚠️ clés env à poser (`NEXT_PUBLIC_POSTHOG_KEY`, `POSTHOG_PROJECT_ID`, `POSTHOG_PERSONAL_API_KEY`), voir `BACKOFFICE.md` |
+| **Analytics PostHog** (tracking vitrine snippet + event `drop_view` ; cadrans `/admin`, fiche drop, `/admin/audience`) | ✅ code en place — ⚠️ clés env à poser (`NEXT_PUBLIC_POSTHOG_KEY`, `POSTHOG_PROJECT_ID`, `POSTHOG_PERSONAL_API_KEY`), voir `docs/specs/BACKOFFICE.md` |
 
 Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas superuser sur Supabase). Lookup via `vault.decrypted_secrets`, update via `vault.update_secret(<uuid>, ...)`.
 
@@ -77,7 +77,7 @@ Settings stockés dans Supabase Vault (pas ALTER DATABASE — postgres n'est pas
 - **Cadence** (décidé 2026-06-12) : 1 drop/semaine, révélation le **jeudi 18h CET/CEST** (Europe/Brussels). Le rituel est ancré dans la copy du site.
 - **Catégorie MVP** : montres uniquement (bijoux/vêtements/art = v2)
 - **Brand naming** : Drop No. (Drop № 001, 002…)
-- **Privilège № 001** (décidé 2026-06-12) : offre privée post-reveal au seul bid le plus haut pour réserver le numéro de série 001. Supplément = 50% du spread (bid − clearing), plancher 5% du clearing. Paiement on-session séparé (une PaymentIntent = une seule capture). Pas de cascade au rang 2, pas d'annonce pré-bid, validité 24h. Rangs 2-5 = v2. Voir `Privilege_001.md` — ✅ **implémenté et déployé** (0026 + close-drop v3 + refund-transaction v2 + écran client + admin + tests)
+- **Privilège № 001** (décidé 2026-06-12) : offre privée post-reveal au seul bid le plus haut pour réserver le numéro de série 001. Supplément = 50% du spread (bid − clearing), plancher 5% du clearing. Paiement on-session séparé (une PaymentIntent = une seule capture). Pas de cascade au rang 2, pas d'annonce pré-bid, validité 24h. Rangs 2-5 = v2. Voir `docs/specs/Privilege_001.md` — ✅ **implémenté et déployé** (0026 + close-drop v3 + refund-transaction v2 + écran client + admin + tests)
 
 ## Out-of-scope MVP (différé v2+)
 
@@ -92,26 +92,26 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 - **RLS** : sacrée. Le client n'utilise JAMAIS service_role. Vérifier RLS sur chaque nouvelle table.
 - **Tests** : Vitest unit, Playwright e2e.
 - **Dates** : tout en UTC côté DB, conversion vers Europe/Paris côté UI.
-- **Back-office** (`/admin`, `/maison`) : Next 14 → `createClient()` **synchrone**, `params`/`searchParams` synchrones ; formulaires en **`useFormState`/`useFormStatus`** (pas `useActionState`) ; thème **dark** via le scope `.admin` dans `globals.css` (ne pas dupliquer les tokens). Détails dans `BACKOFFICE.md`.
+- **Back-office** (`/admin`, `/maison`) : Next 14 → `createClient()` **synchrone**, `params`/`searchParams` synchrones ; formulaires en **`useFormState`/`useFormStatus`** (pas `useActionState`) ; thème **dark** via le scope `.admin` dans `globals.css` (ne pas dupliquer les tokens). Détails dans `docs/specs/BACKOFFICE.md`.
 - **Prix provisoire N-ième** (clôture en cours) : affiché **uniquement** dans `/admin`. Côté maison/client : agrégés masqués jusqu'au reveal.
 
 ## Fichiers à lire avant de coder
 
-1. `PRD_v2_DropNo.md` — source de vérité produit
-2. `Decisions_Mecanisme.md` — pourquoi sealed-bid plutôt qu'English ouvert
+1. `docs/specs/PRD_v2_DropNo.md` — source de vérité produit
+2. `docs/specs/Decisions_Mecanisme.md` — pourquoi sealed-bid plutôt qu'English ouvert
 3. `db/schema-design.md` — narratif schéma
 4. `db/security-review.md` — modèle de menace + walkthrough attaques
 5. `supabase/README.md` — architecture backend + déploiement
-6. `design-system/tokens.css` + `design-system/components.md` — source of truth design
-7. `mockups/dropno-mockups.html` — rendu visuel des 3 écrans produit
-8. `mockups/dropno-homepage-public.html` — homepage publique dropno.eu (manifeste + calendar + lire + newsletter)
-9. `mockups/reveal-hero.html` — moment de révélation à T (bascule dark, clip-path reveal du clearing price)
+6. `docs/design/design-system/tokens.css` + `docs/design/design-system/components.md` — source of truth design
+7. `docs/design/mockups/dropno-mockups.html` — rendu visuel des 3 écrans produit
+8. `docs/design/mockups/dropno-homepage-public.html` — homepage publique dropno.eu (manifeste + calendar + lire + newsletter)
+9. `docs/design/mockups/reveal-hero.html` — moment de révélation à T (bascule dark, clip-path reveal du clearing price)
 10. `content/legal/` — drafts CGU, CGV, Privacy, Cookies, Mentions, Rétractation (à valider juriste avant publication)
 11. `content/essays/` — essais éditoriaux pour `/lire` (Vickrey/Trésor publié, autres à paraître)
-12. `outreach/` — emails de prospection marques (Ressence, Furlan Marri)
-13. `decks/drop-no-presentation-marques.pptx` — pitch deck 12 slides pour les marques (généré depuis `outputs/build-deck.js`)
-14. `BACKOFFICE.md` — **back-office `/admin` + `/maison`** : architecture, surfaces, conventions, migrations 0010–0016, accès dev, données démo
-15. `Privilege_001.md` — spec du Privilège № 001 (offre série 001 au top bidder)
+12. `business/Prospection maisons/` — emails de prospection marques (Ressence, Furlan Marri), `pipeline.xlsx`
+13. `business/Pitch maisons/` — pitch decks maisons (`.pptx` v3 FR/EN, PDF, captures site)
+14. `docs/specs/BACKOFFICE.md` — **back-office `/admin` + `/maison`** : architecture, surfaces, conventions, migrations 0010–0016, accès dev, données démo
+15. `docs/specs/Privilege_001.md` — spec du Privilège № 001 (offre série 001 au top bidder)
 
 ## Design tokens (depuis le mockup)
 
@@ -133,7 +133,7 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 
 ## Workflow recommandé
 
-1. Lire `CLAUDE.md` (ce fichier) + `PRD_v2_DropNo.md`
+1. Lire `CLAUDE.md` (ce fichier) + `docs/specs/PRD_v2_DropNo.md`
 2. Si scaffolding from scratch : prompt « Scaffold Next.js 14 App Router + Tailwind + shadcn + Supabase client + Stripe pour Drop No., suivant les conventions de CLAUDE.md »
 3. Itérer écran par écran. Priorité MVP : Drop Calendar → Page Drop → Auth/KYC flow → Dashboard utilisateur
 4. Toujours valider RLS sur chaque nouvelle requête (test avec un user authentifié sans KYC ne doit jamais voir un bid d'autrui)

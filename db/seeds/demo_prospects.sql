@@ -140,4 +140,32 @@ set bid_count = v.bc
 from (values (101, 11), (102, 7), (103, 9), (104, 13), (105, 16)) as v(drop_number, bc)
 where d.drop_number = v.drop_number and d.is_demo;
 
+-- ── Contenu EN (migration 0038) ──────────────────────────────────────────────
+-- Description + specs traduites, rendues sur /en (fallback FR sinon). Bloc
+-- séparé pour ne pas alourdir le CTE ci-dessus ; idempotent.
+update public.drops set
+  description_en = E'A mechanical chronograph with a grained sector dial, snailed sub-counters and blued hands. 38 mm steel case, manual-winding movement, domed sapphire crystal. A piece made for the wrist, not the display case.',
+  specs_en = '{"Case":"Steel, 38 mm","Movement":"Manual-winding chronograph","Crystal":"Domed sapphire","Dial":"Grained sector, snailed counters","Water resistance":"50 m","Strap":"Grained leather, steel buckle"}'::jsonb
+where drop_number = 101 and is_demo;
+
+update public.drops set
+  description_en = E'An orbital-module dial, no visible crown, read through flush-mounted discs. Grade 5 titanium, ultra-thin profile. Time read like a tide, not like a mechanism.',
+  specs_en = '{"Case":"Grade 5 titanium, 42 mm","Movement":"Automatic, ROCS module","Crystal":"Treated anti-reflective sapphire","Dial":"Anthracite orbital discs","Water resistance":"100 m","Strap":"Nubuck leather, titanium buckle"}'::jsonb
+where drop_number = 102 and is_demo;
+
+update public.drops set
+  description_en = E'Time read through three concentric rotating discs, no hands. Hand-guilloche midnight-blue dial, 40.5 mm steel case. Another grammar of time.',
+  specs_en = '{"Case":"Steel, 40.5 mm","Movement":"Automatic, X-Centric calibre","Crystal":"Flat sapphire","Dial":"Midnight blue guilloche, rotating discs","Water resistance":"30 m","Strap":"Blue calf, steel buckle"}'::jsonb
+where drop_number = 103 and is_demo;
+
+update public.drops set
+  description_en = E'A circuit edition of the Speed: deep green dial, ''55'' index, yellow accents and racing touches. 42 mm steel case, Swiss automatic movement, caseback engraved with the Spa-Francorchamps layout. Ten pieces from the series of 55; the highest bid chooses its number.',
+  specs_en = '{"Case":"Steel, 42 mm","Movement":"Swiss automatic (Sellita SW200)","Crystal":"Sapphire","Dial":"Circuit green, 55 index","Water resistance":"100 m","Edition":"10 pieces from the series of 55"}'::jsonb
+where drop_number = 104 and is_demo;
+
+update public.drops set
+  description_en = E'Born of an official collaboration with the Spa-Francorchamps Circuit. The dial is cut from the track''s own asphalt, the counters from the circuit''s kerbs, the pushers machined from the steel of the Uniroyal Tower. Nothing is symbolic: every material has a provenance.\n\n41 mm titanium case, Swiss Sellita SW500 automatic movement, sapphire crystal and caseback engraved with the circuit layout. A numbered automatic edition, assembled at the Liege workshop. This drop offers twelve, by sealed bid.',
+  specs_en = '{"Case":"Titanium, 41 mm","Movement":"Swiss automatic Sellita SW500","Dial":"Asphalt of the Spa-Francorchamps circuit","Counters":"Circuit kerbs","Pushers":"Steel of the Uniroyal Tower","Caseback":"Sapphire, engraved circuit layout","Water resistance":"100 m (10 ATM)","Edition":"Numbered, official Spa collaboration"}'::jsonb
+where drop_number = 105 and is_demo;
+
 commit;

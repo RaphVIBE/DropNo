@@ -1,0 +1,23 @@
+{
+  "name": "dropno-ai-talk-video",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Drop No. — animated talk video (Remotion).",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render DropNoAITalk out/dropno-ai-talk.mp4",
+    "render:demo": "remotion render SiteWalkthrough out/dropno-site-demo.mp4",
+    "still": "remotion still DropNoAITalk out/still.png --frame=60"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.5.0"
+  }
+}

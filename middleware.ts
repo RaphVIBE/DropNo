@@ -4,6 +4,7 @@ import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
 import { updateSession } from "@/lib/supabase/middleware";
 import { constructionGate } from "@/lib/construction-gate";
+import { maintenanceGate } from "@/lib/maintenance-gate";
 
 const handleI18n = createMiddleware(routing);
 
@@ -12,7 +13,12 @@ const handleI18n = createMiddleware(routing);
 const NON_LOCALIZED = ["/admin", "/maison", "/api", "/auth"];
 
 export async function middleware(request: NextRequest) {
-  // Barrière "site en construction" (avant tout le reste).
+  // Barrière "maintenance" (503) : prioritaire sur tout le reste. Coupe le
+  // front visiteur, préserve /admin · /maison · /api pour piloter pendant.
+  const maintenance = maintenanceGate(request);
+  if (maintenance) return maintenance;
+
+  // Barrière "site en construction" (avant tout le reste, hors maintenance).
   const gated = constructionGate(request);
   if (gated) return gated;
 
@@ -42,7 +48,9 @@ export const config = {
      * Toutes les routes sauf :
      * - _next/static, _next/image
      * - favicon.ico, fichiers d'images
+     * - robots.txt / sitemap.xml / og-default.png : métadonnées SEO servies
+     *   par leurs route handlers, jamais localisées (sinon i18n → 404).
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|og-default.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

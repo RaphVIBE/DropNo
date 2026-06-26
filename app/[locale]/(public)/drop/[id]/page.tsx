@@ -13,9 +13,11 @@ import { DropCountdown } from "@/components/drop/drop-countdown";
 import { ShareDrop } from "@/components/drop/share-drop";
 import { DropAlertBell } from "@/components/drop/drop-alert-bell";
 import { DropViewTracker } from "@/components/analytics/DropViewTracker";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { formatDropNumber, formatEuros, formatRevealMoment } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
-import { localizedAlternates } from "@/lib/i18n/metadata";
+import { defaultOgImage, localizedAlternates, siteUrl } from "@/lib/i18n/metadata";
+import { breadcrumbJsonLd, dropJsonLd } from "@/lib/seo/structured-data";
 import type { Tables } from "@/lib/supabase/types";
 
 export const dynamic = "force-dynamic";
@@ -61,9 +63,16 @@ export async function generateMetadata({
     description,
     alternates: localizedAlternates(`/drop/${params.id}`, locale),
     openGraph: {
+      type: "website",
       title,
       description,
-      ...(drop.hero_image_url ? { images: [{ url: drop.hero_image_url }] } : {}),
+      images: [{ url: drop.hero_image_url || defaultOgImage() }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [drop.hero_image_url || defaultOgImage()],
     },
   };
 }
@@ -83,7 +92,7 @@ export default async function DropPage({
   const { data: drop } = await supabase
     .from("drops_public")
     .select(
-      "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, is_demo, brand:brands(name, slug)"
+      "id, drop_number, title, description, description_en, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, specs_en, is_demo, brand:brands(name, slug)"
     )
     .eq("id", params.id)
     .maybeSingle();
@@ -143,8 +152,37 @@ export default async function DropPage({
         : null;
   const canAlert = status === "scheduled" || status === "open";
 
+  // Structured data : un drop réel est indexable (les démos ne le sont pas).
+  const dropId = drop.id ?? params.id;
+  const structuredData = isDemo
+    ? null
+    : {
+        product: dropJsonLd({
+          id: dropId,
+          title: drop.title ?? t("dropFallback"),
+          brandName: brand?.name ?? null,
+          description: drop.description ?? null,
+          floorPriceCents: drop.floor_price_cents ?? null,
+          status,
+          opensAt: drop.bid_window_opens_at ?? null,
+          revealAt: drop.reveal_at ?? null,
+          imageUrl: drop.hero_image_url ?? null,
+        }),
+        breadcrumb: breadcrumbJsonLd([
+          { name: "Drop No.", url: siteUrl() },
+          { name: t("breadcrumbDrops"), url: `${siteUrl()}/drops` },
+          { name: dropLabel, url: `${siteUrl()}/drop/${dropId}` },
+        ]),
+      };
+
   return (
     <>
+      {structuredData ? (
+        <>
+          <JsonLd data={structuredData.product} />
+          <JsonLd data={structuredData.breadcrumb} />
+        </>
+      ) : null}
       {isDemo ? (
         <div className="border-y border-champagne bg-sand px-7 py-3 text-center md:px-16">
           <p className="text-[11px] uppercase tracking-[0.2em] text-champagne-deep">
@@ -232,6 +270,8 @@ export default async function DropPage({
       <DropDetail
         description={drop.description}
         specs={(drop.specs as Record<string, unknown> | null) ?? null}
+        descriptionEn={drop.description_en ?? null}
+        specsEn={(drop.specs_en as Record<string, unknown> | null) ?? null}
       />
     </>
   );

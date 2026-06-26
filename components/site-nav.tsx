@@ -22,6 +22,7 @@ export async function SiteNav() {
     { href: "/drops", label: t("calendar") },
     { href: "/marques", label: t("houses") },
     { href: "/mecanisme", label: t("mechanism") },
+    { href: "/lire", label: t("read") },
     { href: "/a-propos", label: t("about") },
   ];
 

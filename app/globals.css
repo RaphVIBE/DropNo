@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /*
- * Drop No. — design tokens (depuis mockups/dropno-mockups.html + CLAUDE.md)
+ * Drop No. — design tokens (depuis docs/design/mockups/dropno-mockups.html + CLAUDE.md)
  * Light theme only au MVP. Espaces colorimetriques en oklch.
  */
 @layer base {

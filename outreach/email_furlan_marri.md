@@ -1,26 +1,30 @@
 # Email — Furlan Marri
 
-**À :** Hamad Al Marri, Andrea Furlan (fondateurs)
+**À :** Hamad Al Marri, Andrea Furlan (fondateurs) — info@furlanmarri.com (+ DM Instagram fondateurs)
 **De :** Raphaël Hombroeck — raph@dropno.eu
 **Objet :** Vos drops, sans la course au F5
+
+> Brouillon Gmail HTML en place (lien démo = bouton champagne, pas d'URL brute). Ce fichier = copie texte de référence.
 
 ---
 
 Bonjour Hamad, Andrea,
 
-J'espère que vous allez bien. D'abord, un mot sincère : ce que vous avez construit en quelques saisons force le respect — des chronographes au dessin juste, des cadrans sector qu'on reconnaît au premier coup d'œil, et une communauté qui répond présente à chaque sortie. C'est rare, et c'est précisément ce qui rend la suite intéressante.
+D'abord, un mot sincère : ce que vous avez bâti en quelques saisons force le respect, des chronographes au dessin juste, des cadrans sector reconnaissables au premier coup d'œil, une communauté qui répond présente à chaque sortie.
 
-Car derrière l'engouement, il y a un angle mort : trois minutes pour vider une référence en ligne, des collectionneurs sincères qui n'arrivent pas à acheter, et vous deux qui ne savez probablement pas si vous laissez vingt, quarante ou soixante pour cent sur la table à chaque sortie.
+Mais derrière l'engouement, il y a un angle mort : trois minutes pour vider une référence, des collectionneurs sincères qui n'arrivent pas à acheter, et vous deux qui ne savez probablement pas si vous laissez vingt, quarante ou soixante pour cent sur la table à chaque drop.
 
-Je travaille sur ce problème précis. Drop No. est une maison de drops scellés pour l'horlogerie premium. Chaque acheteur soumet une offre cachée pendant cinq jours. À la révélation, les huit plus hautes offres remportent la pièce, et toutes payent le même prix : la huitième. Pas de course, pas de bots, pas de bid war public. Surtout, à chaque drop, vous repartez avec une donnée que personne d'autre ne peut vous donner : ce que vos collectionneurs étaient vraiment prêts à payer, distribution complète, profil acheteurs KYC.
+Je travaille sur ce problème précis. Drop No. est une plateforme de drops scellés pour l'horlogerie brand-direct. Chaque acheteur soumet une offre cachée pendant cinq jours. À la révélation, les plus hautes offres remportent la pièce, et toutes payent le même prix : la dernière gagnante. Pas de course, pas de bots, pas de bid war public.
 
-Plancher minimum trois mille euros. Vous gardez la maîtrise du nombre d'exemplaires, du prix plancher, et du calendrier. Pré-autorisation Stripe et KYC Stripe Identity côté acheteurs, donc zéro fraude. Notre commission : douze pour cent, uniquement sur les ventes effectives. Drop annulé, zéro frais.
+Surtout, à chaque drop vous repartez avec une donnée que personne ne peut vous donner : ce que vos collectionneurs étaient vraiment prêts à payer, distribution complète, pas une moyenne, pas un sondage. Un chiffre, et le profil des acheteurs qui l'ont posé.
 
-Plutôt que de vous l'expliquer, je vous l'ai préparé : une simulation privée à votre nom, en ligne, avec le mécanisme qui tourne sur une de vos pièces.
+Drop No. n'est pas fait pour votre catalogue courant. C'est l'outil de la pièce que vous n'avez pas encore osé pricer : la prochaine chrono mécanique, une capsule anniversaire, une collab. Plancher à votre main (minimum trois mille euros), nombre d'exemplaires et calendrier aussi. Sous le plancher, le drop est annulé : zéro frais, aucune vente bradée. La pièce ne quitte votre atelier que pour partir chez un acheteur vérifié (KYC Stripe Identity, carte pré-autorisée) : nous ne la stockons jamais. Notre commission, douze pour cent, uniquement sur les ventes effectives.
 
-→ https://dropno.netlify.app/demo/furlan-marri?key=34304ef966ccbb5785604f69bcbffd8d
+Plutôt que de l'expliquer, je vous l'ai préparé : une simulation privée à votre nom, sur une de vos pièces.
 
-Pour la prochaine référence chrono ou un drop anniversaire, je serais ravi d'en discuter quinze minutes en visio, cette semaine ou la suivante.
+→ https://dropno.eu/demo/furlan-marri?key=ebb9fae3ae39a4b2adbb435baa016569
+
+Quinze minutes en visio cette semaine ou la suivante pour en parler ?
 
 Bien à vous,
 
@@ -32,8 +36,7 @@ raph@dropno.eu  ·  +32 475 72 27 63
 
 ## Notes d'envoi
 
-- **Canal :** info@furlanmarri.com en copie de leurs comptes Instagram fondateurs (DM). Les deux founders sont actifs sur IG, parfois plus réactifs que l'email pro.
-- **Tone :** plus direct que Ressence — ils sont jeunes, anglais courant, communauté digital-first. La référence "course au F5" leur parle.
-- **Pas de pièce jointe.** Deck en suivi si réponse positive.
-- **Angle subsidiaire :** si pas de réponse, retenter via William Massena (Massena LAB) qui connaît l'écosystème et peut intro proprement.
-- **Follow-up :** une seule relance, 8 jours après, en mentionnant un détail récent (nouvelle ref, post Instagram).
+- **Lien démo :** page **produit** (`/demo/furlan-marri`), `dropno.eu`, clé propre (`ebb9fae3…`). Brouillon Gmail = **bouton champagne**.
+- **Angle :** donnée / prix vrai en premier ; plancher 3 000 € cadré comme « la pièce que vous n'avez pas encore osé pricer » (pas le catalogue méca-quartz).
+- **Subsidiaire :** intro via William Massena (Massena LAB) si pas de réponse.
+- **Follow-up :** une relance J+8 en citant un détail récent (ref, post IG).

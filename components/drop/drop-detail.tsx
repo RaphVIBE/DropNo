@@ -1,26 +1,40 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 /**
  * Story marque + fiche technique. La description est decoupee en paragraphes
  * (separes par double saut de ligne). Les specs viennent de drops.specs (JSON
  * objet cle->valeur), affichees en dl si presentes.
+ *
+ * Contenu localise (migration 0038) : en /en, on prefere description_en /
+ * specs_en quand ils existent, sinon on retombe sur le FR de base. Les cles de
+ * specs sont elles aussi traduites (« Boitier » -> « Case »).
  */
 export async function DropDetail({
   description,
   specs,
+  descriptionEn = null,
+  specsEn = null,
 }: {
   description: string | null;
   specs: Record<string, unknown> | null;
+  descriptionEn?: string | null;
+  specsEn?: Record<string, unknown> | null;
 }) {
   const t = await getTranslations("dropDetail");
-  const paragraphs = (description ?? "")
+  const locale = await getLocale();
+  const useEn = locale === "en";
+
+  const resolvedDescription = useEn && descriptionEn ? descriptionEn : description;
+  const resolvedSpecs = useEn && specsEn ? specsEn : specs;
+
+  const paragraphs = (resolvedDescription ?? "")
     .split(/\n{2,}/)
     .map((p) => p.trim())
     .filter(Boolean);
 
   const specEntries =
-    specs && typeof specs === "object" && !Array.isArray(specs)
-      ? Object.entries(specs).filter(([, v]) => v != null && v !== "")
+    resolvedSpecs && typeof resolvedSpecs === "object" && !Array.isArray(resolvedSpecs)
+      ? Object.entries(resolvedSpecs).filter(([, v]) => v != null && v !== "")
       : [];
 
   if (paragraphs.length === 0 && specEntries.length === 0) return null;

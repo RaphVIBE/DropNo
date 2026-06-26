@@ -22,7 +22,7 @@ Voici comment il fonctionne, d'où il vient, et pourquoi Drop No. l'a choisi.
 
 ## Le problème que personne ne voulait nommer
 
-Avant 1992, le Trésor américain vendait ses bons du Trésor de la manière classique : les acheteurs institutionnels — banques, fonds, courtiers — soumettaient une offre cachée, en indiquant le prix qu'ils étaient prêts à payer. À la clôture, les plus offrants gagnaient. Et chacun payait son propre prix.
+Avant 1992, le Trésor américain vendait ses bons du Trésor de la manière classique : les acheteurs institutionnels (banques, fonds, courtiers) soumettaient une offre cachée, en indiquant le prix qu'ils étaient prêts à payer. À la clôture, les plus offrants gagnaient. Et chacun payait son propre prix.
 
 C'est ce qu'on appelle une enchère discriminatoire, ou *pay-as-bid*. Le nom est exact : chaque gagnant paye exactement ce qu'il a offert. Si vous avez offert 99,50, vous payez 99,50. Votre voisin a offert 99,20 : il paye 99,20 pour le même titre.
 

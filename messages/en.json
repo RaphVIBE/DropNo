@@ -11,6 +11,7 @@
     "houses": "Houses",
     "mechanism": "Mechanism",
     "about": "About",
+    "read": "Read",
     "signIn": "Sign in"
   },
   "footer": {
@@ -19,6 +20,7 @@
     "exploreCalendar": "Drop calendar",
     "exploreHouses": "Houses",
     "exploreMechanism": "The mechanism",
+    "exploreRead": "Read",
     "exploreAbout": "About",
     "commitmentsTitle": "Our commitments",
     "commitment1": "Pieces direct from the houses, never resold",
@@ -176,6 +178,7 @@
     "shareReveal": "Reveal {moment}",
     "countdownReveal": "Reveal in",
     "countdownOpen": "Opens in",
+    "breadcrumbDrops": "Calendar",
     "storyEyebrow": "The piece",
     "storyHeading": "In the maison's own words.",
     "floorPrice": "Floor price",
@@ -490,6 +493,20 @@
     "accept": "Accept all",
     "refuse": "Decline"
   },
+  "lire": {
+    "metaTitle": "Read · Drop No.",
+    "metaDescription": "Essays on uniform price auctions, premium watchmaking and price discovery. The Drop No. reading room.",
+    "eyebrow": "The reading room",
+    "heroTitle": "Read",
+    "heroBody": "The mechanism, its history, its reasons. A few essays to understand why eight buyers pay the same price.",
+    "empty": "The first essays are coming soon.",
+    "readingTime": "{minutes} min read",
+    "backToIndex": "Back to the reading room",
+    "frenchOnlyNote": "This essay is available in French only for now.",
+    "notFoundMetaTitle": "Essay not found · Drop No.",
+    "notFound": "This essay does not exist or has not been published yet.",
+    "breadcrumbRead": "Read"
+  },
   "waitlist": {
     "kicker": "Not a newsletter",
     "name": "La Liste",
@@ -514,5 +531,43 @@
     "errorEmail": "Invalid email.",
     "errorConsent": "Please tick the box to confirm.",
     "errorGeneric": "Something went wrong. Please try again."
+  },
+  "errors": {
+    "backHome": "Back to home",
+    "viewCalendar": "See the calendar",
+    "tryAgain": "Try again",
+    "contactPrompt": "Need a hand?",
+    "contactLink": "hello@dropno.eu",
+    "notFound": {
+      "code": "404",
+      "eyebrow": "Page not found",
+      "title": "This page does not exist.",
+      "lede": "The link may have expired, or the piece you were looking for has already been revealed. Nothing is lost: the next drop is waiting for you."
+    },
+    "runtime": {
+      "eyebrow": "Technical incident",
+      "title": "Something stopped short.",
+      "lede": "An unexpected error happened on our side. Any bids you have placed remain saved and valid. Please try again in a moment.",
+      "digest": "Incident reference"
+    },
+    "forbidden": {
+      "code": "403",
+      "eyebrow": "Restricted access",
+      "title": "This page is private.",
+      "lede": "You do not have the rights to view this page. If you believe this is a mistake, sign in or write to us.",
+      "signIn": "Sign in"
+    },
+    "global": {
+      "title": "Something went wrong.",
+      "lede": "The site ran into an unexpected incident. Any bids you have placed remain saved and valid. Reload the page to continue.",
+      "reload": "Reload the page"
+    },
+    "maintenance": {
+      "eyebrow": "Maintenance",
+      "title": "We will be back shortly.",
+      "lede": "The site is briefly down for maintenance. We are putting the finishing touches to the experience.",
+      "reassure": "Your bid remains saved and valid. No action is needed on your part.",
+      "contactPrompt": "Something urgent?"
+    }
   }
 }

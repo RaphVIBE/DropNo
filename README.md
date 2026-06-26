@@ -12,7 +12,7 @@ price clearing). Pas de surenchère temps réel, pas de guerre des prix.
 - **Frontend** : Next.js 14 (App Router, TypeScript strict) + Tailwind + shadcn/ui
 - **Backend** : Supabase (Postgres 17, Auth, RLS stricte, Edge Functions Deno)
 - **Paiement** : Stripe (PaymentIntents pré-auth capture manuelle + Stripe Identity KYC)
-- **Hosting** : Vercel · **Emails** : Resend · **Analytics** : PostHog · **Support** : Crisp
+- **Hosting** : Netlify · **Emails** : Resend · **Analytics** : PostHog · **Support** : Crisp
 
 ## Démarrage
 
@@ -49,8 +49,8 @@ bids à la révélation par `close_drop()` (SQL atomique, idempotente,
 
 ## Documentation
 
-- `PRD_v2_DropNo.md` — source de vérité produit
-- `Decisions_Mecanisme.md` — pourquoi sealed-bid
+- `docs/specs/PRD_v2_DropNo.md` — source de vérité produit
+- `docs/specs/Decisions_Mecanisme.md` — pourquoi sealed-bid
 - `db/schema-design.md` · `db/security-review.md` — schéma & modèle de menace
 - `supabase/README.md` — architecture backend & déploiement
 - `CLAUDE.md` — contexte & conventions

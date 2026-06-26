@@ -11,6 +11,7 @@
     "houses": "Maisons",
     "mechanism": "Mécanisme",
     "about": "À propos",
+    "read": "Lire",
     "signIn": "Se connecter"
   },
   "footer": {
@@ -19,6 +20,7 @@
     "exploreCalendar": "Calendrier des drops",
     "exploreHouses": "Maisons",
     "exploreMechanism": "Le mécanisme",
+    "exploreRead": "Lire",
     "exploreAbout": "À propos",
     "commitmentsTitle": "Nos engagements",
     "commitment1": "Pièces en direct des maisons, jamais de revente",
@@ -176,6 +178,7 @@
     "shareReveal": "Révélation {moment}",
     "countdownReveal": "Révélation dans",
     "countdownOpen": "Ouverture dans",
+    "breadcrumbDrops": "Calendrier",
     "storyEyebrow": "La pièce",
     "storyHeading": "Racontée par la maison.",
     "floorPrice": "Prix plancher",
@@ -490,6 +493,20 @@
     "accept": "Tout accepter",
     "refuse": "Refuser"
   },
+  "lire": {
+    "metaTitle": "Lire · Drop No.",
+    "metaDescription": "Essais sur le mécanisme des enchères à prix uniforme, l'horlogerie premium et la découverte des prix. La lecture de Drop No.",
+    "eyebrow": "La lecture",
+    "heroTitle": "Lire",
+    "heroBody": "Le mécanisme, son histoire, ses raisons. Quelques essais pour comprendre pourquoi huit acheteurs payent le même prix.",
+    "empty": "Les premiers essais paraissent bientôt.",
+    "readingTime": "{minutes} min de lecture",
+    "backToIndex": "Retour à la lecture",
+    "frenchOnlyNote": "Cet essai n'est pour l'instant disponible qu'en français.",
+    "notFoundMetaTitle": "Essai introuvable · Drop No.",
+    "notFound": "Cet essai n'existe pas ou n'a pas encore paru.",
+    "breadcrumbRead": "Lire"
+  },
   "waitlist": {
     "kicker": "Pas une newsletter",
     "name": "La Liste",
@@ -514,5 +531,43 @@
     "errorEmail": "Email invalide.",
     "errorConsent": "Merci de cocher la case pour confirmer.",
     "errorGeneric": "Une erreur est survenue. Réessayez."
+  },
+  "errors": {
+    "backHome": "Retour à l’accueil",
+    "viewCalendar": "Voir le calendrier",
+    "tryAgain": "Réessayer",
+    "contactPrompt": "Besoin d’aide ?",
+    "contactLink": "hello@dropno.eu",
+    "notFound": {
+      "code": "404",
+      "eyebrow": "Page introuvable",
+      "title": "Cette page n’existe pas.",
+      "lede": "Le lien a peut-être expiré, ou la pièce que vous cherchez a déjà été révélée. Rien n’est perdu : le prochain drop vous attend."
+    },
+    "runtime": {
+      "eyebrow": "Incident technique",
+      "title": "Quelque chose s’est interrompu.",
+      "lede": "Une erreur inattendue est survenue de notre côté. Vos offres en cours restent enregistrées et valables. Réessayez dans un instant.",
+      "digest": "Référence de l’incident"
+    },
+    "forbidden": {
+      "code": "403",
+      "eyebrow": "Accès réservé",
+      "title": "Cette page est privée.",
+      "lede": "Vous n’avez pas les droits nécessaires pour voir cette page. Si vous pensez qu’il s’agit d’une erreur, connectez-vous ou écrivez-nous.",
+      "signIn": "Se connecter"
+    },
+    "global": {
+      "title": "Une erreur est survenue.",
+      "lede": "Le site a rencontré un incident inattendu. Vos offres en cours restent enregistrées et valables. Rechargez la page pour reprendre.",
+      "reload": "Recharger la page"
+    },
+    "maintenance": {
+      "eyebrow": "Maintenance",
+      "title": "Nous revenons très vite.",
+      "lede": "Le site est en maintenance pour quelques instants. Nous mettons la dernière main à l’expérience.",
+      "reassure": "Votre offre reste enregistrée et valable. Aucune action n’est requise de votre part.",
+      "contactPrompt": "Une question pressante ?"
+    }
   }
 }

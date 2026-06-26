@@ -29,7 +29,7 @@ import type { Locale } from "@/i18n/routing";
 export const dynamic = "force-dynamic";
 
 const SELECT =
-  "id, drop_number, title, description, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, brand:brands(name, slug)";
+  "id, drop_number, title, description, description_en, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, specs_en, brand:brands(name, slug)";
 
 export async function generateMetadata(): Promise<Metadata> {
   // Jamais indexée.
@@ -210,6 +210,8 @@ export default async function DemoDropPage({
       <DropDetail
         description={drop.description}
         specs={(drop.specs as Record<string, unknown> | null) ?? null}
+        descriptionEn={drop.description_en ?? null}
+        specsEn={(drop.specs_en as Record<string, unknown> | null) ?? null}
       />
     </>
   );

@@ -52,7 +52,7 @@ python3 supabase/auth-emails/finalize-auth.py
 ```
 
 Options : `--site-url https://…`, `--no-rotate` (réutilise la clé fournie).
-Après : fais tourner la clé Resend **transactionnelle** côté hébergeur (Vercel)
+Après : fais tourner la clé Resend **transactionnelle** côté hébergeur (Netlify)
 et déploie pour publier `public/email/*.png`.
 
 ## Brancher Resend en SMTP (recommandé en prod)

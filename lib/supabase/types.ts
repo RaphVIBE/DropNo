@@ -512,6 +512,7 @@ export type Database = {
           clearing_price_cents: number | null
           created_at: string
           description: string | null
+          description_en: string | null
           drop_number: number
           exemplaires: number
           floor_price_cents: number
@@ -525,6 +526,7 @@ export type Database = {
           reveal_at: string
           revealed_at: string | null
           specs: Json | null
+          specs_en: Json | null
           status: string
           title: string
           updated_at: string
@@ -538,6 +540,7 @@ export type Database = {
           clearing_price_cents?: number | null
           created_at?: string
           description?: string | null
+          description_en?: string | null
           drop_number: number
           exemplaires: number
           floor_price_cents: number
@@ -551,6 +554,7 @@ export type Database = {
           reveal_at: string
           revealed_at?: string | null
           specs?: Json | null
+          specs_en?: Json | null
           status?: string
           title: string
           updated_at?: string
@@ -564,6 +568,7 @@ export type Database = {
           clearing_price_cents?: number | null
           created_at?: string
           description?: string | null
+          description_en?: string | null
           drop_number?: number
           exemplaires?: number
           floor_price_cents?: number
@@ -577,6 +582,7 @@ export type Database = {
           reveal_at?: string
           revealed_at?: string | null
           specs?: Json | null
+          specs_en?: Json | null
           status?: string
           title?: string
           updated_at?: string
@@ -1034,6 +1040,7 @@ export type Database = {
           brand_id: string | null
           clearing_price_cents: number | null
           description: string | null
+          description_en: string | null
           drop_number: number | null
           exemplaires: number | null
           floor_price_cents: number | null
@@ -1046,6 +1053,7 @@ export type Database = {
           reveal_at: string | null
           revealed_at: string | null
           specs: Json | null
+          specs_en: Json | null
           status: string | null
           title: string | null
         }

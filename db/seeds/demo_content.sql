@@ -28,6 +28,19 @@ update drops set
     "Bracelet": "Cuir de veau huilé, boucle bronze",
     "Garantie": "5 ans"
   }'::jsonb,
+  -- Contenu EN (migration 0038) : rendu sur /en, fallback FR sinon.
+  description_en = E'The Plongeur Bronze is our first dive watch. A 42 mm CuSn8 bronze case that patinas over time, unique to each wrist, and a smoked-brown dial that turns to honey under raking light.\n\nUnder the domed sapphire crystal, the automatic LV-300 calibre delivers 300 metres of water resistance and sixty hours of power reserve. Unidirectional rotating bezel with a ceramic insert, screw-down crown, caseback engraved with the serial number.\n\nThree pieces only, numbered 1 to 3. Delivered in its workshop case with an oiled leather strap and a spare tropic rubber strap, signed certificate and a complimentary service at five years.',
+  specs_en = '{
+    "Case": "Bronze CuSn8, 42 mm",
+    "Water resistance": "300 m",
+    "Movement": "Automatic, in-house calibre LV-300",
+    "Power reserve": "60 hours",
+    "Crystal": "Domed sapphire, double anti-reflective",
+    "Bezel": "Unidirectional rotating, ceramic insert",
+    "Dial": "Lacquered smoked brown, Super-LumiNova indexes",
+    "Strap": "Oiled calf leather, bronze buckle",
+    "Warranty": "5 years"
+  }'::jsonb,
   -- Galerie sombre/dramatique cohérente : plongeuse sur fond noir + chrono sur
   -- reflet rouge (écho au velours du héros). Set curaté visuellement.
   images_urls = '[

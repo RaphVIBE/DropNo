@@ -184,7 +184,7 @@ Canaux : email obligatoire + push (si autorisé). Rate-limit : max 4 notifs par 
 - Audit sécurité externe avant launch (recommandé Cure53 ou Synacktiv, ~10-15k€).
 
 ### Conformité
-- RGPD : DPA Stripe + Supabase + PostHog + Crisp + Vercel signés. Registre des traitements documenté.
+- RGPD : DPA Stripe + Supabase + PostHog + Crisp + Netlify signés. Registre des traitements documenté.
 - AML : KYC Stripe Identity sur tous les acheteurs au 1er bid. Conservation 5 ans.
 - CGV publiées, accessibles depuis chaque drop. Mention rétractation 14j explicite.
 
@@ -213,7 +213,7 @@ Canaux : email obligatoire + push (si autorisé). Rate-limit : max 4 notifs par 
 |---|---|---|
 | Frontend | Next.js 14 (App Router) + Tailwind + shadcn/ui | SEO, RSC, ecosystem |
 | Backend | Supabase (Postgres, Auth, Realtime, Storage, Edge Functions) | All-in-one, RLS, MCP déjà connecté |
-| Hosting | Vercel | Intégration Next.js native, edge |
+| Hosting | Netlify | Intégration Next.js native, edge |
 | Paiement | Stripe + Stripe Identity | Pré-auth, KYC, standard EU |
 | CDN images | Cloudflare Images | Optimisation, watermarking |
 | Analytics | PostHog | Self-hostable, RGPD-friendly |
@@ -275,7 +275,7 @@ Canaux : email obligatoire + push (si autorisé). Rate-limit : max 4 notifs par 
 | R4 | Fuite des bids avant T (interne ou breach) | Faible | Catastrophique | Chiffrement at-rest, audit log, accès admin restreint (founders only), pentest avant launch |
 | R5 | Litige authentification (marque conteste casual contre acheteur) | Faible (brand-direct) | Élevé | Brand-direct supprime la majorité du risque. CGV clarifient responsabilité marque. Assurance marchandise. |
 | R6 | DGCCRF / rétractation EU mal appliquée | Moyenne | Élevé | Consultation juriste e-commerce EU avant CGV. Tests utilisateurs sur flow rétractation. |
-| R7 | Cash burn pré-traction | Élevée | Moyen | Stack low-cost (Supabase, Vercel, Crisp), équipe lean, milestones GMV-gated |
+| R7 | Cash burn pré-traction | Élevée | Moyen | Stack low-cost (Supabase, Netlify, Crisp), équipe lean, milestones GMV-gated |
 | R8 | Concurrent positionné identique (Catawiki étend, Christie's lance Drop) | Moyenne | Moyen | Vitesse, brand-direct exclusif (positionnement défensible), partenariats marques exclusifs |
 | R9 | Acheteur fraude (KYC contourné, carte volée) | Faible | Moyen | Stripe Radar + Stripe Identity. Plafond bid first-time (ex : 10k€ premier drop). |
 | R10 | Marque retire un drop en cours | Faible | Élevé | Clause contrat-cadre interdit retrait après T-fenêtre. Pénalité forfaitaire si retrait. |

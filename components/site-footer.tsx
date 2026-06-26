@@ -23,6 +23,7 @@ export async function SiteFooter() {
     { href: "/drops", label: t("exploreCalendar") },
     { href: "/marques", label: t("exploreHouses") },
     { href: "/mecanisme", label: t("exploreMechanism") },
+    { href: "/lire", label: t("exploreRead") },
     { href: "/a-propos", label: t("exploreAbout") },
   ];
 

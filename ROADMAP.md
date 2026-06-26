@@ -63,11 +63,13 @@ Chaque lane a un agent propriétaire (voir `.claude/agents/`). Statut tenu à jo
 ### 📣 Social — `social`
 | Item | P | Statut |
 |---|---|---|
-| Calendrier de publication (source de vérité dédiée) | — | ✅ `social/calendrier-publication.md` |
-| Feed IG + Reels batch 01 | — | 🟡 en cours (cf. calendrier) |
-| Posts à programmer (29/06 Royal Oak, 01/07 Speedmaster, 03/07 Sealed…) | P1 | ⏳ |
-| LinkedIn bilingue jeudi | P1 | 🟡 |
-| Profils & bannières (avatar, X, LinkedIn, YouTube) | P2 | ⏳ |
+| Calendrier de publication (source de vérité dédiée) | — | ✅ `social/calendrier-publication.md` (réconcilié vs Buffer 2026-06-26) |
+| Cadre de campagne (phasage + semaine-type reveal) | — | ✅ `social/strategie-campagne.md` |
+| Feed IG + Reels batch 01 | — | ✅ 6 posts publiés 16-26/06 |
+| LinkedIn bilingue jeudi | P1 | 🟡 2 publiés (Grey market, Supreme) ; LI batch-02 à programmer |
+| **X / Twitter (canal autonome)** | P1 | 🟡 backlog rattrapé le 26/06 (4 posts programmés, échelonnés) ; reprise auto 19h abandonnée, cadence propre 2-3/sem à installer |
+| Posts à programmer (29/06 Royal Oak, 01/07 Speedmaster, 03/07 Sealed…) | P1 | ⏳ batch-02 |
+| Profils & bannières (avatar, X, LinkedIn, YouTube) | P2 | 🟡 avatars posés ; bannières + YouTube ⏳ |
 
 ### 🤝 Croissance & CRM — `croissance`
 | Item | P | Statut |

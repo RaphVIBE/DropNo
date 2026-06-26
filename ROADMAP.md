@@ -94,6 +94,7 @@ Chaque lane a un agent propriétaire (voir `.claude/agents/`). Statut tenu à jo
 | Retours logistique (direction, valeur assurée, tracking) | — | ✅ (0025) |
 | Tracking DHL intégré, enlèvements maisons | P1 | ⏳ |
 | Analytics PostHog : poser les clés env + valider events (`drop_view`) | P1 | ⏳ clés manquantes |
+| Appliquer migration 0038 (contenu drop localisé) en prod après merge #45 | P1 | ⏳ (2026-06-26) déclencheur = merge PR #45 (`chore/reorg-docs-seo`) ; rappel quotidien `dropno-migration-0038-apres-merge-pr45` posé |
 | Export comptable CSV + base TVA | P2 | ⏳ |
 | RGPD : export/suppression compte, registre | P1 | ⏳ |
 

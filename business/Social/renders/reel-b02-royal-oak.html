@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Drop № — Reel b02 Royal Oak (rétention)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300;1,9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: oklch(0.975 0.006 80);
+    --ink: oklch(0.18 0.012 60);
+    --ink-soft: oklch(0.35 0.012 60);
+    --champagne: oklch(0.72 0.07 80);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden}
+  body{background:#1a1714;font-family:Inter,sans-serif}
+  .stage{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+  .frame{position:relative;width:1080px;height:1920px;overflow:hidden;
+    background:var(--bg);color:var(--ink);transform-origin:top left}
+  .grain{position:absolute;inset:0;opacity:.05;mix-blend-mode:multiply;pointer-events:none;z-index:5}
+  .vign{position:absolute;inset:0;pointer-events:none;z-index:4;
+    background:radial-gradient(120% 80% at 50% 38%, transparent 52%, rgba(40,30,18,.12) 100%)}
+  .scrim{position:absolute;left:0;right:0;bottom:0;top:32%;z-index:2;pointer-events:none;
+    background:linear-gradient(to bottom, transparent 0%, var(--bg) 48%)}
+
+  /* engraved Royal Oak — bigger, denser, instantly readable */
+  .engrave{position:absolute;left:50%;top:36%;width:1480px;height:1480px;transform:translate(-50%,-50%);
+    z-index:1;opacity:0;animation:bgIn 1.8s ease-out .05s forwards, bgDrift 26s ease-in-out infinite}
+  .engrave svg{width:100%;height:100%;display:block}
+  .draw{stroke-dasharray:3600;stroke-dashoffset:3600;animation:draw 2.4s ease-out .1s forwards}
+  .draw.d2{animation-delay:.45s}.draw.d3{animation-delay:.9s}.draw.d4{animation-delay:1.3s}
+  .screw{transform-box:fill-box;transform-origin:center;opacity:0;animation:screwIn .8s ease-out forwards}
+  .hands{transform-box:view-box;transform-origin:750px 690px;opacity:0;
+    animation:handsIn 1.5s cubic-bezier(.2,.8,.2,1) .35s forwards}
+  .sec{transform-box:view-box;transform-origin:750px 690px;animation:tick 9s linear 1.4s infinite}
+  .tap{opacity:0;animation:tapIn 1.6s ease-out .6s forwards}
+
+  .sweep{position:absolute;left:0;top:22%;width:34%;height:44%;z-index:2;pointer-events:none;
+    background:linear-gradient(100deg, transparent 0%, rgba(255,248,232,.62) 50%, transparent 100%);
+    mix-blend-mode:screen;transform:translateX(-60%) skewX(-12deg);
+    animation:sweep 7.5s ease-in-out .3s infinite}
+
+  .copy{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:0 110px 168px;height:44%;display:flex;align-items:flex-end}
+  .beat{position:absolute;left:110px;right:110px;bottom:168px;opacity:0}
+  .beat .line{font-family:Fraunces,serif;font-style:italic;font-weight:300;font-size:112px;line-height:1.05;color:var(--ink)}
+  .beat .line.sm{font-size:84px}
+  .beat .sub{margin-top:30px;font:400 40px/1.5 Inter;color:var(--ink-soft)}
+  .b1{animation:beat 4.2s ease-out .3s forwards}
+  .b2{animation:beat 3.4s ease-out 4.4s forwards}
+  .b3{animation:beat 3.8s ease-out 7.7s forwards}
+
+  .save{position:absolute;left:110px;right:110px;top:50%;transform:translateY(-40%);z-index:3;
+    opacity:0;animation:saveIn 1.4s ease-out 11.7s forwards}
+  .save .rule{height:3px;width:120px;background:var(--champagne);margin-bottom:46px}
+  .save .big{font-family:Fraunces,serif;font-style:italic;font-weight:300;font-size:124px;line-height:1.04;color:var(--ink)}
+  .save .wordmark{font-family:Fraunces,serif;font-style:italic;font-weight:400;font-size:58px;margin-top:64px;color:var(--ink)}
+  .save .wordmark .pt{color:var(--champagne)}
+
+  @keyframes bgIn{to{opacity:.15}}
+  @keyframes bgDrift{0%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(1.035)}}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes screwIn{0%{opacity:0;transform:scale(.35) rotate(-45deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+  @keyframes handsIn{0%{opacity:0;transform:rotate(-120deg)}100%{opacity:1;transform:rotate(0)}}
+  @keyframes tick{to{transform:rotate(360deg)}}
+  @keyframes tapIn{to{opacity:1}}
+  @keyframes sweep{0%{transform:translateX(-60%) skewX(-12deg)}55%{transform:translateX(380%) skewX(-12deg)}100%{transform:translateX(380%) skewX(-12deg)}}
+  @keyframes beat{0%{opacity:0;transform:translateY(26px)}9%{opacity:1;transform:translateY(0)}86%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-14px)}}
+  @keyframes saveIn{0%{opacity:0;transform:translateY(-30%)}100%{opacity:1;transform:translateY(-40%)}}
+
+  .bar{position:fixed;top:14px;left:14px;right:14px;display:flex;gap:10px;align-items:center;color:#cdbfa6;font:500 13px Inter;z-index:30}
+  .bar button{background:#cdbfa6;color:#1a1714;border:0;border-radius:5px;padding:8px 16px;font:600 13px Inter;cursor:pointer}
+  .bar button:hover{background:var(--champagne)}
+  .bar .hint{opacity:.75;max-width:640px;line-height:1.4}
+  body.clean{background:#000}
+  body.clean .hint, body.clean #clean{display:none}
+  body.clean #replay{opacity:.5}body.clean #replay:hover{opacity:1}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <button id="replay">Rejouer</button>
+    <button id="clean">Masquer les repères</button>
+    <span class="hint">Reel 9:16 muet, ~16s. Royal Oak reconnaissable : vis hexagonales, tapisserie, aiguilles 10:10 + trotteuse qui balaie, guichet date, bracelet intégré. Export : « Masquer les repères », plein écran, enregistre, son dans CapCut.</span>
+  </div>
+
+  <div class="stage" id="stage">
+  <div class="frame" id="frame">
+    <div class="engrave">
+      <svg viewBox="0 0 1500 1500" aria-hidden="true">
+        <defs>
+          <clipPath id="dial"><polygon points="952,790 845,897 655,897 548,790 548,590 655,483 845,483 952,590"/></clipPath>
+        </defs>
+        <!-- tapisserie waffle, clipped to the dial -->
+        <g class="tap" clip-path="url(#dial)" fill="oklch(0.18 0.012 60)" opacity=".5"><g id="tap"></g></g>
+
+        <g stroke="oklch(0.18 0.012 60)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <!-- integrated bracelet (built in JS), behind the case -->
+          <g id="bracelet" stroke-width="2"></g>
+
+          <!-- octagonal bezel -->
+          <polygon class="draw" points="990,805 865,930 635,930 510,805 510,575 635,450 865,450 990,575" stroke-width="3.4"/>
+          <polygon class="draw d2" points="952,790 845,897 655,897 548,790 548,590 655,483 845,483 952,590" stroke-width="1.6" opacity=".55"/>
+
+          <!-- date window at 3 o'clock -->
+          <rect class="draw d3" x="868" y="672" width="48" height="40" rx="3" stroke-width="1.8"/>
+
+          <!-- hands: hour + minute at 10:10, sweep into place -->
+          <g class="hands" stroke-linecap="round">
+            <line x1="750" y1="690" x2="655" y2="635" stroke-width="11"/>   <!-- hour -> 10 -->
+            <line x1="750" y1="690" x2="897" y2="605" stroke-width="8"/>    <!-- minute -> 2 -->
+          </g>
+          <!-- seconds hand sweeping for life -->
+          <g class="sec">
+            <line x1="750" y1="690" x2="750" y2="500" stroke="oklch(0.72 0.07 80)" stroke-width="3"/>
+            <line x1="750" y1="690" x2="750" y2="728" stroke="oklch(0.72 0.07 80)" stroke-width="5"/>
+          </g>
+          <circle cx="750" cy="690" r="9" fill="oklch(0.18 0.012 60)" stroke="none"/>
+
+          <!-- 8 hexagonal screws (built in JS), on top -->
+          <g id="screws" stroke-width="2.2"></g>
+        </g>
+
+        <g fill="oklch(0.18 0.012 60)" opacity=".5" style="font-family:Fraunces,Georgia,serif;font-style:italic">
+          <text x="1320" y="1330" text-anchor="end" style="font-size:40px">Fig. 11 · la lunette octogonale</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="sweep"></div>
+    <div class="scrim"></div>
+
+    <div class="copy">
+      <div class="beat b1"><div class="line">Steel, priced like gold.</div></div>
+      <div class="beat b2"><div class="line">In 1972, the industry called it suicide.</div></div>
+      <div class="beat b3"><div class="line sm">It saved haute horlogerie.</div><div class="sub">Drawn overnight by Gérald Genta. Now the one watch you cannot get at retail.</div></div>
+    </div>
+
+    <div class="save">
+      <div class="rule"></div>
+      <div class="big">The cure became the symptom.</div>
+      <div class="wordmark">Drop <span class="pt">№</span></div>
+    </div>
+
+    <div class="vign"></div>
+    <svg class="grain"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>
+  </div>
+  </div>
+
+<script>
+  // ---- tapisserie waffle ----
+  (function(){
+    var t=document.getElementById('tap'); if(!t) return;
+    var s='', step=30, sz=15;
+    for(var y=478;y<=902;y+=step){
+      for(var x=540;x<=952;x+=step){
+        s+='<rect x="'+x+'" y="'+y+'" width="'+sz+'" height="'+sz+'" rx="2"/>';
+      }
+    }
+    t.innerHTML=s;
+  })();
+  // ---- 8 hexagonal screws at the bezel vertices ----
+  (function(){
+    var host=document.getElementById('screws'); if(!host) return;
+    var verts=[[990,805],[865,930],[635,930],[510,805],[510,575],[635,450],[865,450],[990,575]];
+    function hex(cx,cy,r){
+      var p=[]; for(var k=0;k<6;k++){var a=(-90+k*60)*Math.PI/180; p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));}
+      return p.join(' ');
+    }
+    var s='';
+    verts.forEach(function(v,i){
+      s+='<g class="screw" style="animation-delay:'+(0.7+i*0.11).toFixed(2)+'s">'
+        +'<polygon points="'+hex(v[0],v[1],19)+'"/>'
+        +'<line x1="'+(v[0]-11)+'" y1="'+(v[1]-6)+'" x2="'+(v[0]+11)+'" y2="'+(v[1]+6)+'"/>'
+        +'</g>';
+    });
+    host.innerHTML=s;
+  })();
+  // ---- integrated bracelet, tapering rows top & bottom ----
+  (function(){
+    var host=document.getElementById('bracelet'); if(!host) return;
+    function row(yc,hw,h){
+      var x0=750-hw, span=2*hw, gap=8, lw=(span-2*gap)/3, s='', r=10;
+      for(var k=0;k<3;k++){
+        var x=x0+k*(lw+gap);
+        s+='<rect x="'+x.toFixed(1)+'" y="'+(yc-h/2).toFixed(1)+'" width="'+lw.toFixed(1)+'" height="'+h+'" rx="'+r+'" opacity=".6"/>';
+        s+='<line x1="'+(x+lw/2).toFixed(1)+'" y1="'+(yc-h/2+8).toFixed(1)+'" x2="'+(x+lw/2).toFixed(1)+'" y2="'+(yc+h/2-8).toFixed(1)+'" opacity=".4"/>';
+      }
+      return s;
+    }
+    var s='';
+    // top rows (going up): yc, half-width, height
+    [[408,112,60],[338,103,56],[274,94,52]].forEach(function(R){s+=row(R[0],R[1],R[2]);});
+    // bottom rows (going down)
+    [[972,112,60],[1042,103,56],[1106,94,52]].forEach(function(R){s+=row(R[0],R[1],R[2]);});
+    host.innerHTML=s;
+  })();
+
+  var FW=1080, FH=1920;
+  function fit(){
+    var pad = document.body.classList.contains('clean') ? 0 : 24;
+    var s = Math.min((window.innerWidth-pad*2)/FW, (window.innerHeight-pad*2)/FH);
+    var frame=document.getElementById('frame'), stage=document.getElementById('stage');
+    frame.style.transform='scale('+s+')';
+    stage.style.width=(FW*s)+'px'; stage.style.height=(FH*s)+'px';
+  }
+  // generated parts (screws/bracelet/tapisserie) are built once on load,
+  // so replay reloads the page to re-run the whole sequence cleanly.
+  document.getElementById('replay').onclick=function(){ location.reload(); };
+  window.addEventListener('keydown',function(e){if(e.key==='r'||e.key==='R')location.reload();});
+  document.getElementById('clean').onclick=function(){
+    document.body.classList.toggle('clean');
+    this.textContent=document.body.classList.contains('clean')?'Afficher les repères':'Masquer les repères';
+    fit();
+  };
+  window.addEventListener('resize',fit);
+  window.addEventListener('load',fit);
+  fit();
+</script>
+</body>
+</html>

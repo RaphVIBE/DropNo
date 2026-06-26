@@ -260,6 +260,39 @@ export type Database = {
           },
         ]
       }
+      demo_visits: {
+        Row: {
+          id: string
+          ip: string | null
+          locale: string
+          opened_at: string
+          path: string | null
+          slug: string
+          surface: string
+          user_agent: string | null
+        }
+        Insert: {
+          id?: string
+          ip?: string | null
+          locale?: string
+          opened_at?: string
+          path?: string | null
+          slug: string
+          surface?: string
+          user_agent?: string | null
+        }
+        Update: {
+          id?: string
+          ip?: string | null
+          locale?: string
+          opened_at?: string
+          path?: string | null
+          slug?: string
+          surface?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       drop_alerts: {
         Row: {
           confirm_token: string
@@ -1211,6 +1244,17 @@ export type Database = {
       }
       is_platform_admin: { Args: { uid?: string }; Returns: boolean }
       is_platform_owner: { Args: { uid?: string }; Returns: boolean }
+      log_demo_visit: {
+        Args: {
+          p_ip: string
+          p_locale: string
+          p_path: string
+          p_slug: string
+          p_surface: string
+          p_ua: string
+        }
+        Returns: undefined
+      }
       my_bid_for_drop: {
         Args: { p_drop_id: string }
         Returns: {

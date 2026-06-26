@@ -1,4 +1,16 @@
 {
+  "demoReveal": {
+    "countdownLabel": "Reveal in",
+    "countdownHint": "The price reveals itself when the countdown ends",
+    "recapLabel": "Revealed price",
+    "recapNote": "{pct} over the expected price, that is {piece} per piece.",
+    "replay": "Replay the reveal",
+    "eyebrow": "The price revealed itself for {brand}",
+    "cta": "Keep exploring",
+    "gainPerPiece": "{amount} per piece",
+    "gainEdition": "{amount} across the edition of {count}",
+    "verdict": "The Nth bid sets the price · everyone pays the same"
+  },
   "meta": {
     "title": "Drop No. · Sealed drops for premium watches",
     "description": "A house of sealed drops for premium watchmaking. Hidden bid, single price set at the reveal."

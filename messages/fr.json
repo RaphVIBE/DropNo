@@ -1,4 +1,16 @@
 {
+  "demoReveal": {
+    "countdownLabel": "Révélation dans",
+    "countdownHint": "Le prix se révèle à la fin du compte à rebours",
+    "recapLabel": "Prix révélé",
+    "recapNote": "{pct} sur le prix attendu, soit {piece} par pièce.",
+    "replay": "Revoir la révélation",
+    "eyebrow": "Le prix s'est révélé pour {brand}",
+    "cta": "Continuer à explorer",
+    "gainPerPiece": "{amount} par pièce",
+    "gainEdition": "{amount} sur l'édition de {count}",
+    "verdict": "La N-ième offre fixe le prix · tous paient ce même prix"
+  },
   "meta": {
     "title": "Drop No. · Drops scellés pour montres premium",
     "description": "Une maison de drops scellés dédiée à l'horlogerie premium. Offre cachée, prix unique à la révélation."

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 
 import { createClient } from "@/lib/supabase/server";
 import { isValidDemoKey } from "@/lib/demo-access";
+import { computeSim } from "@/lib/demo-maisons";
 import { DropAssurance } from "@/components/drop/drop-assurance";
 import { DropHero, type DropStatus } from "@/components/drop/drop-hero";
 import { DropGallery } from "@/components/drop/drop-gallery";
@@ -11,6 +13,7 @@ import { DropSpecs } from "@/components/drop/drop-specs";
 import { DropDetail } from "@/components/drop/drop-detail";
 import { DropBidForm } from "@/components/drop/drop-bid-form";
 import { DropCountdown } from "@/components/drop/drop-countdown";
+import { DemoReveal } from "@/components/demo/demo-reveal";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -72,6 +75,25 @@ export default async function DemoDropPage({
     .limit(1)
     .maybeSingle();
   if (!drop) notFound();
+
+  // Détection d'ouverture : journal en base (best-effort, jamais bloquant).
+  // `force-dynamic` => s'exécute à chaque ouverture du lien.
+  try {
+    const h = headers();
+    await supabase.rpc("log_demo_visit", {
+      p_slug: params.slug,
+      p_surface: "drop",
+      p_locale: params.locale,
+      p_ip: h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "",
+      p_ua: h.get("user-agent") ?? "",
+      p_path: `/demo/${params.slug}`,
+    });
+  } catch {
+    // détection best-effort, ne bloque jamais le rendu de la démo
+  }
+
+  // Simulation de gain (chiffres illustratifs partagés avec la page maison).
+  const sim = computeSim(params.slug, drop.exemplaires ?? 0);
 
   const brandJoin = (drop.brand as { name: string; slug: string } | null) ?? null;
   const brandName = brandJoin?.name ?? brand.name ?? null;
@@ -155,7 +177,18 @@ export default async function DemoDropPage({
         </div>
 
         <div className="pt-8 md:sticky md:top-10 md:self-start md:pt-0">
-          {counter ? (
+          {sim && isOpen ? (
+            <DemoReveal
+              brandName={brandName ?? ""}
+              attenduCents={sim.attenduCents}
+              clearingCents={sim.clearingCents}
+              perPieceCents={sim.perPieceCents}
+              editionGainCents={sim.editionGainCents}
+              editionPieces={sim.editionPieces}
+              gainPct={sim.gainPct}
+              locale={params.locale}
+            />
+          ) : counter ? (
             <div className="mb-8 border-y border-rule border-t-foreground py-6">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <span className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">

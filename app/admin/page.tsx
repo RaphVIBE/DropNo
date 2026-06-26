@@ -44,9 +44,16 @@ export default async function AdminHome() {
     .limit(1)
     .maybeSingle();
 
-  // Prix de clôture provisoire = N-ième offre qualifiée (N = exemplaires),
-  // soit la plus basse parmi les N meilleures ≥ plancher (logique close_drop).
+  // Prix de clôture provisoire = N-ième offre gagnante (N = exemplaires),
+  // soit la plus basse parmi les N meilleures ≥ plancher ET réellement
+  // pré-autorisées (stripe_auth_status = 'authorized') — exactement la
+  // sélection de close_drop v5 (migration 0037). Les offres 'active' mais
+  // non autorisées (pending/failed/released) ne sont pas capturables : elles
+  // sont écartées du clearing comme au reveal.
+  // bidCount = activité réelle (toutes offres actives) ; authorizedCount =
+  // sous-ensemble qui pèsera effectivement sur le clearing au reveal.
   let bidCount = 0;
+  let authorizedCount = 0;
   let provisional: number | null = null;
   if (open) {
     const { count } = await supabase
@@ -54,9 +61,16 @@ export default async function AdminHome() {
       .eq("drop_id", open.id).eq("status", "active");
     bidCount = count ?? 0;
 
+    const { count: authed } = await supabase
+      .from("bids").select("*", { count: "exact", head: true })
+      .eq("drop_id", open.id).eq("status", "active")
+      .eq("stripe_auth_status", "authorized");
+    authorizedCount = authed ?? 0;
+
     const { data: top } = await supabase
       .from("bids").select("amount_cents")
       .eq("drop_id", open.id).eq("status", "active")
+      .eq("stripe_auth_status", "authorized")
       .gte("amount_cents", open.floor_price_cents)
       .order("amount_cents", { ascending: false })
       .limit(open.exemplaires);
@@ -111,7 +125,10 @@ export default async function AdminHome() {
             <Badge tone="green">Ouvert</Badge>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Stat label="Enchères posées" value={bidCount} />
+            <Stat
+              label="Enchères posées"
+              value={bidCount === authorizedCount ? `${bidCount}` : `${bidCount} · ${authorizedCount} autorisées`}
+            />
             <Stat label={`Prix provisoire (${open.exemplaires}ᵉ)`} value={eur(provisional)} accent />
             <Stat label="Demande" value={`${open.exemplaires ? Math.round((bidCount / open.exemplaires) * 100) : 0}%`} />
             <Stat label="Reveal" value={`${dateShort(open.reveal_at)} · J−${Math.max(0, daysUntil(open.reveal_at))}`} />
@@ -124,7 +141,11 @@ export default async function AdminHome() {
             )}
           </div>
           {provisional == null && bidCount > 0 && (
-            <p className="mt-3 text-xs text-muted-foreground">Aucune offre n&apos;atteint encore le plancher.</p>
+            <p className="mt-3 text-xs text-muted-foreground">
+              {authorizedCount === 0
+                ? "Aucune offre pré-autorisée pour le moment (cartes en attente)."
+                : "Aucune offre autorisée n'atteint encore le plancher."}
+            </p>
           )}
         </Card>
       )}

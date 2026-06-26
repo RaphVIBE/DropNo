@@ -2,14 +2,16 @@
   "demoReveal": {
     "countdownLabel": "Révélation dans",
     "countdownHint": "Le prix se révèle à la fin du compte à rebours",
-    "recapLabel": "Prix révélé",
-    "recapNote": "{pct} sur le prix attendu, soit {piece} par pièce.",
-    "replay": "Revoir la révélation",
-    "eyebrow": "Le prix s'est révélé pour {brand}",
-    "cta": "Continuer à explorer",
-    "gainPerPiece": "{amount} par pièce",
-    "gainEdition": "{amount} sur l'édition de {count}",
-    "verdict": "La N-ième offre fixe le prix · tous paient ce même prix"
+    "fullEyebrow": "Révélation imminente",
+    "fullHint": "Les offres sont scellées. L'attribution est imminente.",
+    "resultEyebrow": "Drop clôturé",
+    "congrats": "Félicitations.",
+    "wonPiece": "Vous remportez {piece}.",
+    "finalPriceLabel": "Prix final",
+    "mechanismNote": "La N-ième offre a fixé le prix. Les {count} gagnants paient ce prix unique.",
+    "orderClosed": "Commande clôturée",
+    "backToSite": "Revenir au site",
+    "recapNote": "Tous les gagnants paient ce même prix unique."
   },
   "meta": {
     "title": "Drop No. · Drops scellés pour montres premium",

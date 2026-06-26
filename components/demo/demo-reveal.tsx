@@ -6,18 +6,24 @@ import { useTranslations } from "next-intl";
 import { formatEuros } from "@/lib/format";
 
 /**
- * Reveal éphémère des pages démo prospect.
+ * Reveal éphémère des pages démo prospect — fidèle au mockup reveal-hero.
  *
- * À l'ouverture (mount), un compteur démarre et tourne `DEMO_REVEAL_MS`. Rien
- * n'est persisté : chaque rafraîchissement repart de zéro. À T=0, un overlay
- * plein écran s'anime (port du mockup docs/design/mockups/reveal-hero.html) :
- * le prix se révèle par clip-path, puis la simulation du gain. Refermable.
+ * À l'ouverture (mount), un compteur démarre (DEMO_REVEAL_MS, redémarre à chaque
+ * refresh). Escalade :
+ *  - > 25s : compteur inline calme, la page reste navigable ;
+ *  - 25s → 10s : les secondes se mettent à pulser ;
+ *  - 10s → 0 : bascule fluide en COMPTE À REBOURS PLEIN ÉCRAN (inversion sombre,
+ *    gros chiffres, pulse) ;
+ *  - 0 : RÉVÉLATION côté client gagnant — « Félicitations … prix final X € »,
+ *    commande clôturée, bouton retour au site.
  *
- * Affiché UNIQUEMENT en démo — la vraie fiche drop garde son DropCountdown vers
- * un reveal_at réel.
+ * Affiché UNIQUEMENT en démo.
  */
 
 const DEMO_REVEAL_MS = 45_000;
+const FULLPAGE_AT_MS = 10_000; // bascule plein écran
+const SECONDS_MOVE_AT_MS = 25_000; // les secondes commencent à bouger
+const REVEAL_BEAT_MS = 700; // battement après T=0 avant la révélation
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -25,29 +31,28 @@ function pad(n: number) {
 
 export function DemoReveal({
   brandName,
-  attenduCents,
+  pieceTitle,
+  dropNumber,
   clearingCents,
-  perPieceCents,
-  editionGainCents,
-  editionPieces,
-  gainPct,
+  exemplaires,
   locale,
+  homeHref = "/",
 }: {
   brandName: string;
-  attenduCents: number;
+  pieceTitle: string;
+  dropNumber: number;
   clearingCents: number;
-  perPieceCents: number;
-  editionGainCents: number;
-  editionPieces: number;
-  gainPct: number;
+  exemplaires: number;
   locale: string;
+  homeHref?: string;
 }) {
   const t = useTranslations("demoReveal");
   const [msLeft, setMsLeft] = useState(DEMO_REVEAL_MS);
-  const [phase, setPhase] = useState<"counting" | "revealed">("counting");
-  const [overlayOpen, setOverlayOpen] = useState(false);
-  const [visible, setVisible] = useState(false); // déclenche les transitions CSS
+  const [revealed, setRevealed] = useState(false);
+  const [fullVisible, setFullVisible] = useState(false); // fade-in plein écran
+  const [revealVisible, setRevealVisible] = useState(false); // transitions reveal
   const startRef = useRef<number | null>(null);
+  const revealTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Compte à rebours depuis le mount.
   useEffect(() => {
@@ -56,48 +61,56 @@ export function DemoReveal({
       const elapsed = Date.now() - (startRef.current ?? Date.now());
       const left = Math.max(0, DEMO_REVEAL_MS - elapsed);
       setMsLeft(left);
-      if (left <= 0) {
-        setPhase("revealed");
-        setOverlayOpen(true);
+      if (left <= 0 && !revealTimer.current) {
+        revealTimer.current = setTimeout(() => setRevealed(true), REVEAL_BEAT_MS);
       }
     };
     tick();
-    const id = setInterval(tick, 250);
-    return () => clearInterval(id);
+    const id = setInterval(tick, 200);
+    return () => {
+      clearInterval(id);
+      if (revealTimer.current) clearTimeout(revealTimer.current);
+    };
   }, []);
 
-  // Une frame après l'ouverture de l'overlay, on ajoute `visible` pour jouer
-  // les transitions (clip-path, fades).
+  const showFull = msLeft <= FULLPAGE_AT_MS; // plein écran (compte à rebours + reveal)
+
+  // Fade-in du plein écran une frame après son montage.
   useEffect(() => {
-    if (!overlayOpen) {
-      setVisible(false);
+    if (!showFull) {
+      setFullVisible(false);
       return;
     }
     const id = requestAnimationFrame(() =>
-      requestAnimationFrame(() => setVisible(true)),
+      requestAnimationFrame(() => setFullVisible(true)),
     );
     return () => cancelAnimationFrame(id);
-  }, [overlayOpen]);
+  }, [showFull]);
 
-  // Esc referme l'overlay.
+  // Déclenche les transitions de la révélation (clip-path, fades).
   useEffect(() => {
-    if (!overlayOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOverlayOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [overlayOpen]);
+    if (!revealed) {
+      setRevealVisible(false);
+      return;
+    }
+    const id = requestAnimationFrame(() =>
+      requestAnimationFrame(() => setRevealVisible(true)),
+    );
+    return () => cancelAnimationFrame(id);
+  }, [revealed]);
 
+  // Découpage temps.
   const totalSec = Math.ceil(msLeft / 1000);
-  const mm = Math.floor(totalSec / 60);
+  const hh = Math.floor(totalSec / 3600);
+  const mm = Math.floor((totalSec % 3600) / 60);
   const ss = totalSec % 60;
-  const pulsing = msLeft <= 10_000 && phase === "counting";
+  const inlineMin = Math.floor(totalSec / 60);
+  const secondsMoving = msLeft <= SECONDS_MOVE_AT_MS && !showFull;
 
   return (
     <div className="mb-8 border-y border-rule border-t-foreground py-6">
-      {/* --- Panneau inline --- */}
-      {phase === "counting" ? (
+      {/* --- Panneau inline (phase navigation) --- */}
+      {!revealed ? (
         <>
           <div className="mb-3 flex items-center justify-between gap-3">
             <span className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -105,93 +118,93 @@ export function DemoReveal({
             </span>
           </div>
           <div
-            className={`font-serif text-[clamp(2.6rem,9vw,4rem)] italic leading-none tabular-nums text-foreground ${
-              pulsing ? "dr-pulse" : ""
-            }`}
+            className="font-serif text-[clamp(2.6rem,9vw,4rem)] italic leading-none tabular-nums text-foreground"
             suppressHydrationWarning
           >
-            {pad(mm)}
+            {pad(inlineMin)}
             <span className="px-[0.05em] opacity-80">:</span>
-            {pad(ss)}
+            <span className={secondsMoving ? "dr-sec-move inline-block" : "inline-block"}>
+              {pad(ss)}
+            </span>
           </div>
           <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
             {t("countdownHint")}
           </p>
         </>
       ) : (
-        // Récap inline une fois le reveal joué (panneau jamais vide).
+        // Récap inline une fois la commande clôturée (panneau jamais vide).
         <div>
           <span className="text-[11px] uppercase tracking-[0.22em] text-champagne-deep">
-            {t("recapLabel")}
+            {t("orderClosed")}
           </span>
           <p className="mt-2 font-serif text-[clamp(2.2rem,7vw,3rem)] italic leading-none tabular-nums text-foreground">
             {formatEuros(clearingCents, locale)}
           </p>
           <p className="mt-3 text-[13px] leading-relaxed text-ink-2">
-            {t("recapNote", {
-              pct: `+${gainPct}%`,
-              piece: `+${formatEuros(perPieceCents, locale)}`,
-            })}
+            {t("recapNote")}
           </p>
-          <button
-            type="button"
-            onClick={() => setOverlayOpen(true)}
-            className="mt-4 text-[11px] uppercase tracking-[0.18em] text-champagne-deep underline-offset-4 transition-colors hover:underline"
-          >
-            {t("replay")}
-          </button>
         </div>
       )}
 
-      {/* --- Overlay reveal plein écran --- */}
-      {overlayOpen ? (
+      {/* --- Plein écran : compte à rebours puis révélation --- */}
+      {showFull ? (
         <div
-          className={`dr-overlay ${visible ? "dr-visible" : ""}`}
+          className={`dr-full ${fullVisible ? "dr-full-visible" : ""} ${
+            revealVisible ? "dr-revealed" : ""
+          }`}
           role="dialog"
           aria-modal="true"
-          aria-label={t("eyebrow", { brand: brandName })}
+          aria-label={revealed ? t("congrats") : t("fullEyebrow")}
         >
-          <button
-            type="button"
-            onClick={() => setOverlayOpen(false)}
-            className="dr-close"
-            aria-label={t("cta")}
-          >
-            {t("cta")} <span aria-hidden>↓</span>
-          </button>
+          {/* En-tête plein écran */}
+          <header className="dr-head">
+            <span className="dr-wordmark font-serif">
+              Drop <sup>№</sup> {pad(dropNumber)}
+            </span>
+            <span className="dr-head-piece">{brandName}</span>
+          </header>
 
           <div className="dr-stage">
-            <p className="dr-eyebrow">
-              {t("eyebrow", { brand: brandName })}
-            </p>
-            <p className="dr-price font-serif">
-              {formatEuros(clearingCents, locale)}
-            </p>
-            <p className="dr-detail font-serif">
-              <span className="dr-struck">{formatEuros(attenduCents, locale)}</span>
-              <span className="dr-arrow">→</span>
-              <span className="dr-badge">+{gainPct}%</span>
-            </p>
+            {!revealed ? (
+              <>
+                <p className="dr-eyebrow">{t("fullEyebrow")}</p>
+                <div className="dr-count font-serif" suppressHydrationWarning>
+                  {pad(hh)}
+                  <span className="dr-colon">:</span>
+                  {pad(mm)}
+                  <span className="dr-colon">:</span>
+                  <span className="dr-count-s">{pad(ss)}</span>
+                </div>
+                <p className="dr-hint">{t("fullHint")}</p>
+              </>
+            ) : (
+              <>
+                <p className="dr-eyebrow">{t("resultEyebrow")}</p>
+                <h2 className="dr-congrats font-serif">{t("congrats")}</h2>
+                <p className="dr-won">{t("wonPiece", { piece: pieceTitle })}</p>
 
-            <div className="dr-gain">
-              <span>
-                {t("gainPerPiece", { amount: `+${formatEuros(perPieceCents, locale)}` })}
-              </span>
-              <span className="dr-gain-sep" aria-hidden>
-                ·
-              </span>
-              <span>
-                {t("gainEdition", {
-                  amount: `+${formatEuros(editionGainCents, locale)}`,
-                  count: editionPieces,
-                })}
-              </span>
-            </div>
+                <div className="dr-price-block">
+                  <span className="dr-price-label">{t("finalPriceLabel")}</span>
+                  <p className="dr-price font-serif">
+                    {formatEuros(clearingCents, locale)}
+                  </p>
+                </div>
 
-            <p className="dr-verdict">
-              <span className="dr-dot" aria-hidden />
-              {t("verdict")}
-            </p>
+                <p className="dr-mechanism">
+                  {t("mechanismNote", { count: exemplaires })}
+                </p>
+
+                <div className="dr-actions">
+                  <span className="dr-closed">
+                    <span className="dr-dot" aria-hidden />
+                    {t("orderClosed")}
+                  </span>
+                  <a className="dr-back" href={homeHref}>
+                    {t("backToSite")} <span aria-hidden>→</span>
+                  </a>
+                </div>
+              </>
+            )}
           </div>
         </div>
       ) : null}
@@ -201,117 +214,166 @@ export function DemoReveal({
           __html: `
         @keyframes dr-pulse-kf {
           0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.012); opacity: 0.92; }
+          50% { transform: scale(1.04); opacity: 0.9; }
         }
-        .dr-pulse { animation: dr-pulse-kf 900ms cubic-bezier(0.16,1,0.3,1) infinite; }
+        .dr-sec-move { animation: dr-pulse-kf 1s cubic-bezier(0.16,1,0.3,1) infinite; }
 
-        .dr-overlay {
+        /* ---- Plein écran ---- */
+        .dr-full {
           position: fixed; inset: 0; z-index: 100;
           display: flex; flex-direction: column;
+          overflow-y: auto;
           padding: clamp(20px, 4vw, 56px);
+          background: oklch(0.975 0.006 80);
+          color: oklch(0.18 0.012 60);
+          opacity: 0;
+          transition: opacity 600ms cubic-bezier(0.16,1,0.3,1),
+                      background 900ms cubic-bezier(0.16,1,0.3,1),
+                      color 900ms cubic-bezier(0.16,1,0.3,1);
+        }
+        .dr-full-visible { opacity: 1; }
+        /* Inversion sombre sur la revelation (compte a rebours -> resultat) */
+        .dr-revealed {
           background: oklch(0.16 0.012 60);
           color: oklch(0.97 0.008 82);
-          opacity: 0;
-          transition: opacity 700ms cubic-bezier(0.16,1,0.3,1);
         }
-        .dr-overlay.dr-visible { opacity: 1; }
 
-        .dr-close {
-          align-self: flex-end;
+        .dr-head {
+          display: flex; align-items: baseline; justify-content: space-between;
+          gap: 16px; padding-bottom: 18px;
+          border-bottom: 1px solid oklch(0.18 0.012 60 / 0.12);
           font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-          color: oklch(0.95 0.008 82 / 0.7);
-          background: none; border: none; cursor: pointer;
-          transition: color 300ms ease;
+          transition: border-color 900ms ease;
         }
-        .dr-close:hover { color: oklch(0.98 0.006 80); }
+        .dr-revealed .dr-head { border-color: oklch(0.97 0.008 82 / 0.14); }
+        .dr-wordmark { font-style: italic; font-size: 16px; text-transform: none; letter-spacing: 0; }
+        .dr-wordmark sup { font-size: 0.6em; }
+        .dr-head-piece { color: inherit; opacity: 0.6; }
 
         .dr-stage {
-          flex: 1;
+          flex: 1 0 auto;
+          min-height: 0;
           display: flex; flex-direction: column;
-          align-items: center; justify-content: center; text-align: center;
+          align-items: center; justify-content: safe center; text-align: center;
+          padding-block: 24px;
         }
+
         .dr-eyebrow {
           font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
-          color: oklch(0.95 0.008 82 / 0.6);
-          margin-bottom: 18px;
-          opacity: 0; transform: translateY(8px);
+          opacity: 0.55; margin-bottom: 20px;
+        }
+
+        /* compte a rebours */
+        .dr-count {
+          font-style: italic; font-weight: 300;
+          font-size: clamp(64px, 15vw, 200px);
+          line-height: 0.9; letter-spacing: -0.02em;
+          font-feature-settings: "tnum";
+          animation: dr-count-pulse 900ms cubic-bezier(0.7,0,0.3,1) infinite;
+        }
+        @keyframes dr-count-pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.012); opacity: 0.93; }
+        }
+        .dr-colon { padding: 0 0.05em; opacity: 0.6; }
+        .dr-count-s { color: oklch(0.52 0.06 70); }
+        .dr-hint {
+          margin-top: 16px;
+          font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+          opacity: 0.5;
+        }
+
+        /* revelation */
+        .dr-congrats {
+          font-style: italic; font-weight: 300;
+          font-size: clamp(48px, 11vw, 120px); line-height: 0.95;
+          opacity: 0; transform: translateY(10px);
           transition: opacity 700ms cubic-bezier(0.16,1,0.3,1) 150ms,
                       transform 700ms cubic-bezier(0.16,1,0.3,1) 150ms;
         }
-        .dr-visible .dr-eyebrow { opacity: 1; transform: translateY(0); }
+        .dr-revealed .dr-congrats { opacity: 1; transform: translateY(0); }
 
+        .dr-won {
+          margin-top: 14px;
+          font-size: clamp(15px, 1.8vw, 19px);
+          opacity: 0; transform: translateY(8px);
+          color: oklch(0.95 0.008 82 / 0.8);
+          transition: opacity 700ms cubic-bezier(0.16,1,0.3,1) 500ms,
+                      transform 700ms cubic-bezier(0.16,1,0.3,1) 500ms;
+        }
+        .dr-revealed .dr-won { opacity: 1; transform: translateY(0); }
+
+        .dr-price-block { margin-top: 40px; }
+        .dr-price-label {
+          display: block;
+          font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+          opacity: 0.55; margin-bottom: 10px;
+          opacity: 0; transition: opacity 700ms ease 900ms;
+        }
+        .dr-revealed .dr-price-label { opacity: 0.55; }
         .dr-price {
           font-style: italic; font-weight: 300;
-          font-size: clamp(72px, 17vw, 240px);
+          font-size: clamp(72px, 16vw, 220px);
           line-height: 0.9; letter-spacing: -0.035em;
           font-feature-settings: "tnum";
           color: oklch(0.98 0.006 80);
           clip-path: inset(100% 0 0 0);
-          transition: clip-path 1100ms cubic-bezier(0.87,0,0.13,1) 250ms;
+          transition: clip-path 1100ms cubic-bezier(0.87,0,0.13,1) 900ms;
         }
-        .dr-visible .dr-price { clip-path: inset(0 0 0 0); }
+        .dr-revealed .dr-price { clip-path: inset(0 0 0 0); }
 
-        .dr-detail {
-          margin-top: 24px;
-          display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-          justify-content: center;
-          font-style: italic; font-weight: 300;
-          font-size: clamp(18px, 2.2vw, 26px);
-          color: oklch(0.95 0.008 82 / 0.75);
-          opacity: 0; transform: translateY(10px);
-          transition: opacity 700ms cubic-bezier(0.16,1,0.3,1) 1400ms,
-                      transform 700ms cubic-bezier(0.16,1,0.3,1) 1400ms;
+        .dr-mechanism {
+          margin-top: 30px; max-width: 46ch;
+          font-size: clamp(13px, 1.4vw, 15px); line-height: 1.6;
+          color: oklch(0.95 0.008 82 / 0.7);
+          opacity: 0; transform: translateY(8px);
+          transition: opacity 800ms cubic-bezier(0.16,1,0.3,1) 1800ms,
+                      transform 800ms cubic-bezier(0.16,1,0.3,1) 1800ms;
         }
-        .dr-visible .dr-detail { opacity: 1; transform: translateY(0); }
-        .dr-struck { text-decoration: line-through; text-decoration-color: oklch(0.72 0.07 80 / 0.6); }
-        .dr-arrow { color: oklch(0.78 0.07 80); }
-        .dr-badge {
-          font-family: var(--font-sans, Inter), sans-serif; font-style: normal;
-          font-size: 14px; letter-spacing: 0.04em;
-          border: 1px solid oklch(0.72 0.07 80 / 0.45);
-          border-radius: 3px; padding: 4px 10px;
+        .dr-revealed .dr-mechanism { opacity: 1; transform: translateY(0); }
+
+        .dr-actions {
+          margin-top: 48px;
+          display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+          justify-content: center;
+          opacity: 0; transform: translateY(8px);
+          transition: opacity 800ms cubic-bezier(0.16,1,0.3,1) 2300ms,
+                      transform 800ms cubic-bezier(0.16,1,0.3,1) 2300ms;
+        }
+        .dr-revealed .dr-actions { opacity: 1; transform: translateY(0); }
+        .dr-closed {
+          display: inline-flex; align-items: center; gap: 10px;
+          font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
           color: oklch(0.82 0.07 80);
         }
-
-        .dr-gain {
-          margin-top: 32px;
-          display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-          justify-content: center;
-          font-size: clamp(13px, 1.4vw, 15px);
-          color: oklch(0.95 0.008 82 / 0.85);
-          opacity: 0; transform: translateY(10px);
-          transition: opacity 800ms cubic-bezier(0.16,1,0.3,1) 2100ms,
-                      transform 800ms cubic-bezier(0.16,1,0.3,1) 2100ms;
-        }
-        .dr-visible .dr-gain { opacity: 1; transform: translateY(0); }
-        .dr-gain-sep { color: oklch(0.78 0.07 80); }
-
-        .dr-verdict {
-          margin-top: 44px;
-          display: flex; align-items: center; gap: 12px;
-          font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
-          color: oklch(0.82 0.07 80);
-          opacity: 0; transform: translateY(10px);
-          transition: opacity 800ms cubic-bezier(0.16,1,0.3,1) 2700ms,
-                      transform 800ms cubic-bezier(0.16,1,0.3,1) 2700ms;
-        }
-        .dr-visible .dr-verdict { opacity: 1; transform: translateY(0); }
         .dr-dot {
           width: 5px; height: 5px; border-radius: 50%;
           background: oklch(0.78 0.07 80);
-          animation: dr-verdict-pulse 2s cubic-bezier(0.16,1,0.3,1) infinite;
+          animation: dr-dot-pulse 2s cubic-bezier(0.16,1,0.3,1) infinite;
         }
-        @keyframes dr-verdict-pulse {
+        @keyframes dr-dot-pulse {
           0%, 100% { box-shadow: 0 0 0 0 oklch(0.78 0.07 80 / 0.4); }
           50% { box-shadow: 0 0 0 8px oklch(0.78 0.07 80 / 0); }
         }
+        .dr-back {
+          font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+          color: oklch(0.97 0.008 82);
+          border: 1px solid oklch(0.97 0.008 82 / 0.3);
+          border-radius: 3px; padding: 11px 20px;
+          text-decoration: none;
+          transition: background 280ms ease, color 280ms ease, border-color 280ms ease;
+        }
+        .dr-back:hover {
+          background: oklch(0.97 0.008 82);
+          color: oklch(0.16 0.012 60);
+        }
 
         @media (prefers-reduced-motion: reduce) {
-          .dr-overlay, .dr-eyebrow, .dr-price, .dr-detail, .dr-gain, .dr-verdict {
+          .dr-full, .dr-congrats, .dr-won, .dr-price, .dr-mechanism, .dr-actions, .dr-price-label {
             transition-duration: 1ms !important;
           }
           .dr-price { clip-path: inset(0 0 0 0) !important; }
-          .dr-pulse, .dr-dot { animation: none !important; }
+          .dr-sec-move, .dr-count, .dr-dot { animation: none !important; }
         }
       `,
         }}

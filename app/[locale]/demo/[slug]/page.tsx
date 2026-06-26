@@ -180,12 +180,10 @@ export default async function DemoDropPage({
           {sim && isOpen ? (
             <DemoReveal
               brandName={brandName ?? ""}
-              attenduCents={sim.attenduCents}
+              pieceTitle={drop.title ?? ""}
+              dropNumber={drop.drop_number ?? 0}
               clearingCents={sim.clearingCents}
-              perPieceCents={sim.perPieceCents}
-              editionGainCents={sim.editionGainCents}
-              editionPieces={sim.editionPieces}
-              gainPct={sim.gainPct}
+              exemplaires={drop.exemplaires ?? sim.editionPieces}
               locale={params.locale}
             />
           ) : counter ? (

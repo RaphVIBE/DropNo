@@ -50,3 +50,8 @@ supabase/.temp/
 
 # Impeccable skill scratch output
 .impeccable/
+
+# Materiel business interne (prospection, pitch, finance, social) :
+# n'a rien a faire sur main. Maison canonique = Google Drive partage.
+# Reste en local, hors versionnement.
+/business/

@@ -108,8 +108,8 @@ C2C revente, app native, NFT/blockchain, multi-catégories, programme premium ti
 9. `docs/design/mockups/reveal-hero.html` — moment de révélation à T (bascule dark, clip-path reveal du clearing price)
 10. `content/legal/` — drafts CGU, CGV, Privacy, Cookies, Mentions, Rétractation (à valider juriste avant publication)
 11. `content/essays/` — essais éditoriaux pour `/lire` (Vickrey/Trésor publié, autres à paraître)
-12. `business/Prospection maisons/` — emails de prospection marques (Ressence, Furlan Marri), `pipeline.xlsx`
-13. `business/Pitch maisons/` — pitch decks maisons (`.pptx` v3 FR/EN, PDF, captures site)
+12. `business/prospection/` — emails de prospection marques (Ressence, Furlan Marri), `pipeline.xlsx`
+13. `business/pitch/` — pitch decks maisons (`presentation-maisons.fr/.en.pptx`, PDF, captures dans `assets/`)
 14. `docs/specs/BACKOFFICE.md` — **back-office `/admin` + `/maison`** : architecture, surfaces, conventions, migrations 0010–0016, accès dev, données démo
 15. `docs/specs/Privilege_001.md` — spec du Privilège № 001 (offre série 001 au top bidder)
 

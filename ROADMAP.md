@@ -77,9 +77,10 @@ Chaque lane a un agent propriétaire (voir `.claude/agents/`). Statut tenu à jo
 ### 🤝 Croissance & CRM — `croissance`
 | Item | P | Statut |
 |---|---|---|
-| Emails outreach maisons (Ressence, Furlan Marri, Col&MacArthur, Raidillon) | P1 | 🟡 4 brouillons Gmail propres prêts (URLs `dropno.eu`, clés par maison) ; L8 vert. Reste avant envoi : supprimer 4 vieux brouillons (`in:drafts netlify`), poser vrais destinataires Ressence + Col, envoyer |
+| Emails outreach maisons — **lot belge vague 1** (Ressence, Col&MacArthur, Raidillon) + Furlan Marri | P1 | 🟢 **PRÊT À DÉCLENCHER LUNDI 2026-06-29.** Runbook séquencé écrit : `business/prospection/runbook-lundi.md` (LinkedIn Mintiens+Colen + email Raidillon lundi ; relances J+5-6 calculées au jeu 02 / ven 03/07 ; checklist pré-envoi ; tableau récap). 3 brouillons Gmail réconciliés et propres (HTML, bouton démo champagne, clés par maison, signature + tél, em dash 0) : Raidillon `hello@raidillon.com` (cold, PRÊT), relance Ressence `hello@ressence.be` (objet remonte au fondateur, bandeau VOIE RELANCE, ne sert que si LinkedIn muet J+5-6), relance Col `contact@cmarthur.com` (idem). L8 vert (mail-tester 10/10). **Anciens brouillons obsolètes à supprimer par owner** : Ressence cold vers `raph@dropno.eu` (placeholder), Col cold avec objet em-dashé, Raidillon « équipe » du matin, + 1 brouillon Raidillon HTML avorté (style cassé). Manuel owner : URL profils LinkedIn + clics Envoyer. Reste vague 2 = Furlan Marri hors lot belge |
+| Emails outreach maisons — vague 2 Tier A (Trilobe, Atelier Wen, Holthinrichs, Sartory Billard, Kudoke, Fears) | P1 | 🟡 6 emails `.md` rédigés (les 7 Tier A ont désormais un email). Reste : adresses destinataires à confirmer (toutes inconnues), 5 démos à générer + clés `DEMO_KEYS`, relire le DE de Kudoke, trancher Brexit pour Fears, créer les brouillons Gmail après validation owner |
 | **L8** délivrabilité email avant cold outreach | P0 | 🟢 VERT au 2026-06-26 — DNS (SPF + DKIM Google + DMARC) ✅ + mail-tester 10/10. Cold envoyable |
-| Pipeline maisons (`business/Prospection maisons/pipeline.xlsx`) tenu à jour | P1 | 🟡 |
+| Pipeline maisons (`business/prospection/pipeline.xlsx`) tenu à jour | P1 | 🟢 maj 2026-06-26 : synthèse corrigée (10 emails sur disque, 4 brouillons Gmail), statuts Tier A à jour, note obsolète « Maxime » retirée. `message-demo.md` régénéré (URLs `dropno.eu` + clés par slug). **Lot belge marqué « vague 1 » + pointeur vers `protocole-semaine-1.md`** dans la synthèse et les 3 lignes belges (statut + notes : P.S. ajouté, relance J+5-6) |
 | Pages démo par maison (`/demo/[slug]`) | — | ✅ |
 | Newsletter / waitlist (Resend audience) | P1 | 🟡 |
 | Relation client : gabarits réponses, triage support | P2 | ⏳ |
@@ -94,7 +95,7 @@ Chaque lane a un agent propriétaire (voir `.claude/agents/`). Statut tenu à jo
 | Retours logistique (direction, valeur assurée, tracking) | — | ✅ (0025) |
 | Tracking DHL intégré, enlèvements maisons | P1 | ⏳ |
 | Analytics PostHog : poser les clés env + valider events (`drop_view`) | P1 | ⏳ clés manquantes |
-| Appliquer migration 0038 (contenu drop localisé) en prod après merge #45 | P1 | ⏳ (2026-06-26) déclencheur = merge PR #45 (`chore/reorg-docs-seo`) ; rappel quotidien `dropno-migration-0038-apres-merge-pr45` posé |
+| Appliquer migration 0038 (contenu drop localisé) en prod après merge #45 | P1 | ✅ (2026-06-27) PR #45 mergée 2026-06-26 ; migration **0038** (`drops_localized_content`, version `20260626082433`) déjà en prod, colonnes `description_en`/`specs_en` présentes sur `drops` et `drops_public`. Tâche `dropno-migration-0038-apres-merge-pr45` à désactiver. |
 | Export comptable CSV + base TVA | P2 | ⏳ |
 | RGPD : export/suppression compte, registre | P1 | ⏳ |
 

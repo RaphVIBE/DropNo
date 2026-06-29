@@ -35,7 +35,7 @@ export async function LegalDocument({ slug }: { slug: string }) {
       <Masthead variant="seal" padding="px-7 pb-14 pt-20 md:pb-16 md:pt-24">
         <div className="mx-auto max-w-3xl">
           <span className="eyebrow">Drop No. · Documents</span>
-          <h1 className="font-display mt-4 text-[clamp(2.25rem,5vw,3.5rem)]">
+          <h1 className="font-display mt-4 text-display-page">
             {doc.title}
           </h1>
         </div>

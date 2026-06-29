@@ -48,7 +48,7 @@ export default async function BrandsPage() {
           {t("eyebrow")}
         </span>
         <h1
-          className="font-display reveal mt-6 max-w-[12ch] text-[clamp(3.5rem,9vw,8rem)]"
+          className="font-display reveal mt-5 max-w-[16ch] text-display-page"
           style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
         >
           {t("heroTitle")}

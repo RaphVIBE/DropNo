@@ -26,7 +26,14 @@
     "mechanism": "Mécanisme",
     "about": "À propos",
     "read": "Lire",
-    "signIn": "Se connecter"
+    "signIn": "Se connecter",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "menuLabel": "Menu",
+    "primaryNav": "Navigation principale",
+    "utilityTitle": "Accès",
+    "language": "Langue",
+    "contact": "Contact"
   },
   "footer": {
     "tagline": "Maison de drops scellés pour montres premium. Une pièce par semaine, un prix unique décidé à la révélation.",
@@ -340,7 +347,11 @@
     "para2Tail": ": celui de la dernière offre retenue. Pas de surenchère en temps réel, pas de guerre des prix. Un calendrier que vous pouvez tenir.",
     "para3": "Nous travaillons en direct avec les marques. Pas de revente, pas d'intermédiaire : l'authenticité vient de la maison elle-même. La pièce vous est livrée assurée, main propre lorsque sa valeur l'exige.",
     "contactLead": "Drop No. est édité depuis Bruxelles. Pour toute question, écrivez-nous à",
-    "calendarLink": "Voir le calendrier des drops →"
+    "calendarLink": "Voir le calendrier des drops →",
+    "readingEyebrow": "Lectures",
+    "readingLead": "Quelques essais sur le mécanisme, son histoire et ses raisons.",
+    "readingMinutes": "{minutes} min",
+    "readingAll": "Voir toutes les lectures →"
   },
   "accountDashboard": {
     "eyebrow": "Mon compte",

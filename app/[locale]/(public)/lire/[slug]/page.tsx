@@ -116,7 +116,7 @@ export default async function EssayPage({
             ) : null}
           </div>
           <h1
-            className="font-display reveal mt-5 text-[clamp(2.2rem,5vw,3.6rem)] leading-[1.05]"
+            className="font-display reveal mt-5 text-[clamp(2.2rem,4.5vw,3.5rem)] leading-[1.05]"
             style={{ "--reveal-delay": "180ms" } as React.CSSProperties}
           >
             {essay.title}

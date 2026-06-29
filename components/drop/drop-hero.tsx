@@ -32,7 +32,7 @@ export async function DropHero({
         </span>
         <StatusLine status={status} revealAt={revealAt} t={t} locale={locale} />
       </div>
-      <div className="pb-16 pt-10 md:pb-24 md:pt-14">
+      <div className="pb-14 pt-10 md:pb-16 md:pt-12">
         {brandName ? (
           <div
             className="reveal mb-4 text-[13px] font-medium uppercase tracking-[0.22em] text-muted-foreground"
@@ -51,7 +51,7 @@ export async function DropHero({
           </div>
         ) : null}
         <h1
-          className="font-display reveal max-w-[12ch] text-balance break-words text-[clamp(3.5rem,8vw,6.875rem)]"
+          className="font-display reveal max-w-[14ch] text-balance break-words text-display-hero"
           style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
         >
           {title}

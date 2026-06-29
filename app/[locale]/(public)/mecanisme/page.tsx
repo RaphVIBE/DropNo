@@ -55,7 +55,7 @@ export default async function MechanismPage() {
           {t("eyebrow")}
         </span>
         <h1
-          className="font-display reveal mt-6 max-w-[14ch] text-[clamp(2.75rem,7vw,5.5rem)]"
+          className="font-display reveal mt-5 max-w-[16ch] text-display-page"
           style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
         >
           {t("heroTitle")}

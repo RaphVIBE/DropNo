@@ -9,7 +9,15 @@ import { routing } from "@/i18n/routing";
  * Sélecteur de langue FR / EN. Rejoue le chemin courant dans l'autre locale
  * (next-intl pose le préfixe /en si besoin et le cookie NEXT_LOCALE).
  */
-export function LocaleSwitcher() {
+export function LocaleSwitcher({
+  size = "compact",
+}: {
+  /**
+   * `compact` (défaut) : barre desktop, boutons au plus serré.
+   * `touch` : overlay mobile, cible tactile >= 44px (WCAG 2.5.5).
+   */
+  size?: "compact" | "touch";
+} = {}) {
   const active = useLocale();
   const pathname = usePathname();
 
@@ -26,8 +34,14 @@ export function LocaleSwitcher() {
     window.location.assign(target);
   }
 
+  const touch = size === "touch";
+
   return (
-    <div className="flex items-center gap-1 text-[11px] uppercase tracking-wider">
+    <div
+      className={`flex items-center text-[11px] uppercase tracking-wider ${
+        touch ? "gap-0" : "gap-1"
+      }`}
+    >
       {routing.locales.map((locale, i) => (
         <span key={locale} className="flex items-center gap-1">
           {i > 0 ? (
@@ -39,7 +53,11 @@ export function LocaleSwitcher() {
             type="button"
             onClick={() => switchTo(locale)}
             aria-current={locale === active ? "true" : undefined}
-            className={`rounded-sm px-0.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            className={`rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              touch
+                ? "inline-flex min-h-[44px] min-w-[44px] items-center justify-center"
+                : "px-0.5"
+            } ${
               locale === active
                 ? "text-foreground"
                 : "text-ink-2 hover:text-foreground"

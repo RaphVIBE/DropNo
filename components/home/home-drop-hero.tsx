@@ -90,7 +90,7 @@ export async function HomeDropHero({
                 {drop.brand.name}
               </div>
             ) : null}
-            <h1 className="font-display text-[clamp(2.4rem,5.5vw,4.5rem)] italic leading-[1.02] transition-colors group-hover:text-champagne-deep">
+            <h1 className="font-display text-[clamp(2.4rem,4.2vw,3.5rem)] italic leading-[1.04] transition-colors group-hover:text-champagne-deep">
               {drop.title}
             </h1>
           </div>

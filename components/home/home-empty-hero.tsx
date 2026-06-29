@@ -24,7 +24,7 @@ export async function HomeEmptyHero({
   return (
     <Masthead
       variant="escapement"
-      padding="px-7 pb-20 pt-24 md:px-16 md:pb-28 md:pt-36"
+      padding="px-7 pb-20 pt-24 md:px-16 md:pb-24 md:pt-28"
     >
       <div className="max-w-3xl">
         <p
@@ -34,7 +34,7 @@ export async function HomeEmptyHero({
           {t("emptyKicker")}
         </p>
         <h1
-          className="font-display reveal mt-3 text-balance text-[clamp(2.75rem,7vw,5.5rem)] leading-[0.95]"
+          className="font-display reveal mt-3 text-balance text-display-hero"
           style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
         >
           {t("emptyTitle")}

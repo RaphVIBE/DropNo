@@ -99,9 +99,11 @@ export default async function DemoDropPage({
   const brandName = brandJoin?.name ?? brand.name ?? null;
   const status = (drop.status ?? "open") as DropStatus;
   const isOpen = status === "open";
-  const isLocked = drop.bid_lock_at
-    ? new Date(drop.bid_lock_at) <= new Date(serverNowIso)
-    : false;
+  // Démo : toujours en état scellé (la « dernière heure »), cohérent avec le
+  // compte à rebours -> reveal. On montre ainsi l'offre réservée du client
+  // (existingBidCents = sim.reservedBidCents, au-dessus du clearing) plutôt que
+  // le panneau « se connecter ».
+  const isLocked = true;
 
   // Compteur : révélation (drop ouvert) ou ouverture (à venir).
   const counter =

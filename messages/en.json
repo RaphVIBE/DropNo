@@ -26,7 +26,14 @@
     "mechanism": "Mechanism",
     "about": "About",
     "read": "Read",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menuLabel": "Menu",
+    "primaryNav": "Primary navigation",
+    "utilityTitle": "Access",
+    "language": "Language",
+    "contact": "Contact"
   },
   "footer": {
     "tagline": "A house of sealed drops for premium watches. One piece a week, a single price set at the reveal.",

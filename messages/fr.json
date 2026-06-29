@@ -26,7 +26,14 @@
     "mechanism": "Mécanisme",
     "about": "À propos",
     "read": "Lire",
-    "signIn": "Se connecter"
+    "signIn": "Se connecter",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "menuLabel": "Menu",
+    "primaryNav": "Navigation principale",
+    "utilityTitle": "Accès",
+    "language": "Langue",
+    "contact": "Contact"
   },
   "footer": {
     "tagline": "Maison de drops scellés pour montres premium. Une pièce par semaine, un prix unique décidé à la révélation.",

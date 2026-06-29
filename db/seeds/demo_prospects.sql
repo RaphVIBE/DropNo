@@ -67,10 +67,10 @@ d (drop_number, slug, title, piece_reference, floor_price_cents, exemplaires, de
        '{"Boîtier":"Acier, 38 mm","Mouvement":"Chronographe à remontage manuel","Glace":"Saphir bombée","Cadran":"Sector grené, compteurs azurés","Étanchéité":"50 m","Bracelet":"Cuir grainé, boucle acier"}'::jsonb,
        'https://cdn.sanity.io/images/8c019h2s/production/5167b05f6a580fc3f790540923d61e52360d8ac2-1080x1350.jpg?w=1200&auto=format',
        '["https://cdn.sanity.io/images/8c019h2s/production/5167b05f6a580fc3f790540923d61e52360d8ac2-1080x1350.jpg?w=1200&auto=format","https://cdn.sanity.io/images/8c019h2s/production/4cc4c46bf5c4e88bc806146b64a269cf3ec2f08b-3020x4686.jpg?w=1200&h=1200&fit=crop&auto=format","https://cdn.sanity.io/images/8c019h2s/production/f92a7c243de2b61731b488c17e275df3db377ea1-1080x1920.jpg?w=1200&h=1200&fit=crop&auto=format"]'::jsonb),
-    (102, 'ressence', 'Type 3 · Édition Anthracite',
+    (102, 'ressence', 'Type 3 · Noir',
        'Réf. RS-T3 · Série démo 5 pièces', 1200000::bigint, 5,
        E'Cadran à modules orbitaux, sans couronne apparente, lecture par disques affleurants. Titane grade 5, profil ultra fin. Le temps lu comme une marée, pas comme une mécanique.',
-       '{"Boîtier":"Titane grade 5, 42 mm","Mouvement":"Automatique, module ROCS","Glace":"Saphir traité antireflet","Cadran":"Disques orbitaux anthracite","Étanchéité":"100 m","Bracelet":"Cuir nubuck, boucle titane"}'::jsonb,
+       '{"Boîtier":"Titane grade 5, 42 mm","Mouvement":"Automatique, module ROCS","Glace":"Saphir traité antireflet","Cadran":"Disques orbitaux noirs","Étanchéité":"100 m","Bracelet":"Cuir nubuck, boucle titane"}'::jsonb,
        -- Hero = vraie photo produit Type 3 cadran noir (T3B). L'ancien hero
        -- 8E5A8722 était un macro d'atelier (bezel marqué main), pas une montre :
        -- relégué en 3e position comme détail de fabrication.
@@ -152,8 +152,9 @@ update public.drops set
 where drop_number = 101 and is_demo;
 
 update public.drops set
+  title_en = 'Type 3 · Black',
   description_en = E'An orbital-module dial, no visible crown, read through flush-mounted discs. Grade 5 titanium, ultra-thin profile. Time read like a tide, not like a mechanism.',
-  specs_en = '{"Case":"Grade 5 titanium, 42 mm","Movement":"Automatic, ROCS module","Crystal":"Treated anti-reflective sapphire","Dial":"Anthracite orbital discs","Water resistance":"100 m","Strap":"Nubuck leather, titanium buckle"}'::jsonb
+  specs_en = '{"Case":"Grade 5 titanium, 42 mm","Movement":"Automatic, ROCS module","Crystal":"Treated anti-reflective sapphire","Dial":"Black orbital discs","Water resistance":"100 m","Strap":"Nubuck leather, titanium buckle"}'::jsonb
 where drop_number = 102 and is_demo;
 
 update public.drops set

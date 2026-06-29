@@ -32,7 +32,7 @@ import type { Locale } from "@/i18n/routing";
 export const dynamic = "force-dynamic";
 
 const SELECT =
-  "id, drop_number, title, description, description_en, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, specs_en, brand:brands(name, slug)";
+  "id, drop_number, title, title_en, description, description_en, status, floor_price_cents, exemplaires, bid_count, bid_window_opens_at, reveal_at, bid_lock_at, clearing_price_cents, hero_image_url, images_urls, specs, specs_en, brand:brands(name, slug)";
 
 export async function generateMetadata(): Promise<Metadata> {
   // Jamais indexée.
@@ -97,6 +97,10 @@ export default async function DemoDropPage({
 
   const brandJoin = (drop.brand as { name: string; slug: string } | null) ?? null;
   const brandName = brandJoin?.name ?? brand.name ?? null;
+  // Titre localisé : EN sur /en si fourni, fallback FR sinon (même logique que
+  // description_en / specs_en).
+  const displayTitle =
+    (params.locale === "en" ? drop.title_en : null) ?? drop.title ?? "";
   const status = (drop.status ?? "open") as DropStatus;
   const isOpen = status === "open";
   // Démo : toujours en état scellé (la « dernière heure »), cohérent avec le
@@ -151,7 +155,7 @@ export default async function DemoDropPage({
 
       <DropHero
         dropNumber={drop.drop_number ?? 0}
-        title={drop.title ?? ""}
+        title={displayTitle}
         brandName={brandName}
         brandSlug={null}
         status={status}
@@ -170,7 +174,7 @@ export default async function DemoDropPage({
           <DropGallery
             heroImageUrl={drop.hero_image_url}
             imagesUrls={(drop.images_urls as string[] | null) ?? null}
-            title={drop.title ?? ""}
+            title={displayTitle}
             seed={drop.drop_number ?? 0}
           />
           <p className="mt-3 text-[11px] italic text-muted-foreground">
@@ -182,7 +186,7 @@ export default async function DemoDropPage({
           {sim && isOpen ? (
             <DemoReveal
               brandName={brandName ?? ""}
-              pieceTitle={drop.title ?? ""}
+              pieceTitle={displayTitle}
               dropNumber={drop.drop_number ?? 0}
               clearingCents={sim.clearingCents}
               exemplaires={drop.exemplaires ?? sim.editionPieces}

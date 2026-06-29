@@ -562,6 +562,7 @@ export type Database = {
           specs_en: Json | null
           status: string
           title: string
+          title_en: string | null
           updated_at: string
         }
         Insert: {
@@ -590,6 +591,7 @@ export type Database = {
           specs_en?: Json | null
           status?: string
           title: string
+          title_en?: string | null
           updated_at?: string
         }
         Update: {
@@ -618,6 +620,7 @@ export type Database = {
           specs_en?: Json | null
           status?: string
           title?: string
+          title_en?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1089,6 +1092,7 @@ export type Database = {
           specs_en: Json | null
           status: string | null
           title: string | null
+          title_en: string | null
         }
         Insert: {
           bid_count?: number | null
@@ -1111,6 +1115,7 @@ export type Database = {
           specs?: Json | null
           status?: string | null
           title?: string | null
+          title_en?: string | null
         }
         Update: {
           bid_count?: number | null
@@ -1133,6 +1138,7 @@ export type Database = {
           specs?: Json | null
           status?: string | null
           title?: string | null
+          title_en?: string | null
         }
         Relationships: [
           {

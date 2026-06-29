@@ -88,7 +88,7 @@ export default async function DropsPage() {
 
   return (
     <>
-      <Masthead variant="escapement" padding="px-7 pb-9 pt-20 md:px-16 md:pb-11 md:pt-28">
+      <Masthead variant="escapement" padding="px-7 pb-9 pt-20 md:px-16 md:pb-11 md:pt-24">
         <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-3">
           <div>
             <span className="eyebrow">{t("eyebrow")}</span>

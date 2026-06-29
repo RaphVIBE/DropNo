@@ -176,7 +176,7 @@ export default async function ContactPage() {
       <Masthead variant="seal" padding="px-7 pb-14 pt-20 md:pb-16 md:pt-24">
         <div className="mx-auto max-w-3xl">
           <span className="eyebrow">{c.heroEyebrow}</span>
-          <h1 className="font-display mt-4 text-[clamp(2.25rem,5vw,3.5rem)]">
+          <h1 className="font-display mt-4 text-display-page">
             {c.heroTitle}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ink-2">

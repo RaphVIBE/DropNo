@@ -139,7 +139,7 @@ export default async function BrandPage({
       <section className="relative overflow-hidden border-b border-rule-soft">
         <BoutiqueHero
           seed={brand.name}
-          className="reveal-art h-64 w-full [--art-opacity:1] sm:h-80 md:h-[26rem]"
+          className="reveal-art h-56 w-full [--art-opacity:1] sm:h-72 md:h-[20rem]"
         />
         {/* Voile : sombre en bas (sous le nom) et en haut (sous le fil
             d'Ariane), transparent au centre pour laisser voir la vitrine. */}
@@ -153,7 +153,7 @@ export default async function BrandPage({
             {t("backToBrands")}
           </Link>
           <h1
-            className="font-display reveal max-w-[14ch] text-[clamp(2.6rem,7vw,6rem)] text-[oklch(0.97_0.008_82)] drop-shadow-[0_2px_18px_oklch(0.16_0.012_60/0.6)]"
+            className="font-display reveal max-w-[14ch] text-[clamp(2.4rem,4.5vw,4rem)] text-[oklch(0.97_0.008_82)] drop-shadow-[0_2px_18px_oklch(0.16_0.012_60/0.6)]"
             style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
           >
             {brand.name}
@@ -162,7 +162,7 @@ export default async function BrandPage({
       </section>
 
       {/* Lead editoriale + lien officiel */}
-      <div className="border-b border-rule-soft bg-sand px-7 pb-14 pt-12 md:px-16 md:pb-16 md:pt-14">
+      <div className="border-b border-rule-soft bg-sand px-7 pb-12 pt-11 md:px-16 md:pb-14 md:pt-12">
         <p className="reveal max-w-[58ch] text-lg leading-relaxed text-ink-2">
           {lead}
         </p>
@@ -185,9 +185,11 @@ export default async function BrandPage({
         ))}
       </div>
 
-      <div className="px-7 pb-28 pt-16 md:px-16 md:pt-20">
-        <div className="mb-8 flex items-baseline justify-between border-b border-foreground pb-6">
-          <h2 className="font-serif text-4xl italic">{t("itsDrops")}</h2>
+      <div className="px-7 pb-28 pt-14 md:px-16 md:pt-16">
+        <div className="mb-8 flex items-baseline justify-between border-b border-foreground pb-5">
+          <h2 className="font-serif text-[clamp(1.75rem,2.6vw,2.25rem)] italic">
+            {t("itsDrops")}
+          </h2>
           <span className="text-[13px] tracking-wide text-muted-foreground">
             {t("dropsCount", { count: drops.length })}
           </span>

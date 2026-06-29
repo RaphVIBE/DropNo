@@ -18,11 +18,13 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 
 export async function SiteNav() {
   const t = await getTranslations("nav");
+  // « Lire » ne figure plus dans la nav principale : les essais sont repliés en
+  // annexe au bas de la page « À propos ». La route /lire reste accessible en
+  // direct (liens existants, SEO).
   const navItems = [
     { href: "/drops", label: t("calendar") },
     { href: "/marques", label: t("houses") },
     { href: "/mecanisme", label: t("mechanism") },
-    { href: "/lire", label: t("read") },
     { href: "/a-propos", label: t("about") },
   ];
 

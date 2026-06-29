@@ -20,7 +20,7 @@ import {
 export function Masthead({
   variant,
   children,
-  padding = "px-7 pb-16 pt-20 md:px-16 md:pb-20 md:pt-28",
+  padding = "px-7 pb-14 pt-20 md:px-16 md:pb-16 md:pt-24",
   className = "",
   artOpacity = 0.09,
 }: {

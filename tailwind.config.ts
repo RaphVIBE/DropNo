@@ -68,6 +68,14 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         serif: ["var(--font-serif)", "Times New Roman", "serif"],
       },
+      // Échelle des titres display (validée passe 1 de l'affinage desktop).
+      // Bornes hautes des clamp resserrées sur desktop, line-height plus aéré.
+      // `display-hero` = le plus grand titre du site (hero vide d'accueil).
+      // `display-page` = titre de masthead des pages éditoriales/index.
+      fontSize: {
+        "display-hero": ["clamp(2.5rem,5vw,4.25rem)", { lineHeight: "1.05" }],
+        "display-page": ["clamp(2.5rem,5vw,3.5rem)", { lineHeight: "1.05" }],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

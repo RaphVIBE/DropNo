@@ -340,7 +340,11 @@
     "para2Tail": ": that of the last bid accepted. No real-time overbidding, no price war. A calendar you can keep.",
     "para3": "We work directly with the brands. No resale, no middleman: authenticity comes from the house itself. Your piece is delivered insured, hand to hand when its value calls for it.",
     "contactLead": "Drop No. is published from Brussels. For any question, write to us at",
-    "calendarLink": "See the drops calendar →"
+    "calendarLink": "See the drops calendar →",
+    "readingEyebrow": "Reading",
+    "readingLead": "A few essays on the mechanism, its history and its reasons.",
+    "readingMinutes": "{minutes} min",
+    "readingAll": "See all reading →"
   },
   "accountDashboard": {
     "eyebrow": "My account",

@@ -76,7 +76,7 @@ export const MAISONS: Record<string, MaisonContent> = {
       { label: "Mouvement", value: "Suisse (Sellita)" },
       { label: "Série", value: "55 exemplaires, jamais de n°13" },
     ],
-    sim: { attenduCents: 340000, clearingCents: 476000 },
+    sim: { attenduCents: 375000, clearingCents: 512000 },
   },
   "col-macarthur": {
     founded: "2014",

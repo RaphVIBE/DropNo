@@ -79,12 +79,12 @@ d (drop_number, slug, title, piece_reference, floor_price_cents, exemplaires, de
        '{"Boîtier":"Acier, 40,5 mm","Mouvement":"Automatique, calibre X-Centric","Glace":"Saphir plat","Cadran":"Bleu nuit guilloché, disques tournants","Étanchéité":"30 m","Bracelet":"Veau bleu, boucle acier"}'::jsonb,
        null,
        null::jsonb),
-    (104, 'raidillon-55', 'Speed /55 · Édition Eau Rouge',
-       'Réf. RD-S55 · Drop de 10 pièces', 320000::bigint, 10,
-       E'Édition circuit de la Speed : cadran vert profond, index « 55 », rehauts jaune et touches de course. Boîtier acier 42 mm, mouvement suisse automatique, fond gravé du tracé de Spa-Francorchamps. Dix exemplaires de la série de 55, le plus haut bid choisit son numéro.',
-       '{"Boîtier":"Acier, 42 mm","Mouvement":"Suisse automatique (Sellita SW200)","Cadran":"Vert circuit, index 55","Verre":"Saphir","Étanchéité":"100 m","Édition":"10 pièces parmi la série de 55"}'::jsonb,
-       'https://raidillon.odoo.com/web/image/11235-61728d10/SPEED-A10-259_530x%402x.webp',
-       '["https://raidillon.odoo.com/web/image/11235-61728d10/SPEED-A10-259_530x%402x.webp"]'::jsonb),
+    (104, 'raidillon-55', 'SPEED-C10-260 SPA',
+       'Réf. SPEED-C10-260 SPA · Série de 55', 350000::bigint, 10,
+       E'La SPEED-C10-260 SPA porte un fragment authentique de l''ancien tarmac du raidillon, le virage qui a donné son nom à la maison, retiré lors du réasphaltage du circuit de Spa-Francorchamps avant le Grand Prix de Belgique 2022. Un morceau de piste devenu pièce d''horlogerie.\n\nFidèle à l''esprit de la collection Speed, le cadran s''inspire des compteurs de vitesse : une lecture dense en chiffres, profonde, lisible d''un coup d''œil. Le fond de boîte reste épuré. Mouvement automatique, boîtier acier.\n\nÉdition limitée à 55 exemplaires, chacun numéroté et accompagné d''un socle en acier portant le même numéro. Ce drop en propose dix, par offre scellée ; le plus haut bid choisit son numéro.',
+       '{"Boîtier":"Acier","Mouvement":"Automatique","Cadran":"Compteurs de vitesse, dense en chiffres","Matière signature":"Fragment du tarmac du raidillon (réasphaltage 2022)","Fond":"Épuré","Série":"55 exemplaires numérotés, socle acier assorti","Édition":"10 pièces parmi la série de 55"}'::jsonb,
+       '/demo/raidillon-speed-c10-260-spa-1.jpg',
+       '["/demo/raidillon-speed-c10-260-spa-1.jpg","/demo/raidillon-speed-c10-260-spa-2.jpg"]'::jsonb),
     (105, 'col-macarthur', 'Francorchamps 1921 Automatique',
        'Réf. CM-F1921-AUTO · Drop de 12 pièces', 314900::bigint, 12,
        E'Née d''une collaboration officielle avec le Circuit de Spa-Francorchamps. Le cadran est taillé dans l''asphalte même de la piste, les compteurs dans les vibreurs (kerbs) du circuit, les poussoirs usinés dans l''acier de la Tour Uniroyal. Rien n''est symbolique : chaque matière a une provenance.\n\nBoîtier titane 41 mm, mouvement automatique suisse Sellita SW500, glace et fond saphir gravé du tracé du circuit. Édition automatique numérotée, assemblée à l''atelier de Liège. Ce drop en propose douze, par offre scellée.',
@@ -159,8 +159,8 @@ update public.drops set
 where drop_number = 103 and is_demo;
 
 update public.drops set
-  description_en = E'A circuit edition of the Speed: deep green dial, ''55'' index, yellow accents and racing touches. 42 mm steel case, Swiss automatic movement, caseback engraved with the Spa-Francorchamps layout. Ten pieces from the series of 55; the highest bid chooses its number.',
-  specs_en = '{"Case":"Steel, 42 mm","Movement":"Swiss automatic (Sellita SW200)","Crystal":"Sapphire","Dial":"Circuit green, 55 index","Water resistance":"100 m","Edition":"10 pieces from the series of 55"}'::jsonb
+  description_en = E'The SPEED-C10-260 SPA carries an authentic fragment of the old tarmac from the raidillon, the corner that gave the maison its name, lifted during the resurfacing of the Spa-Francorchamps circuit ahead of the 2022 Belgian Grand Prix. A piece of the track turned into a piece of watchmaking.\n\nTrue to the Speed collection, the dial draws on speedometers: a dense, legible reading rich in numerals. The caseback stays clean. Automatic movement, steel case.\n\nLimited to 55 pieces, each numbered and paired with a steel stand bearing the same number. This drop offers ten, by sealed bid; the highest bid chooses its number.',
+  specs_en = '{"Case":"Steel","Movement":"Automatic","Dial":"Speedometer style, rich in numerals","Signature material":"Fragment of the raidillon tarmac (2022 resurfacing)","Caseback":"Clean","Series":"55 numbered pieces, matching steel stand","Edition":"10 pieces from the series of 55"}'::jsonb
 where drop_number = 104 and is_demo;
 
 update public.drops set

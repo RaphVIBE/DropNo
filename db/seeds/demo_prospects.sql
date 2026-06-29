@@ -71,8 +71,11 @@ d (drop_number, slug, title, piece_reference, floor_price_cents, exemplaires, de
        'Réf. RS-T3 · Série démo 5 pièces', 1200000::bigint, 5,
        E'Cadran à modules orbitaux, sans couronne apparente, lecture par disques affleurants. Titane grade 5, profil ultra fin. Le temps lu comme une marée, pas comme une mécanique.',
        '{"Boîtier":"Titane grade 5, 42 mm","Mouvement":"Automatique, module ROCS","Glace":"Saphir traité antireflet","Cadran":"Disques orbitaux anthracite","Étanchéité":"100 m","Bracelet":"Cuir nubuck, boucle titane"}'::jsonb,
-       'https://ressencewatches.com/cdn/shop/files/8E5A8722-square_1200x.jpg?v=1669120920',
-       '["https://ressencewatches.com/cdn/shop/files/8E5A8722-square_1200x.jpg?v=1669120920","https://ressencewatches.com/cdn/shop/files/T3B-product-page_1200x.jpg?v=1692957207","https://ressencewatches.com/cdn/shop/files/T3W-product-page_1200x.jpg?v=1692957240"]'::jsonb),
+       -- Hero = vraie photo produit Type 3 cadran noir (T3B). L'ancien hero
+       -- 8E5A8722 était un macro d'atelier (bezel marqué main), pas une montre :
+       -- relégué en 3e position comme détail de fabrication.
+       'https://ressencewatches.com/cdn/shop/files/T3B-product-page_1200x.jpg?v=1692957207',
+       '["https://ressencewatches.com/cdn/shop/files/T3B-product-page_1200x.jpg?v=1692957207","https://ressencewatches.com/cdn/shop/files/T3W-product-page_1200x.jpg?v=1692957240","https://ressencewatches.com/cdn/shop/files/8E5A8722-square_1200x.jpg?v=1669120920"]'::jsonb),
     (103, 'trilobe', 'Les Matinaux · Nuit Fathom',
        'Réf. TR-LM103 · Série démo 6 pièces', 480000::bigint, 6,
        E'Lecture de l''heure par trois disques tournants concentriques, sans aiguille. Cadran bleu nuit guilloché main, boîtier acier 40,5 mm. Une autre grammaire du temps.',

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -10,15 +11,18 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 
-import { formatEuros } from "@/lib/format";
+import { formatAmount, formatEuros } from "@/lib/format";
 import { formatSerial } from "@/lib/privilege";
 import { getStripe } from "@/lib/stripe/browser";
 
 /**
- * Privilège № 001 — vue « Une dernière chose » (voir Privilege_001.md).
+ * Privilège № 001 — « lettre privée » post-reveal (voir Privilege_001.md +
+ * mockups/dropno-buyer-privilege.html). Mise en page éditoriale plein écran,
+ * centrée, ton sobre : aucune mention publique.
  *
- * Trois états : offre active (CTA réserver / conserver), paiement (Elements),
- * confirmé. La discrétion prime : aucune mention publique, ton sobre.
+ * États : offre active (réserver / conserver), paiement (Stripe Elements),
+ * confirmé, refusé, expiré (Lock 1 : même page, CTA désactivés + message).
+ * La logique de paiement et les endpoints /api/serial-offers/* sont inchangés.
  */
 
 export type SerialOfferData = {
@@ -32,6 +36,9 @@ export type SerialOfferData = {
   heroImageUrl: string | null;
   exemplaires: number;
   paidCents: number | null;
+  bidCents: number | null;
+  recipientName: string | null;
+  dropId: string;
 };
 
 export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
@@ -44,7 +51,9 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  const serial = formatSerial(offer.serialNo, offer.exemplaires);
+  const serialPad = pad(offer.serialNo);
+  const serialFull = formatSerial(offer.serialNo, offer.exemplaires);
+  const backHref = `/drop/${offer.dropId}/result`;
   const expired = useCountdownExpired(offer.expiresAt);
   const remaining = useRemainingLabel(offer.expiresAt, {
     hm: (h, m) => t("remainingHoursMinutes", { hours: h, minutes: m }),
@@ -64,7 +73,6 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
         return;
       }
       if (data.accepted) {
-        // Dev sans Stripe : acceptation directe.
         setPhase("accepted");
         return;
       }
@@ -97,131 +105,193 @@ export function SerialOfferView({ offer }: { offer: SerialOfferData }) {
     }
   }
 
+  const recipient = offer.recipientName
+    ? t("recipient", { name: offer.recipientName })
+    : t("recipientGeneric");
+
   // --- États terminaux ---
   if (phase === "accepted") {
     return (
-      <Shell>
-        <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
-        <h1 className="font-display mb-6 text-4xl">{t("acceptedTitle")}</h1>
-        <p className="text-sm leading-relaxed text-ink-2">
-          {t("acceptedBody", { title: offer.title, serial })}
-        </p>
+      <Frame backHref={backHref} backLabel={t("back")}>
+        <Recipient>{recipient}</Recipient>
+        <Title>{t("acceptedTitle")}</Title>
+        <Context>{t("acceptedBody", { title: offer.title, serial: serialFull })}</Context>
         <BackLink label={t("backLink")} />
-      </Shell>
+      </Frame>
     );
   }
 
   if (phase === "declined" || offer.status === "declined") {
     return (
-      <Shell>
-        <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
-        <h1 className="font-display mb-6 text-4xl">{t("declinedTitle")}</h1>
-        <p className="text-sm leading-relaxed text-ink-2">
-          {t("declinedBody")}
-        </p>
+      <Frame backHref={backHref} backLabel={t("back")}>
+        <Recipient>{recipient}</Recipient>
+        <Title>{t("declinedTitle")}</Title>
+        <Context>{t("declinedBody")}</Context>
         <BackLink label={t("backLink")} />
-      </Shell>
+      </Frame>
     );
   }
 
+  // Lock 1 : expirée. Même lettre, message de réassignation, CTA désactivés
+  // (libellés neutres : on ne dévoile plus le supplément).
   if (offer.status !== "pending" || expired) {
     return (
-      <Shell>
-        <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
-        <h1 className="font-display mb-6 text-4xl">
-          {t("expiredTitle")}
-        </h1>
-        <p className="text-sm leading-relaxed text-ink-2">
-          {t("expiredBody")}
-        </p>
-        <BackLink label={t("backLink")} />
-      </Shell>
+      <Frame backHref={backHref} backLabel={t("back")}>
+        <Recipient>{recipient}</Recipient>
+        <Title>{t("expiredTitle")}</Title>
+        <div className="my-12 border-y border-rule py-12 md:my-14 md:py-14">
+          <p className="mx-auto max-w-[560px] text-[15px] leading-relaxed text-ink-2">
+            {t("expiredBody", { serial: serialPad })}
+          </p>
+          <p className="mt-4 text-sm text-muted-foreground">
+            {t.rich("expiredContact", {
+              link: (c) => (
+                <a
+                  href="mailto:hello@dropno.eu"
+                  className="border-b border-rule pb-px text-ink-2 hover:text-foreground"
+                >
+                  {c}
+                </a>
+              ),
+            })}
+          </p>
+        </div>
+        <div className="mx-auto max-w-[480px]">
+          <button type="button" disabled className={EDITORIAL_BTN}>
+            {t("reserveCta")}
+          </button>
+          <button type="button" disabled className={EDITORIAL_BTN_GHOST}>
+            {t("keepClearing")}
+          </button>
+        </div>
+      </Frame>
     );
   }
 
   // --- Étape paiement ---
   if (phase === "card" && clientSecret) {
     return (
-      <Shell>
-        <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
-        <h1 className="font-display mb-2 text-4xl">{t("reserveTitle")}</h1>
-        <p className="mb-1 font-serif text-lg italic">
+      <Frame backHref={backHref} backLabel={t("back")}>
+        <Recipient>{recipient}</Recipient>
+        <Title>{t("reserveTitle")}</Title>
+        <p className="mb-2 font-serif text-2xl italic text-champagne-deep">
           {formatEuros(offer.supplementCents, locale)}
         </p>
-        <p className="mb-6 text-sm text-ink-2">
+        <Context>
           {offer.paidCents
             ? t("supplementNotePaid", {
                 paid: formatEuros(offer.paidCents, locale),
               })
             : t("supplementNote")}
-        </p>
-        <Elements
-          stripe={getStripe()}
-          options={{ clientSecret, appearance: { theme: "flat" } }}
-        >
-          <CardStep
-            offerId={offer.id}
-            onConfirmed={() => setPhase("accepted")}
-            onBack={() => setPhase("offer")}
-          />
-        </Elements>
-      </Shell>
+        </Context>
+        <div className="mx-auto mt-10 max-w-[480px] text-left">
+          <Elements
+            stripe={getStripe()}
+            options={{ clientSecret, appearance: { theme: "flat" } }}
+          >
+            <CardStep
+              offerId={offer.id}
+              onConfirmed={() => setPhase("accepted")}
+              onBack={() => setPhase("offer")}
+            />
+          </Elements>
+        </div>
+      </Frame>
     );
   }
 
   // --- Offre active ---
+  const showFigures = offer.bidCents != null && offer.paidCents != null;
   return (
-    <Shell>
-      <Eyebrow>{t("eyebrow", { number: pad(offer.dropNumber) })}</Eyebrow>
-      <h1 className="font-display mb-6 text-4xl">{t("offerTitle")}</h1>
-      <p className="text-sm leading-relaxed text-ink-2">
-        {t.rich("offerLead", {
-          serial,
-          em: (chunks) => (
-            <span className="font-serif italic text-foreground">{chunks}</span>
-          ),
-        })}
-      </p>
-      <p className="mt-4 text-sm leading-relaxed text-ink-2">
-        {t.rich("offerSupplement", {
-          amount: formatEuros(offer.supplementCents, locale),
-          em: (chunks) => (
-            <span className="font-serif italic text-foreground">{chunks}</span>
-          ),
-        })}
-      </p>
+    <Frame backHref={backHref} backLabel={t("back")}>
+      <Recipient>{recipient}</Recipient>
+      <Title>{t("claimTitle", { serial: serialPad })}</Title>
 
-      <dl className="mt-8 grid gap-3 border-y border-rule py-5 text-sm">
-        <Row label={t("rowPiece")} value={offer.title} />
-        <Row label={t("rowSerial")} value={serial} />
-        <Row
-          label={t("rowSupplement")}
-          value={formatEuros(offer.supplementCents, locale)}
-        />
-        {remaining ? (
-          <Row label={t("rowExpiresIn")} value={remaining} />
-        ) : null}
-      </dl>
+      <Context>
+        {showFigures
+          ? t.rich("contextLine", {
+              bid: formatEuros(offer.bidCents as number, locale),
+              clearing: formatEuros(offer.paidCents as number, locale),
+              count: offer.exemplaires,
+              strike: (c) => (
+                <span className="tabular-nums text-muted-foreground line-through decoration-muted-2 decoration-1">
+                  {c}
+                </span>
+              ),
+              pay: (c) => <span className="tabular-nums text-foreground">{c}</span>,
+            })
+          : t("contextLineSimple")}
+      </Context>
 
-      {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
+      {/* Supplément, le nombre titre */}
+      <div className="my-12 border-y border-rule py-12 md:my-14 md:py-14">
+        <div className="mb-[18px] text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+          {t("supplementLabel")}
+        </div>
+        <div className="mb-3.5 font-serif text-[clamp(64px,11vw,120px)] font-light italic leading-none tracking-[-0.035em] tabular-nums text-champagne-deep">
+          <span className="mr-[0.08em] text-[0.72em] tracking-normal text-muted-foreground">
+            +
+          </span>
+          <span className="mr-[0.14em] align-[0.45em] text-[0.36em] tracking-normal text-ink-2">
+            EUR
+          </span>
+          {formatAmount(offer.supplementCents, locale)}
+        </div>
+        <div className="font-serif text-sm italic text-muted-foreground">
+          {t("supplementNoteOffer")}
+        </div>
+      </div>
 
-      <button
-        type="button"
-        onClick={startPayment}
-        disabled={busy}
-        className={CTA_CLASS}
-      >
-        {busy ? t("preparing") : t("reserveCta")}
-      </button>
-      <button
-        type="button"
-        onClick={decline}
-        disabled={busy}
-        className="mt-4 block w-full rounded-sm text-center text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
-      >
-        {t("keepNumber")}
-      </button>
-    </Shell>
+      {error ? (
+        <p className="mb-6 text-sm text-destructive">{error}</p>
+      ) : null}
+
+      <div className="mx-auto mb-9 max-w-[480px]">
+        <button
+          type="button"
+          onClick={startPayment}
+          disabled={busy}
+          className={EDITORIAL_BTN}
+        >
+          {busy
+            ? t("preparing")
+            : t("reserveCtaAmount", {
+                serial: serialPad,
+                amount: formatEuros(offer.supplementCents, locale),
+              })}
+        </button>
+        <button
+          type="button"
+          onClick={decline}
+          disabled={busy}
+          className={EDITORIAL_BTN_GHOST}
+        >
+          {t("keepClearing")}
+        </button>
+      </div>
+
+      <div className="mb-12 text-[13px] text-muted-foreground">
+        {remaining
+          ? t.rich("expiresLine", {
+              remaining,
+              rem: (c) => (
+                <span className="font-serif italic tabular-nums text-ink-2">
+                  {c}
+                </span>
+              ),
+            })
+          : null}
+      </div>
+
+      <details className="mx-auto max-w-[580px] text-sm">
+        <summary className="inline cursor-pointer list-none border-b border-rule pb-0.5 text-muted-foreground hover:text-ink-2 [&::-webkit-details-marker]:hidden">
+          {t("whyToggle")}
+        </summary>
+        <div className="mt-[22px] border-t border-rule-soft pt-[22px] text-left text-sm leading-[1.7] text-ink-2">
+          {t("whyBody", { serial: serialPad })}
+        </div>
+      </details>
+    </Frame>
   );
 }
 
@@ -257,8 +327,7 @@ function CardStep({
     }
 
     if (paymentIntent && paymentIntent.status === "succeeded") {
-      // Ceinture-bretelles : confirmation synchrone côté serveur (le webhook
-      // payment_intent.succeeded fait foi de toute façon, idempotent).
+      // Ceinture-bretelles : confirmation synchrone (le webhook fait foi).
       try {
         await fetch(`/api/serial-offers/${offerId}/confirm`, {
           method: "POST",
@@ -273,7 +342,6 @@ function CardStep({
     }
 
     if (paymentIntent && paymentIntent.status === "processing") {
-      // Paiement en cours de traitement : le webhook finalisera.
       onConfirmed();
       return;
     }
@@ -290,7 +358,7 @@ function CardStep({
         type="button"
         onClick={confirm}
         disabled={!stripe || submitting}
-        className={CTA_CLASS}
+        className={EDITORIAL_BTN + " mt-6"}
       >
         {submitting ? t("paying") : t("confirmCta")}
       </button>
@@ -351,24 +419,76 @@ function pad(n: number): string {
   return String(n).padStart(3, "0");
 }
 
-function Shell({ children }: { children: React.ReactNode }) {
+/** Cadre éditorial plein écran : en-tête sobre (wordmark + retour), corps
+ *  centré, pied minimal. /account n'a pas de chrome global. */
+function Frame({
+  backHref,
+  backLabel,
+  children,
+}: {
+  backHref: string;
+  backLabel: string;
+  children: ReactNode;
+}) {
   return (
-    <section className="mx-auto max-w-xl px-7 py-20 md:px-0">
-      <div className="border border-rule bg-card p-8 md:p-10">{children}</div>
-    </section>
+    <div className="flex min-h-screen flex-col">
+      <header className="flex items-center justify-between border-b border-rule-soft px-gutter py-[18px]">
+        <Link
+          href="/"
+          className="font-serif text-[22px] font-light italic tracking-[-0.01em] text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          Drop <sup className="ml-[-2px] align-super text-[0.78em]">№</sup>
+        </Link>
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-2 text-[13px] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          <span aria-hidden className="font-serif italic">
+            ←
+          </span>
+          {backLabel}
+        </Link>
+      </header>
+      <main className="mx-auto w-full max-w-[820px] flex-1 px-gutter pb-24 pt-24 text-center md:pt-28">
+        {children}
+      </main>
+      <footer className="border-t border-rule-soft px-gutter py-7 text-center text-[11px] text-muted-foreground">
+        <a
+          href="mailto:hello@dropno.eu"
+          className="border-b border-rule-soft pb-px hover:text-ink-2"
+        >
+          hello@dropno.eu
+        </a>
+      </footer>
+    </div>
   );
 }
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="eyebrow mb-3">{children}</p>;
+function Recipient({ children }: { children: ReactNode }) {
+  return (
+    <p className="mb-12 text-[11px] uppercase tracking-[0.22em] text-champagne-deep md:mb-14">
+      <span
+        aria-hidden
+        className="mr-2.5 inline-block h-1 w-1 rotate-45 bg-champagne-deep align-middle"
+      />
+      {children}
+    </p>
+  );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Title({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-4">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="font-serif italic text-foreground">{value}</dd>
-    </div>
+    <h1 className="mb-10 font-serif text-[clamp(56px,10vw,120px)] font-light italic leading-[0.95] tracking-[-0.03em]">
+      {children}
+    </h1>
+  );
+}
+
+function Context({ children }: { children: ReactNode }) {
+  return (
+    <p className="mx-auto max-w-[620px] text-base leading-relaxed text-ink-2">
+      {children}
+    </p>
   );
 }
 
@@ -376,12 +496,15 @@ function BackLink({ label }: { label: string }) {
   return (
     <Link
       href="/account/dashboard"
-      className="mt-8 inline-block rounded-sm text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="mt-12 inline-block rounded-sm text-sm underline underline-offset-4 hover:text-champagne-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       {label}
     </Link>
   );
 }
 
-const CTA_CLASS =
-  "mt-6 block w-full bg-primary px-6 py-[18px] text-center text-[13px] font-medium uppercase tracking-[0.16em] text-primary-foreground transition-colors rounded-sm hover:bg-[var(--btn-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50";
+const EDITORIAL_BTN =
+  "block w-full border border-foreground bg-foreground px-6 py-5 text-center text-xs font-medium uppercase tracking-[0.18em] text-background transition-opacity duration-200 ease-quart hover:opacity-[0.88] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-40";
+
+const EDITORIAL_BTN_GHOST =
+  "mt-2.5 block w-full border border-rule bg-transparent px-6 py-5 text-center text-xs font-medium uppercase tracking-[0.18em] text-ink-2 transition-colors duration-200 ease-quart hover:border-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-40";

@@ -22,15 +22,20 @@ export default async function SerialOfferPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: offer } = await supabase
-    .from("serial_offers")
-    .select(
-      "id, status, supplement_cents, expires_at, serial_no, drop:drops(id, drop_number, title, hero_image_url, exemplaires), transaction:transactions(amount_paid_cents)"
-    )
-    .eq("id", params.id)
-    .maybeSingle();
+  const [{ data: offer }, { data: profile }] = await Promise.all([
+    supabase
+      .from("serial_offers")
+      .select(
+        "id, status, supplement_cents, expires_at, serial_no, drop:drops(id, drop_number, title, hero_image_url, exemplaires), transaction:transactions(amount_paid_cents), bid:bids(amount_cents)"
+      )
+      .eq("id", params.id)
+      .maybeSingle(),
+    supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle(),
+  ]);
 
-  if (!offer || offer.status === "expired") notFound();
+  // Lock 1 : une offre expiree N'EST PLUS un 404, elle affiche l'ecran
+  // « offre expiree » (CTAs desactives + message de reassignation).
+  if (!offer) notFound();
 
   const drop = offer.drop as unknown as {
     id: string;
@@ -42,6 +47,7 @@ export default async function SerialOfferPage({
   const tx = offer.transaction as unknown as {
     amount_paid_cents: number;
   } | null;
+  const bid = offer.bid as unknown as { amount_cents: number } | null;
   if (!drop) notFound();
 
   return (
@@ -57,6 +63,9 @@ export default async function SerialOfferPage({
         heroImageUrl: drop.hero_image_url,
         exemplaires: drop.exemplaires,
         paidCents: tx?.amount_paid_cents ?? null,
+        bidCents: bid?.amount_cents ?? null,
+        recipientName: profile?.display_name ?? null,
+        dropId: drop.id,
       }}
     />
   );

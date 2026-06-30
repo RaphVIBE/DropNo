@@ -676,6 +676,11 @@
     "nextDropTitle": "The next drop opens Thursday.",
     "nextDropSub": "A piece by a different maison. Reveal Thursday at 18:00 CET.",
     "nextDropCalendar": "See the calendar",
-    "nextDropLetter": "Get the Thursday letter"
+    "nextDropLetter": "Get the Thursday letter",
+    "captureEyebrow": "Drop № {number} · Hmm.",
+    "captureTitle": "Something didn't clear.",
+    "captureBody": "A hold was placed on your card, but the capture didn't go through. No piece was reserved, no charge was made. The hold releases within 24h.",
+    "captureContact": "If you'd like us to look into it, write to <link>hello@dropno.eu</link> and reference your bid time. We'll respond within 48 working hours.",
+    "captureBack": "Back to the calendar"
   }
 }

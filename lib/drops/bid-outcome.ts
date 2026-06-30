@@ -22,6 +22,8 @@
 export type BidRow = {
   amount_cents: number;
   status: string;
+  /** 'pending' | 'authorized' | 'captured' | 'failed' | 'released' */
+  stripe_auth_status?: string | null;
 };
 
 /** Transaction capturee de l'utilisateur pour ce drop (signal de gain le plus sur). */
@@ -52,7 +54,11 @@ export type BidOutcome =
     }
   | { kind: "won"; clearingCents: number; bidCents: number }
   | { kind: "outbid"; clearingCents: number; bidCents: number; floorCents: number }
-  | { kind: "below_floor"; bidCents: number; floorCents: number };
+  | { kind: "below_floor"; bidCents: number; floorCents: number }
+  // Lock 2 : la capture Stripe a echoue au reveal. L'acheteur etait gagnant
+  // par le prix mais a perdu la piece (pas de cascade). Ecran rassurant, sans
+  // detail technique ni montant (cf. handoff, Decisions verrouillees).
+  | { kind: "capture_failed" };
 
 /**
  * Determine l'issue a partir de l'etat lu en base. Renvoie `null` si l'issue
@@ -73,6 +79,16 @@ export function computeBidOutcome(input: {
 }): BidOutcome | null {
   const { bid, tx, serialOffer, clearingCents, floorCents } = input;
   if (!bid) return null;
+
+  // Lock 2 : gagnant par le prix dont la capture a echoue. On teste avant la
+  // victoire (statuts 'failed' vs 'captured' mutuellement exclusifs).
+  const wouldWin =
+    bid.status === "won" ||
+    (clearingCents != null && bid.amount_cents >= clearingCents);
+  const captureFailed =
+    wouldWin &&
+    (bid.stripe_auth_status === "failed" || tx?.status === "failed");
+  if (captureFailed) return { kind: "capture_failed" };
 
   const captured = !!tx && tx.captured_at != null;
   const won =

@@ -13,6 +13,7 @@ import {
 import { RevealWon } from "@/components/reveal/reveal-won";
 import { RevealOutbid } from "@/components/reveal/reveal-outbid";
 import { RevealBelowFloor } from "@/components/reveal/reveal-below-floor";
+import { RevealCaptureFailed } from "@/components/reveal/reveal-capture-failed";
 import type { Locale } from "@/i18n/routing";
 import type { Tables } from "@/lib/supabase/types";
 
@@ -131,7 +132,13 @@ export default async function ResultPage({
 
   const bid = rpcBid as unknown as (Tables<"bids"> & BidRow) | null;
   const outcome = computeBidOutcome({
-    bid: bid ? { amount_cents: bid.amount_cents, status: bid.status } : null,
+    bid: bid
+      ? {
+          amount_cents: bid.amount_cents,
+          status: bid.status,
+          stripe_auth_status: bid.stripe_auth_status,
+        }
+      : null,
     tx: (tx as TxRow) ?? null,
     serialOffer: (offer as SerialOfferRow) ?? null,
     clearingCents: drop.clearing_price_cents ?? null,
@@ -148,6 +155,10 @@ export default async function ResultPage({
     : "18:00 CET";
   const count = drop.exemplaires ?? 0;
   const specsRaw = locale === "en" ? (drop.specs_en ?? drop.specs) : drop.specs;
+
+  if (outcome.kind === "capture_failed") {
+    return <RevealCaptureFailed dropNumber={dropNumber} />;
+  }
 
   if (outcome.kind === "won" || outcome.kind === "won_privilege") {
     const txId = (tx as { id?: string } | null)?.id ?? null;

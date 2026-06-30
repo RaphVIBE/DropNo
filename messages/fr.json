@@ -676,6 +676,11 @@
     "nextDropTitle": "Le prochain drop ouvre jeudi.",
     "nextDropSub": "Une pièce d'une autre maison. Révélation jeudi à 18h00 CET.",
     "nextDropCalendar": "Voir le calendrier",
-    "nextDropLetter": "Recevoir la lettre du jeudi"
+    "nextDropLetter": "Recevoir la lettre du jeudi",
+    "captureEyebrow": "Drop № {number} · Hmm.",
+    "captureTitle": "Quelque chose n'a pas abouti.",
+    "captureBody": "Une empreinte a été posée sur votre carte, mais la capture n'est pas passée. Aucune pièce n'a été réservée, aucun débit n'a eu lieu. L'empreinte se libère sous 24h.",
+    "captureContact": "Si vous voulez qu'on regarde, écrivez à <link>hello@dropno.eu</link> en indiquant l'heure de votre offre. Nous répondons sous 48 heures ouvrées.",
+    "captureBack": "Retour au calendrier"
   }
 }

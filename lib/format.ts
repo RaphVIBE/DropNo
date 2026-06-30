@@ -20,6 +20,17 @@ export function formatEuros(cents: number, locale: string = "fr"): string {
   }).format(cents / 100);
 }
 
+/**
+ * Montant groupe SANS symbole, pour les nombres editoriaux (gros prix de
+ * clearing en Fraunces italic ou la marque monetaire est posee separement).
+ * Ex: 820000 -> "8 200" (fr) / "8,200" (en).
+ */
+export function formatAmount(cents: number, locale: string = "fr"): string {
+  return new Intl.NumberFormat(bcp(locale), {
+    maximumFractionDigits: 0,
+  }).format(cents / 100);
+}
+
 /** Numero de drop formate facon Drop No. : 1 -> "001". */
 export function formatDropNumber(n: number): string {
   return String(n).padStart(3, "0");

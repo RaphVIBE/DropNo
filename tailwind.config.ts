@@ -36,6 +36,8 @@ const config: Config = {
         muted: {
           DEFAULT: "var(--muted)",
           foreground: "var(--muted-foreground)",
+          // texte tertiaire des écrans acheteur (plus clair que -foreground)
+          2: "var(--muted-2)",
         },
         accent: {
           DEFAULT: "var(--accent)",
@@ -63,6 +65,8 @@ const config: Config = {
         },
         sand: "var(--sand)",
         masthead: "var(--masthead)",
+        // bande de fond profonde des écrans acheteur (plus sombre que --background)
+        "bg-deep": "var(--bg-deep)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
@@ -75,6 +79,18 @@ const config: Config = {
       fontSize: {
         "display-hero": ["clamp(2.5rem,5vw,4.25rem)", { lineHeight: "1.05" }],
         "display-page": ["clamp(2.5rem,5vw,3.5rem)", { lineHeight: "1.05" }],
+      },
+      // Largeur de contenu et gouttière fluide des écrans acheteur (reveal).
+      maxWidth: {
+        content: "var(--max-w)",
+      },
+      spacing: {
+        gutter: "var(--gutter)",
+      },
+      // Courbe ease-out-quart : motion law du parcours acheteur (cf. handoff).
+      // Distincte du cubic-bezier(0.16,1,0.3,1) des révélations vitrine.
+      transitionTimingFunction: {
+        quart: "var(--ease-quart)",
       },
       borderRadius: {
         lg: "var(--radius)",

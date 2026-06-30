@@ -46,6 +46,16 @@
     --sand: oklch(0.952 0.009 78); /* bande alternée, entre background et muted */
     --masthead: oklch(0.935 0.014 78); /* bande d'en-tête : sable un poil plus foncé */
 
+    /* Parcours acheteur (vitrine post-reveal) — tokens partagés des 5 écrans
+       mockups/dropno-buyer-*.html. Light-only : aucun override .admin (surfaces
+       vitrine uniquement). Le mockup `--muted` (texte 0.52) correspond déjà à
+       --muted-foreground ; on n'ajoute donc que ce qui manque réellement. */
+    --muted-2: oklch(0.62 0.012 65); /* texte tertiaire, plus clair que muted-foreground */
+    --bg-deep: oklch(0.94 0.008 80); /* bande de fond plus profonde que --background */
+    --gutter: clamp(20px, 6vw, 80px); /* marge latérale fluide partagée */
+    --max-w: 1100px; /* largeur de contenu des écrans reveal */
+    --ease-quart: cubic-bezier(0.25, 1, 0.5, 1); /* motion law acheteur : ease-out-quart */
+
     /* Hover des boutons PRIMAIRES (pleins) : remplissage bronze/champagne
        profond, mat — texte clair conservé. Subtil, distinct du secondaire. */
     --btn-hover: oklch(0.46 0.05 72);
